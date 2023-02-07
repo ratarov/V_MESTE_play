@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Главная страница PlayBoardgame{% endblock %}
+{% block content %}
+  <div class="row border rounded shadow-sm bg-white">
+    <div class="col-12 col-md-12 mb-3">
+      <p><h4>Добро пожаловать на страницу Boardgame Friends!</h4></p>  
+      <p>Тут можно найти встречу для игры </p>
+      <form class="row" method="get" action="{% url 'meetings:meeting_search' %}">
+        <div class="col-5">
+          <input class="form-control" name="location" type="text" placeholder="Введите город или точный адрес">
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary">
+            <svg class="i-search" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-width="2">
+              <circle cx="14" cy="14" r="12" />
+              <path d="M23 23 L30 30"  />
+            </svg>
+          </button>
+        </div>
+      </form>
+      <br>
+      <p>
+        Или всегда можно <a href="{% url 'meetings:meeting_create' %}">создать свою встречу</a> <br><br><br>
+      </p>
+      <p>
+        Тут скоро будет красивое описание для начала работы с сайтом
+      </p>
+    </div>
+  </div>
+{% endblock %}

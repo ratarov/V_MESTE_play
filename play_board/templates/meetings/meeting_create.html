@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+{% load user_filters %}
+{% block title %}Новая встреча{% endblock %}
+{% block content %}
+  <div class="row border rounded shadow-sm bg-white">
+    <div class="col-12 col-md-12 mb-3">
+      <p><h4>Вы создаете новую встречу:</h4></p>       
+      <form method="post">
+        {% csrf_token %}
+        {% for field in meeting_form %}
+          {% for error in field.errors %} <i>{{ error|escape }}</i> {% endfor %}
+        {% endfor %}
+        <div class="form-group row my-3">
+          <div class="col-12 col-md-4 mb-1">
+            <label class="form-label"><b>Где? *</b></label>
+            {{ meeting_form.place|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Выберите из <a href='{% url 'users:user_info' %}'>списка</a> 
+              или <a href='{% url 'users:place_add' %}'>создайте новое</a>
+            </small> 
+          </div>
+          <div class="col-6 col-md-4 mb-1">
+            <label class="form-label"><b>Когда? *</b></label>
+            {{ meeting_form.start_date }}
+            <small class="form-text text-muted">Выберите дату встречи</small> 
+          </div>
+          <div class="col-6 col-md-4 mb-1">
+            <label class="form-label"><b>Во сколько? *</b></label>
+            {{ meeting_form.start_time }}
+            <small class="form-text text-muted">Выберите время начала</small> 
+          </div>
+          <div class="col-12 col-md-12 mb-1">
+            <label class="form-label"><b>Во что играть? *</b></label>
+            {{ meeting_form.games }}
+            <small class="form-text text-muted">
+              Выберите одну или несколько игр из списка. Не нашли игру? 
+              <a href='{% url 'games:game_add' %}'>Добавьте в 1 клик!</a>
+            </small>
+          </div>
+          <div class="col-6 col-md-4 mb-1">
+            <label class="form-label"><b>Ваши гости</b></label>
+            {{ meeting_form.guests|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Помимо Вас будут игроки не с сайта?
+            </small>
+          </div>
+          <div class="col-6 col-md-4 mb-1">
+            <label class="form-label"><b>Максимум игроков *</b></label>
+            {{ meeting_form.max_players|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Максимальное количество игроков
+            </small>
+          </div>
+          <div class="col-6 col-md-4 mb-1">
+            <label class="form-label"><b>Стоимость участия</b></label>
+            {{ meeting_form.price|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Цена для 1 человека
+            </small>
+          </div>
+          <div class="col-12 col-md-4 mb-1">
+            <label class="form-label"><b>Назовем встречу!</b></label>
+            {{ meeting_form.name|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Ночь Ужаса Аркхэма? Посиделки у гоблина?
+            </small>
+          </div>
+          <div class="col-12 col-md-12 mb-1">
+            <label class="form-label"><b>Комментарии</b></label>
+            {{ meeting_form.description|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Любые Ваши пожелания
+            </small>
+          </div>
+        </div>
+        <button class="btn btn-primary" type="submit">
+          {% if form_edit %} Изменить {% else %} Создать {% endif %} 
+        </button>
+      </form>
+    </div></div>  
+{% endblock %}

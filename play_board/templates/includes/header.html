@@ -1,0 +1,81 @@
+{% load static %}
+<header>
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+		<div class="container">
+			<a class="navbar-brand" href="{% url 'meetings:index' %}">
+        <img src="{% static 'img/logo.png' %}"
+             width="32"
+             height="32"
+             class="d-inline-block align-top"
+             alt="">
+        Play Boardgame
+      </a>
+			<button class="navbar-toggler collapsed" type="button" 
+       data-bs-toggle="collapse" data-bs-target="#navbarCollapse" 
+       aria-controls="navbarCollapse" aria-expanded="false" 
+       aria-label="Toggle navigation"
+      >
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			{% with request.resolver_match.view_name as view_name %}
+				<div class="navbar-collapse collapse" id="navbarCollapse" style="">
+					<ul class="navbar-nav ms-auto mb-2 mb-md-0">
+						<li class="nav-item">
+							<a class="nav-link{% if view_name == 'meetings:meeting_search' %} 
+               active {% endif %}" aria-current="page" 
+               href="{% url 'meetings:meeting_search' %}"
+              >
+                Поиск
+              </a>
+						</li>
+            <li class="nav-item">
+							<a class="nav-link{% if view_name == 'games:game_search' %} 
+               active {% endif %}" aria-current="page" 
+               href="{% url 'games:game_search' %}"
+              >
+                Игры
+              </a>
+						</li>
+						{% if user.is_authenticated %}
+							<li class="nav-item">
+								<a class="nav-link {% if view_name == 'meetings:meeting_create' %} 
+                 active {% endif %}" aria-current="page" href="{% url 'meetings:meeting_create' %}"
+                >
+                  Создать встречу
+                </a>
+							</li>
+              <li class="nav-item">
+								<a class="nav-link {% if view_name == 'users:user_info' %}active{% endif %}" 
+                 aria-current="page" href="{% url 'users:user_info' %}"
+                >
+                  Вы: {{ user.username }}
+                </a>
+							</li>
+              <li class="nav-item">
+								<a class="nav-link" aria-current="page" href="{% url 'users:logout' %}"
+                >
+                  Выйти
+                </a>
+							</li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link {% if view_name == 'users:login' %} 
+                active {% endif %}" aria-current="page" href="{% url 'users:login' %}"
+                >
+                  Войти
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if view_name == 'users:signup' %} 
+                active {% endif %}" aria-current="page" href="{% url 'users:signup' %}"
+                >
+                  Регистрация
+                </a>
+              </li>
+            {% endif %}
+					</ul>
+				</div>
+			{% endwith %}
+		</div>
+	</nav>
+</header>

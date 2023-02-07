@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+{% load user_filters %}
+{% block title %}Поиск компании{% endblock %}
+{% block content %}
+  <div class="row ">
+    {% comment %} <div class="row border rounded mb-4 shadow-sm"> {% endcomment %}
+    <div class="col-12 mb-3 border rounded shadow-sm bg-white">
+      <p><h4>Поиск компании:</h4></p>
+      <form method="get">
+        <div class="form-group row my-3">
+          <div class="col-9 col-md-6 mb-2">
+            <label class="form-label">Адрес поиска (обязательно): </label>
+            {{ form.location|addplaceholder:'Введите город или Ваш адрес' }} 
+          </div>
+          <div class="col-3 col-md-2 mb-2">
+            <label class="form-label">Радиус:</label>
+            {{ form.radius|addclass:'form-control' }}
+          </div>
+          <div class="col-6 col-md-2 mb-2">
+            <label class="form-label">Не раньше:</label>
+            {{ form.date_since }} 
+          </div>
+          <div class="col-6 col-md-2 mb-2">
+            <label class="form-label">Не позже:</label>
+            {{ form.date_until }} 
+          </div>
+
+          <div class="col-8 col-md-4 mb-2">
+            <label class="form-label">Выберите игру:</label>
+            {{ form.game }}
+          </div>
+          <div class="col-4 col-md-2 align-self-center">
+            <div class=" d-flex justify-content-end ">
+              <button type="submit" class="btn btn-primary">
+                Искать
+              </button>
+            </div>  
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-12 col-md-5 order-2 order-md-1">
+      {% if text %}<p>{{ text }}</p>{% endif %}
+      {% if map %}
+        {% for meeting in meetings %}
+          {% include "meetings/meeting_card.html" %}
+        {% empty %}
+          <p>Подходящих игр не найдено</p>
+        {% endfor %}
+      {% endif %}
+    </div>
+      <div class="col-12 col-md-7  order-1 order-md-2">
+        <div class="sticky-md-top">
+        {{ map|safe }}
+        </div>
+      </div>
+    </div>
+	</div>
+{% endblock %}

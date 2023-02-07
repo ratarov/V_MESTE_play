@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+{% block title %}Страница {{ user.username }} {% endblock %}
+{% block content %}
+  {% include 'users/_switcher.html' %}
+  <div class="row border-start border-end border-bottom rounded shadow-sm bg-white mb-3">
+    <div class="col-12 col-md-12">
+      <p>
+        <h4>Страница пользователя {{ user.username }}</h4> 
+      </p>
+      <p>
+        {% if user.photo %}
+          {% thumbnail user.photo "100x100" crop="center" as photo %}
+            <img class="img-fluid rounded mx-auto" src="{{ photo.url }}">
+          {% endthumbnail %}
+        {% else %}
+          <img src="{% static 'img/avatar.jpg' %}" width="100" height="100" class="d-inline-block" alt="">
+        {% endif %}  
+      </p>
+    </div>
+  </div>
+  
+  <div class="row mb-3">
+    <div class="col-12 col-md-4 border rounded shadow-sm bg-white mb-3">
+      <p>
+        <h5>Об игроке: <a href="{% url 'users:user_info_edit' %}"><small>изменить</small></a></h5>
+      </p>
+    <div class="row mb-3">
+      <div class="col-3">
+        <span class="text-muted">Имя:</span>
+      </div>
+      <div class="col-9">
+        {% if user.get_full_name %}
+          {{ user.get_full_name }}
+        {% endif %}
+      </div>
+      
+      <div class="col-3">
+        <span class="text-muted">E-mail:</span>
+      </div>
+      <div class="col-9">
+        {{ user.email }}
+      </div>  
+      <div class="col-3">
+        <span class="text-muted">Страна:</span>
+      </div>
+      <div class="col-9">
+        {% if user.country %}
+          {{ user.country }}
+        {% endif %}
+      </div>
+      <div class="col-3">
+        <span class="text-muted">Город:</span>
+      </div>
+      <div class="col-9">
+        {% if user.city %}
+          {{ user.city }} 
+        {% endif %}
+      </div>  
+      <div class="col-3">
+        <span class="text-muted">О себе:</span>
+      </div>
+      <div class="col-9">
+        {% if user.about %}
+          {{ user.about|linebreaksbr }} 
+        {% endif %}
+      </div>
+      <div class="col-3">
+        <span class="text-muted">Telegram:</span>
+      </div>
+      <div class="col-9">
+        {% if user.telegram %}
+          {{ user.telegram }} 
+        {% endif %}
+      </div>
+      
+
+
+      <div class="col-3">
+        <span class="text-muted">Tesera:</span>
+      </div>
+      <div class="col-9">
+        {% if user.tesera_account %}
+          <a href="https://m.tesera.ru/profile/{{ user.tesera_account }}/">{{ user.tesera_account }}</a>
+        {% endif %}
+      </div>
+      <div class="col-3">
+        <span class="text-muted">BGG:</span>
+      </div>
+      <div class="col-9">
+        {% if user.bgg_account %}
+        <a href="https://boardgamegeek.com/user/{{ gamer.bgg_account }}/">{{ user.bgg_account }}</a><br>
+      {% endif %}
+      </div>
+    </div>   
+  </div>
+  
+  
+    <div class="col-12 col-md-8 border rounded shadow-sm bg-white mb-3"> <!-- для мест -->
+      <p>
+        <h5>Мои места для игр: <a href="{% url 'users:place_add' %}"><small>добавить</small></a></h5>
+      </p>
+      <p>
+        {% for place in user.places.all %}
+        <p>
+          {% thumbnail place.type.logo "24x24" as logo %}
+            <img class="img-fluid rounded mx-auto" src="{{ logo.url }}" title="{{place.type.name}}">
+          {% endthumbnail %} 
+          {{ place.name }} - 
+          <a href="{% url 'users:place_edit' place.id %}">изменить</a>
+          <a href="{% url 'users:place_del' place.id %}">удалить</a>
+          <br>
+          {{ place.city }}, {{ place.address }}<br>
+          {{ place.comments|linebreaksbr }}
+        </p>
+        {% empty %} 
+          Места пока не добавлены<br>
+        {% endfor %}
+      </p>
+      <p>
+        <h5>Коллекции игр:</h5>
+      </p>
+      <p>
+        Любимые игры: <a href="{% url 'users:user_collections' 'liked' %}">
+                        <span class="badge bg-danger">{{ user.liked_games.count }}</span>
+                      </a><br>
+        Коллекция на сайте: <a href="{% url 'users:user_collections' 'site' %}">
+                              <span class="badge bg-danger">{{ user.site_collection.count }}</span>
+                            </a><br>
+        Коллекция на tesera.ru: <a href="{% url 'users:user_collections' 'tesera' %}">
+                                  <span class="badge bg-danger">{{ user.tesera_collection.count }}</span>
+                                </a> 
+                                <a href="{% url 'users:update_collection' %}"><span class="badge bg-danger">обновить</span></a>
+      </p>
+    </div>
+  </div>
+
+
+
+
+      
+      <p>
+        <h5></h5> 
+      </p>
+       
+      
+      <br>
+    </div>
+  </div>
+
+
+
+
+  
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+{% block title %}Страница игрока {{ user.username }} {% endblock %}
+{% block content %}
+  {% include 'users/_switcher.html' %}
+  <div class="row border-start border-end border-bottom rounded shadow-sm bg-white mb-3">
+    <div class="col-12 col-md-12">
+      <p>
+        <h4>Ваши встречи:</h4> 
+      </p>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle table-borderless">
+          <thead>
+            <tr>
+              <th scope="col" width="60">Статус</th>
+              <th scope="col">Дата</th>
+              <th scope="col">Встреча</th>
+              <th scope="col">Место</th>
+              <th scope="col">Состав</th>
+              <th scope="col">Игры</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for meeting in meetings %}
+            <tr>
+              <td>
+                {% thumbnail meeting.status.logo "30x30" crop="center" as photo %}
+                  <img class="img-fluid rounded mx-auto" src="{{ photo.url }}">
+                {% endthumbnail %}
+              </td>
+              <td>{{ meeting.start_date|date:"j b" }}</td>
+              <td>
+                <a href="{% url 'meetings:meeting_detail' meeting.id %}">{{ meeting.get_name }}</a><br>
+                <small class="text-muted">{{ meeting.creator.username }}</small>
+              </td>
+              <td>
+                {{ meeting.place.get_name }}<br>
+                <small class="text-muted">{{ meeting.place.address }}, {{ meeting.place.building }}</small>
+              </td>
+              <td>{{ meeting.get_total_players }} / {{ meeting.max_players }}</td>
+              <td>
+                {% for game in meeting.games.all %}
+                  <a class="btn btn-sm btn-outline-dark" href="{% url 'games:game_detail' game.slug %}"
+                  title="Страница игры {{ game.name_rus }}"
+                  >
+                    {{ game.name_rus|truncatechars:25 }} 
+                  </a>
+                {% endfor %}
+              </td>
+            </tr>
+            {% empty %} <i>Встреч не найдено</i>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

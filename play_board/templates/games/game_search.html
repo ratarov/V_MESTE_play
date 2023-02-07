@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% block title %}Добавление игр{% endblock %}
+{% block content %}
+<div class="row border rounded shadow-sm bg-white">
+  <div class="col-12 col-md-12 mb-3">
+    <p><h4>Поиск {% if new_search %}и добавление новых {% endif %}игр:</h4></p>    
+    <form class="row g-3" method="get">
+      <div class="col-10 col-md-6">
+        <input class="form-control" name="search" type="text" placeholder="Название с заглавной буквы (или часть названия)">
+      </div>
+      <div class="col-2">
+        <button type="submit" class="btn btn-primary">
+          <svg class="i-search" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-width="2">
+            <circle cx="14" cy="14" r="12" />
+            <path d="M23 23 L30 30"  />
+          </svg>
+        </button>        
+      </div>
+    </form>
+  </div>
+  <div class="col-12 col-md-12 mb-3">  
+    {% if search %}
+      <h5>Мы нашли {% if new_search %}и добавили в базу {% endif %}следующие игры:</h5>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle table-borderless">
+          <tbody>
+            {% for game in games %}
+            <tr>
+              <td class="width-70" width="70">
+                <img class="img rounded max-height-100" src="{{ game.photo_url }}" height="60">
+              </td>
+              <td>
+                <a class="text-decoration-none" href="{% url 'games:game_detail' game.slug %}">
+                  {{ game.name_rus }} <br>
+                  <small class="text-muted">{{ game.name_eng }}</small>
+                </a>
+              </td>
+            </tr>
+            {% empty %} <i>Подходящих игр не найдено</i>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% if existing_search %} 
+        Не нашли нужную игру в базе? <a href='{% url 'games:game_add' %}'>Добавьте в 1 клик!</a>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

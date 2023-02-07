@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Страница игры: {{ game.name_rus }}{% endblock %}
+{% block content %}
+  <div class="row border rounded shadow-sm bg-white">
+    <div class="col-12 col-md-12">
+      <p>
+        <h4>Страница игры {{ game.name_rus }}</h4>
+        {% if game.name_eng %}
+          <h6 class="text-muted">{{ game.name_eng }}, {{ game.year }}</h6>
+        {% endif %}
+      </p>
+    </div>
+    
+    <div class="col-12">
+      <img class="img-fluid rounded mx-auto" class="img-responsive" data-no-retina="true"   
+      src="{{ game.photo_url }}" width="200" height="200">
+    </div>
+    {% if user.is_authenticated %}
+      <div class="col-6 col-md-2 mb-4">
+        <a class="text-decoration-none text-reset" href="{% url 'games:like_game' game.slug %}">
+           {% if liked %} 
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+            </svg>
+           {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" 
+             class="bi bi-heart" viewBox="0 0 16 16">
+              <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+            </svg>
+           {% endif %} Нравится!
+        </a>
+      </div>
+      <div class="col-6 col-md-10 mb-4">
+        <a class="text-decoration-none text-reset" href="{% url 'games:collect_game' game.slug %}">
+          {% if collected %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+          fill="red" class="bi bi-bag-heart-fill" viewBox="0 0 16 16">
+            <path d="M11.5 4v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5ZM8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1Zm0 6.993c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132Z"/>
+          </svg>
+          {% else %} 
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+             fill="currentColor" class="bi bi-bag-heart" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5Zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0ZM14 14V5H2v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1ZM8 7.993c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132Z"/>
+            </svg>
+          {% endif %} В коллекции
+        </a>
+      </div>
+    {% endif %}
+    <div class="col-6 col-md-2 mb-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">
+        <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/>
+      </svg> 
+      <span class="text-muted">{{ game.players_min }} - {{ game.players_max }}<span>
+    </div>
+    <div class="col-6 col-md-2 mb-2">
+      {% if game.duration_min or game.duration_max %}
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-stopwatch" viewBox="0 0 16 16">
+        <path d="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5V5.6z"/>
+        <path d="M6.5 1A.5.5 0 0 1 7 .5h2a.5.5 0 0 1 0 1v.57c1.36.196 2.594.78 3.584 1.64a.715.715 0 0 1 .012-.013l.354-.354-.354-.353a.5.5 0 0 1 .707-.708l1.414 1.415a.5.5 0 1 1-.707.707l-.353-.354-.354.354a.512.512 0 0 1-.013.012A7 7 0 1 1 7 2.071V1.5a.5.5 0 0 1-.5-.5zM8 3a6 6 0 1 0 .001 12A6 6 0 0 0 8 3z"/>
+      </svg>
+      <span class="text-muted">{{ game.duration_min }} - {{ game.duration_max }} мин. <span>
+      {% endif %}
+    </div>
+    <div class="col-6 col-md-2 mb-2">
+      {% if game.time_to_learn %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-mortarboard" viewBox="0 0 16 16">
+          <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5ZM8 8.46 1.758 5.965 8 3.052l6.242 2.913L8 8.46Z"/>
+          <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Zm-.068 1.873.22-.748 3.496 1.311a.5.5 0 0 0 .352 0l3.496-1.311.22.748L8 12.46l-3.892-1.556Z"/>
+        </svg> 
+        <span class="text-muted">{{ game.time_to_learn }} мин <span>
+      {% endif %}
+    </div>
+    <div class="col-6 col-md-2 mb-2">
+      {% if game.time_to_learn %}
+        <img src="{% static 'img/cake.png' %}" width="24" height="24" title="Рек.возраст"> 
+        <span class="text-muted">{{ game.age }}+<span>
+      {% endif %}
+    </div>
+    
+    <div class="col-12 mb-3">
+      {% autoescape off %}
+        <br><h5>Описание:</h5>
+        {% if game.description %}{{ game.description }}{% else %}Отсутствует<br>{% endif %}
+        
+      {% endautoescape %}
+      <i>Больше информации об игре на 
+        <a href="https://m.tesera.ru/games/{{ game.tesera_id }}/">tesera.ru</a> 
+        {% if game.bgg_id %}
+          или <a href="https://boardgamegeek.com/boardgame/{{ game.bgg_id }}/">boardgamegeek.com</a>
+        {% endif %}
+      </i>
+      <p>
+        <h6>Описание игр взято с крупнейшего русскоязычного сайта о настольных играх 
+          <a href="https://tesera.ru/games/">tesera.ru</a>. 
+          Спасибо создателям сайта за эту возможность!
+        </h6>
+      </p>
+    </div>
+  </div>
+{% endblock %}

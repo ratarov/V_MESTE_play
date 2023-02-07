@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load user_filters %}
+{% block title %}Добавить/редактировать место{% endblock %}
+{% block content %}
+  <div class="row border-start border-end border-bottom rounded shadow-sm bg-white mb-3">
+    <div class="col-12 col-md-12">
+      <p>
+        <h4>
+          {% if is_edit %}Изменение места "{{ form.instance.name }}"
+          {% else %}Создание места для игр
+          {% endif %}
+        </h4> 
+      </p>
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          {% for error in field.errors %} <i>{{ error|escape }}</i> {% endfor %}
+        {% endfor %}
+        <div class="form-group row my-3">
+          <div class="col-12 col-md-4 mb-1">
+            <label class="form-label"><b>Тип места *</b></label>
+            {{ form.type|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Выберите тип места встреча
+            </small> 
+          </div>
+          <div class="col-12 col-md-8 mb-1">
+            <label class="form-label"><b>Название места *</b></label>
+            {{ form.name|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Если тип квартира, другие игроки увидят просто надпись "квартира"
+            </small>
+          </div>
+          <div class="col-12 col-md-4 mb-1">
+            <label class="form-label"><b>Город *</b></label>
+            {{ form.city|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Укажите город
+            </small> 
+          </div>
+          <div class="col-12 col-md-4 mb-1">
+            <label class="form-label"><b>Улица *</b></label>
+            {{ form.address|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Название улицы
+            </small> 
+          </div>
+          <div class="col-6 col-md-2 mb-1">
+            <label class="form-label"><b>Номер дома *</b></label>
+            {{ form.address|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Номер дома с корпусом
+            </small> 
+          </div>
+          <div class="col-6 col-md-2 mb-1">
+            <label class="form-label"><b>Номер квартиры</b></label>
+            {{ form.flat|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Увидят только участники игры
+            </small> 
+          </div>
+          <div class="col-12 col-md-12 mb-1">
+            <label class="form-label"><b>Комментарии</b></label>
+            {{ form.comments|addclass:'form-control' }}
+            <small class="form-text text-muted">
+              Ваши заметки, другие их не увидят
+            </small> 
+          </div>
+          <div class="col-12 col-md-12 mb-1">
+          </div>
+        
+
+        <div class="d-flex">
+          <button type="submit" class="btn btn-primary">
+            {% if is_edit %}
+              Изменить
+            {% else %}
+              Добавить
+            {% endif %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

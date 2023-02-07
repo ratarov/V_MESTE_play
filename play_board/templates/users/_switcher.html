@@ -1,0 +1,41 @@
+{% with request.resolver_match.view_name as view_name %}
+  {% if user.is_authenticated %}
+    <div class="row">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a 
+            class="nav-link {% if view_name == 'users:user_info' %}active{% endif %}"
+            href="{% url 'users:user_info' %}"
+          >
+            Моя инфо
+          </a>
+        </li>
+        {% comment %} <li class="nav-item">
+          <a 
+            class="nav-link {% if view_name == 'users:user_collections' %}active{% endif %}"
+            href="{% url 'users:user_collections' %}"
+          >
+            Коллекции
+          </a>
+        </li> {% endcomment %}
+        <li class="nav-item">
+          <a 
+            class="nav-link {% if view_name == 'users:user_meetings' %} active {% endif %}"
+            href="{% url 'users:user_meetings' %}"
+          >
+            Встречи
+          </a>
+        </li>
+      </ul>
+    </div>
+  {% endif %}
+  {% if page_header %}
+    <div class="row border-start border-end border-bottom {% if not user.is_authenticated %} border-top {% endif %} rounded mb-4 shadow-sm">
+      <div class="col p-4 d-flex flex-column">
+        <h1 class="display-5 fw-bold text-center">
+          {{ page_header }}
+        </h1>
+      </div>
+    </div>
+  {% endif %}
+{% endwith %}

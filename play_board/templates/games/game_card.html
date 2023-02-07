@@ -1,0 +1,11 @@
+<tr>
+  <td class="width-70" width="70">
+    <img class="img rounded max-height-100" src="{{ game.photo_url }}" height="60">
+  </td>
+  <td>
+    <a class="text-decoration-none" href="{% url 'games:game_detail' game.slug %}">
+      {{ game.name_rus }} <br>
+      <small class="text-muted">{{ game.name_eng }}</small>
+    </a>
+  </td>
+</tr>

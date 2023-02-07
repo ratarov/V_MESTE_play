@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+{% load user_filters %}
+{% block title %}Страница встречи {{ meeting.get_name }}{% endblock %}
+{% block content %}
+  <div class="row border rounded shadow-sm bg-white mb-3">
+    <div class="col-12 mb-3">
+      <p>
+        <h4>Встреча "{{ meeting.get_name }}"</h4>
+        <small class="text-muted">Статус встречи: <b>{{ meeting.status }}</b></small>
+      </p>
+      {% if not user.is_authenticated %}
+        <i>Авторизуйтесь, чтобы присоединиться</i>
+      {% elif meeting.creator == user %} 
+        <a class="btn btn-sm btn-outline-dark" href="{% url 'meetings:meeting_edit' meeting.id %}">
+          Изменить
+        </a>
+        <a class="btn btn-sm btn-outline-dark" href="{% url 'meetings:meeting_cancel' meeting.id %}">
+          Отменить
+        </a>
+      {% elif participation and participation.status == 'BAN' %}
+        Вы не можете присоединиться
+      {% elif not participation and meeting.get_total_players >= meeting.max_players %}
+        Набран максимум игроков
+      {% else %}
+        <form method="post">
+          {% csrf_token %}
+          {% for error in guests_form.guests.errors %} <i>{{ error|escape }}</i> {% endfor %}
+          <div class="row">    
+            <div class='col-auto'>
+              {% if participation %}
+                <a class="btn btn-sm btn-outline-dark" href="{% url 'meetings:leave_meeting' meeting.id %}">
+                  Покинуть встречу
+                </a>
+              {% else %}
+                <button type="submit" class="btn-sm btn-dark">
+                  Присоединиться
+                </button>
+              {% endif %}
+            </div>
+            <div class='col-auto'>
+              <button class="btn-sm btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
+                Приду не один
+              </button>
+            </div>
+            <div class='col-3'>
+              <div class="collapse collapse-horizontal" id="collapseWidthExample">
+                <div class="row" style="width: 550px;">
+                  <div class="col-2">
+                    {{ guests_form.guests|addclass:'form-control form-control-sm' }}
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn-sm btn-dark">ОК</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        
+      {% endif%}
+    </div>
+
+    <div class="col-12 col-md-12 mb-3">
+      <div class="row mb-3">
+        <div class="col-8 order-1 order-md-1"> <!--строка организатора-->
+          <div class="row"> 
+            <div class="col-auto col-md-2">
+              {% if meeting.creator.photo %}
+                {% thumbnail meeting.creator.photo "70x70" crop="center" as photo %}
+                  <img class="img-fluid rounded mx-auto" src="{{ photo.url }}">
+                {% endthumbnail %}
+              {% else %}
+                <img src="{% static 'img/avatar.jpg' %}" width="70" height="70" class="d-inline-block" alt="">
+              {% endif %}
+            </div>
+            <div class="col-6 mb-1">
+              <text class="text-muted">Организатор:<text> <br>
+              <a href="{% url 'users:profile' meeting.creator.username %}">
+                <b>{{ meeting.creator.username }}</b>
+              </a>
+            </div>
+          </div>
+        </div><!--строка организатора-->
+
+        <div class="col-12 col-md-8 order-3 order-md-2"> <!--текст карточки-->
+          <div class="row">
+            <div class="col-12 col-md-2">
+              <text class="text-muted">Игры:<text>
+            </div>
+            <div class="col-12 col-md-10">
+              {% for game in meeting.games.all %}
+              <a class="btn btn-sm btn-outline-dark" href="{% url 'games:game_detail' game.slug %}"
+              title="Страница игры {{ game.name_rus }}"
+              >
+                {{ game.name_rus }} 
+              </a>
+            {% empty %} Коллекция
+            {% endfor %}
+            </div>
+            <div class="col-4 col-md-2">
+              <text class="text-muted">Команда:<text>
+            </div>
+            <div class="col-8 col-md-10">
+              {{ meeting.get_total_players }} / {{ meeting.max_players }}
+            </div>
+            <div class="col-12 col-md-2">
+              <text class="text-muted">Игроки:<text>
+            </div>
+            <div class="col-12 col-md-10">
+              {% for participation in meeting.get_active_players %}
+              <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                {% if participation.player != meeting.creator and user == meeting.creator %}
+                  <a class="btn btn-outline-danger" 
+                  href="{% url 'meetings:ban_player' meeting.id participation.player.username %}" title="Забанить"
+                  >
+                    x
+                  </a>
+                {% endif %}
+                <a class="btn btn-outline-dark" href="{% url 'users:profile' participation.player.username %}" 
+                title="Перейти на страницу игрока">
+                  {{ participation.player.username }}{% if participation.guests %} + {{ participation.guests }}{% endif %}
+                </a>
+              </div>
+            {% endfor %}
+            </div>
+            {% if user == meeting.creator %}
+              <div class="col-4 col-md-2">
+                <text class="text-muted">Забанены:<text>
+              </div>
+              <div class="col-8 col-md-10">
+                {% for participation in meeting.get_banned_players %}
+                  <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                    {% if user == meeting.creator %}
+                      <a class="btn btn-outline-success" 
+                      href="{% url 'meetings:unban_player' meeting.id participation.player.username %}" title="Разбанить"
+                      >
+                        x
+                      </a>
+                    {% endif %}
+                    <a class="btn btn-outline-dark" href="{% url 'users:profile' participation.player.username %}" 
+                    title="Перейти на страницу игрока">
+                      {{ participation.player.username }} + {{ participation.guests }}
+                    </a>
+                  </div> 
+                  {% empty %} пусто
+                {% endfor %} 
+              </div>
+            {% endif %}
+            
+            <div class="col-4 col-md-2">
+              <text class="text-muted">Цена:<text>
+            </div>
+            <div class="col-8 col-md-10">
+              {{ meeting.get_price }}
+            </div>
+            <div class="col-12 col-md-2">
+              <text class="text-muted">Комментарии:<text>
+            </div>
+            <div class="col-12 col-md-10">
+              {{ meeting.description|linebreaksbr }}
+            </div>
+          </div>
+        </div><!--текст карточки-->
+    
+
+        <div class="col-12 col-md-4 mb-3 order-2 order-md-3"><!--адрес и карта-->
+          <div class="col-12 col-md-11">
+            <p>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
+                <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+              </svg>
+              {{ meeting.start_date|date:"l j b" }} {{ meeting.start_time }}
+            </p>
+            <p class="muted">
+              {% thumbnail meeting.place.type.logo "24x24" as logo %}
+                  <img class="img-fluid rounded mx-auto" src="{{ logo.url }}"  title="{{meeting.place.type.name}}">
+                {% endthumbnail %}
+              {{ meeting.place.get_name }}<br>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+              </svg>
+              {{ meeting.place.city }}, {{ meeting.place.address }}, {{ meeting.place.building }}
+              {% if participation and participation.status == 'ACT' and meeting.place.flat %}
+                , кв. {{ meeting.place.flat }}
+              {% endif %}
+            </p>
+          </div>
+          <div class="col-12 col-md-11">
+            {{ map|safe }}
+          </div>
+        </div><!--адрес и карта-->
+
+        
+      </div>
+    </div>
+  </div>
+  
+  <div class="row border rounded shadow-sm bg-white mb-3">
+    <div class="col-12 col-md-12 mb-1"><!--комментарии-->
+      <p><h5> Комментарии игроков: </h5></p>
+      {% for comment in comments %}
+        <div class="row mb-2">
+          <div class="col-auto">
+            {% if comment.creator.photo %}
+              {% thumbnail comment.creator.photo "40x40" crop="center" as photo %}
+                <img class="img-fluid rounded mx-auto" src="{{ photo.url }}">
+              {% endthumbnail %}
+            {% else %}
+              <img src="{% static 'img/avatar.jpg' %}" width="200" height="200" class="d-inline-block" alt="">
+            {% endif %}
+          </div>
+          <div class="col-auto">
+            <a href="{% url 'users:profile' comment.creator.username %}">
+              {{ comment.creator.username }}
+            </a><br>
+            {{ comment.text|linebreaksbr }}<br>
+            <small class="text-muted">
+              {{ comment.created|date:"j M H:i" }} 
+              {% if user == comment.creator %}
+              - 
+              <a href="#" 
+               title="Удалить комментарий">Изменить</a>
+              {% endif %}
+              {% if user == comment.creator or user == meeting.creator %} 
+               - 
+              <a href="{% url 'meetings:comment_del' comment_id=comment.id meeting_id=comment.meeting.id %}" 
+               title="Удалить комментарий">Удалить</a>
+              {% endif %}
+            </small>
+          </div>
+        </div>
+        {% if not forloop.last %} <hr> {% endif %}
+      {% empty %}
+        Пока нет комментариев
+      {% endfor %} 
+      <hr>
+      {% if user.is_authenticated %}
+        <h5>
+          Добавить комментарий:
+        </h5>
+        <form method="post" action="{% url 'meetings:comment_add' meeting.id %}">
+          {% csrf_token %}      
+          <div class="form-group mb-2">
+            {{ comment_form.text }}
+          </div>
+          <button type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

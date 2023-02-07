@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+{% block title %}Страница игрока {{ gamer.username }} {% endblock %}
+{% block content %}
+
+
+<div class="row border rounded shadow-sm bg-white mb-3">
+  <div class="col-12 col-md-12">
+    <p>
+      <h4>Страница игрока {{ gamer.username }}</h4>
+    </p>
+    <p>
+    {% if gamer.photo %}
+      {% thumbnail gamer.photo "100x100" crop="center" as photo %}
+        <img class="img-fluid rounded mx-auto" src="{{ photo.url }}">
+      {% endthumbnail %}
+    {% else %}
+      <img src="{% static 'img/avatar.jpg' %}" width="100" height="100" class="d-inline-block" alt="">
+    {% endif %} </p>
+  </div>
+</div>
+
+<div class="row mb-3">
+<div class="col-12 col-md-5 border rounded shadow-sm bg-white mb-3">
+  <p>
+    <h5>Об игроке</h5>
+  </p>
+<div class="row mb-3">
+  <div class="col-3">
+    <span class="text-muted">Имя:</span>
+  </div>
+  <div class="col-9">
+    {% if gamer.get_full_name %}
+      {{ gamer.get_full_name }}
+    {% endif %}
+  </div>
+  <div class="col-3">
+    <span class="text-muted">Откуда:</span>
+  </div>
+  <div class="col-9">
+    {% if gamer.city %}{{ gamer.city }}{% endif %}
+    {% if gamer.country %} ({{ gamer.country }}){% endif %} 
+  </div>  
+  <div class="col-3">
+    <span class="text-muted">О себе:</span>
+  </div>
+  <div class="col-9">
+    {% if gamer.about %}
+      {{ gamer.about|linebreaksbr }}
+    {% endif %}
+  </div>
+  <div class="col-3">
+    <span class="text-muted">Tesera:</span>
+  </div>
+  <div class="col-9">
+    {% if gamer.tesera_account %}
+    <a href="https://m.tesera.ru/profile/{{ gamer.tesera_account }}/">{{ gamer.tesera_account }}</a><br>
+  {% endif %}
+  </div>
+  <div class="col-3">
+    <span class="text-muted">BGG:</span>
+  </div>
+  <div class="col-9">
+    {% if gamer.bgg_account %}
+    <a href="https://boardgamegeek.com/user/{{ gamer.bgg_account }}/">{{ gamer.bgg_account }}</a><br>
+  {% endif %}
+  </div>
+</div>   
+</div>
+
+
+  <div class="col-12 col-md-7 border rounded shadow-sm bg-white mb-3">
+    <p>
+      <h5>Статистика встреч:</h5>
+    </p>
+    
+    <p>
+      <h5>Коллекции игр:</h5>
+    </p>
+    <p>
+      Любимые игры: 
+      <a href="{% url 'users:gamer_collections' gamer.username 'liked' %}">
+        <span class="badge bg-danger">{{ gamer.liked_games.count }}</span>
+      </a><br>
+      Коллекция на сайте: 
+      <a href="{% url 'users:gamer_collections' gamer.username 'site' %}">
+        <span class="badge bg-danger">{{ gamer.site_collection.count }}</span>
+      </a><br>
+      {% if gamer.tesera_account %}
+        Коллекция на tesera.ru: 
+        <a href="{% url 'users:gamer_collections' gamer.username 'tesera' %}">
+          <span class="badge bg-danger">{{ gamer.tesera_collection.count }}</span>
+        </a> 
+      {% endif %}
+    </p>
+
+    
+  </div>
+</div>
+{% endblock %}

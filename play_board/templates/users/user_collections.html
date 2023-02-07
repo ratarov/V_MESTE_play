@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+{% block title %}Мои коллекции{% endblock %}
+{% block content %}
+  {% include 'users/_switcher.html' %}
+  <div class="row border-start border-end border-bottom rounded shadow-sm bg-white mb-3">
+    <div class="col-12 col-md-12">
+      <p>
+        <h5>
+          {% if type == 'liked' %} 
+            Любимые игры {{ user.username }}: <span class="badge bg-danger">{{ user.liked_games.count }}</span> 
+          {% elif type == 'site' %}
+            Коллекция на сайте {{ user.username }}: <span class="badge bg-danger">{{ user.site_collection.count }}</span>
+          {% elif type == 'tesera' %} 
+            Коллекция tesera {{ user.username }}: <span class="badge bg-danger">{{ user.tesera_collection.count }}</span>
+            {% if user == request.user%}<a href="{% url 'users:update_collection' %}"><span class="badge bg-danger">обновить</span></a>{% endif %}
+          {% endif %}
+        </h5>
+      </p>
+  
+      <div class="table-responsive">
+        <table class="table table-hover align-middle table-borderless">
+          <tbody>
+            {% for game in page_obj %}
+              {% include "games/game_card.html" %}
+            {% empty %} <i>В коллекции пусто</i>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% include "includes/paginator.html" %}
+      </div>
+    </div>
+{% endblock %}
