@@ -1,5 +1,6 @@
 from django.contrib import admin
-from meetings.models import Comment, Meeting, MeetingStatus, MeetingParticipation
+from meetings.models import (Comment, Meeting, MeetingStatus,
+                             MeetingParticipation)
 
 
 class MeetingAdmin(admin.ModelAdmin):
@@ -12,7 +13,6 @@ class MeetingAdmin(admin.ModelAdmin):
         'place',
     )
     search_fields = ['games']
-    # list_filter = ('pub_date',)
     autocomplete_fields = ['games']
     empty_value_display = '-пусто-'
 

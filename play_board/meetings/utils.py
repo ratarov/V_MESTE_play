@@ -1,8 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.utils import timezone
 from geopy.geocoders import Nominatim
-from meetings.forms import CommentForm, MeetingForm, MeetingSearchForm
-from meetings.models import Comment, Meeting, MeetingStatus
+from meetings.models import Meeting
 from django.conf import settings
 import folium
 from django.urls import reverse
@@ -19,24 +18,26 @@ def get_geolocation(location):
 
 
 def filter_meetings(place, request):
-    radius = int(request.GET.get('radius'))
+    radius = int(request.GET.get('radius', settings.DEFAULT_SEARCH_RADIUS))
     date_since = request.GET.get('date_since')
     date_until = request.GET.get('date_until')
     game = request.GET.get('game')
     meetings = Meeting.objects.filter(
         start_date__gte=timezone.now(),
-        status__name='готовится',
+        status__name='Готовится',
         place__loc_lat__gt=(place.latitude - radius / settings.KM_IN_DEGREE),
         place__loc_lat__lt=(place.latitude + radius / settings.KM_IN_DEGREE),
         place__loc_lon__gt=(place.longitude - radius / settings.KM_IN_DEGREE),
         place__loc_lon__lt=(place.longitude + radius / settings.KM_IN_DEGREE),
-    )
+    ).select_related('status', 'creator', 'place').prefetch_related('games')
     if date_since:
         meetings = meetings.filter(start_date__gte=date_since)
     if date_until:
         meetings = meetings.filter(start_date__lte=date_until)
     if game:
         meetings = meetings.filter(games__id=game)
+    if request.user.is_authenticated:
+        meetings = meetings.exclude(creator=request.user)
     return meetings
 
 

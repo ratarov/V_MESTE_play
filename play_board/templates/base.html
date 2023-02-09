@@ -28,17 +28,37 @@
 			});
 			});
 		</script>
+    <style type="text/css">
+      body{
+        position: relative;
+      }
+      main{
+          margin-bottom: 80px;
+      }
+      .footer-bs{
+          position: absolute;
+          width: 100%;
+          min-height: 70px;
+          bottom: 0px;
+          left: 0;
+      }
+    </style>
     <title>
 			{% block title %}Тут должен быть заголовок{% endblock %}
 		</title>
 	</head>
-	<body style="background-color: #FFFAFA;">
+	<body class="d-flex flex-column min-vh-100" style="background-color: #FFFAFA;">
 		{% include 'includes/header.html' %}
-		<main>
-			<div class="container py-5">
-				{% block content %}Контента нет, но будет{% endblock %}
-			</div>
-			{% include 'includes/footer.html' %}
-		</main>
+    <div id="wrap">
+      <main >
+        <div class="container py-5">
+          {% block content %}Контента нет, но будет{% endblock %}
+        </div>
+        <div class="row">
+        </div>
+        
+      </main>
+    </div>
+    {% include 'includes/footer.html' %}
 	</body>
 </html>

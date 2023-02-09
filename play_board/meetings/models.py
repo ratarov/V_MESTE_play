@@ -4,7 +4,7 @@ from games.models import Game
 
 
 class MeetingStatus(models.Model):
-    logo = models.ImageField('Иконка', upload_to='icons', 
+    logo = models.ImageField('Иконка', upload_to='icons',
                              null=True, blank=True)
     name = models.CharField(max_length=30)
 
@@ -20,7 +20,8 @@ class Meeting(models.Model):
     name = models.CharField(
         'Название', max_length=30, blank=True, null=True)
     status = models.ForeignKey(
-        MeetingStatus, related_name='meetings', default=1, on_delete=models.SET_DEFAULT)
+        MeetingStatus, related_name='meetings', default=1,
+        on_delete=models.SET_DEFAULT)
     games = models.ManyToManyField(
         Game, blank=True, related_name='meetings')
     start_date = models.DateField('Дата встречи')
@@ -57,7 +58,8 @@ class Meeting(models.Model):
 
     def get_total_players(self):
         players_qty = self.participants.filter(status='ACT').count()
-        guests_qty = self.participants.filter(status='ACT').values_list('guests', flat=True)
+        guests_qty = self.participants.filter(status='ACT').\
+            values_list('guests', flat=True)
         return sum(guests_qty) + players_qty
 
     def get_price(self):

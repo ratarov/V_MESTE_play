@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
 from django.db import models
 from geopy.geocoders import Nominatim
 from games.models import Game
@@ -38,7 +37,7 @@ class User(AbstractUser):
 
 
 class PlaceType(models.Model):
-    logo = models.ImageField('Иконка', upload_to='icons', 
+    logo = models.ImageField('Иконка', upload_to='icons',
                              null=True, blank=True)
     name = models.CharField(max_length=30)
 
@@ -67,12 +66,6 @@ class Place(models.Model):
         verbose_name_plural = 'Места'
         ordering = ('name',)
         default_related_name = 'places'
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=['creator', 'name'],
-        #         name='unique_gamer_place'
-        #     )
-        # ]
 
     def __str__(self):
         return self.name
@@ -81,7 +74,7 @@ class Place(models.Model):
         if self.address:
             try:
                 geolocator = Nominatim(user_agent="Tester")
-                full_address = f'{self.city} {self.address} {self.building}'
+                full_address = f'{self.city}, {self.address}, {self.building}'
                 location = geolocator.geocode(full_address)
                 self.loc_lat = location.latitude
                 self.loc_lon = location.longitude
@@ -92,7 +85,7 @@ class Place(models.Model):
 
     def get_info(self):
         if self.type.name == 'квартира/дом':
-            return self.address
+            return f'{self.address}, {self.building}'
         else:
             return f'"{self.name}": {self.address}, {self.building}'
 

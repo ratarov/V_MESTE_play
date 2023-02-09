@@ -5,24 +5,20 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from games.models import Game
-from users.forms import CreateUserForm, PlaceForm, UserInfoForm
+from users.forms import (CreateUserForm, PlaceForm, UserInfoForm,
+                         UserMeetingsForm)
 from users.models import Place, User
-from users.utils import get_tesera_collection, get_tesera_user, get_paginated_games
-from games.utils import create_game, parse_tesera_response
+from users.utils import (get_tesera_collection, get_tesera_user,
+                         get_paginated_games, filter_user_meetings)
+from games.utils import parse_tesera_response
 
 
 def gamer_profile(request, username):
     gamer = get_object_or_404(User, username=username)
     context = {'gamer': gamer}
-    # if gamer.tesera_account:
-    #     tesera_slugs = get_user_collection(gamer.tesera_account)
-    #     if tesera_slugs:
-    #         collection = Game.objects.filter(slug__in=tesera_slugs)
-    #         context['collection'] = collection
     return render(request, 'users/gamer_profile.html', context)
 
 
-@login_required
 def gamer_collections(request, username, collection):
     gamer = get_object_or_404(User, username=username)
     qs = {
@@ -61,11 +57,19 @@ def update_tesera_collection(request):
                 request.user.tesera_account, collection_qty)
             collection_dataset = parse_tesera_response(collection_raw)
             request.user.tesera_collection.clear()
+            new_games = []
+            games_in_collection = []
             for game_dataset in collection_dataset:
                 slug = game_dataset.get('slug')
                 if not Game.objects.filter(slug=slug).exists():
-                    create_game(game_dataset)
-                request.user.tesera_collection.add(Game.objects.get(slug=slug))
+                    new_games.append(Game(**game_dataset))
+                games_in_collection.append(slug)
+            Game.objects.bulk_create(new_games)
+            mapped_games = map(lambda x: Game.objects.get(slug=x).id,
+                               games_in_collection)
+            col = [User.tesera_collection.through(
+                user_id=request.user.id, game_id=xxx) for xxx in mapped_games]
+            User.tesera_collection.through.objects.bulk_create(col)
     return redirect('users:user_collections', 'tesera')
 
 
@@ -82,11 +86,10 @@ def user_collections(request, collection):
 
 
 @login_required
-def user_meetings(request, status=None):
-    meetings = request.user.played.order_by('-start_date')
-    if status:
-        meetings = request.user.played.filter(status=status)
-    context = {'meetings': meetings}
+def user_meetings(request):
+    form = UserMeetingsForm(data=request.GET or None)
+    meetings = filter_user_meetings(request)
+    context = {'meetings': meetings, 'form': form}
     return render(request, 'users/user_meetings.html', context)
 
 

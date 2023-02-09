@@ -14,20 +14,20 @@ class MeetingSearchForm(forms.ModelForm):
         [5, 5]
     )
     location = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control'}
+        attrs={'class': 'form-control form-control-sm'}
     ))
     radius = forms.ChoiceField(choices=radius_vars, required=False)
     date_since = forms.DateField(
         required=False, widget=forms.DateInput(
             format=('%Y-%m-%d'),
-            attrs={'class': 'form-control', 'type': 'date'}
+            attrs={'class': 'form-control form-control-sm', 'type': 'date'}
         )
     )
     date_until = forms.DateField(
         required=False,
         widget=forms.DateInput(
             format=('%Y-%m-%d'),
-            attrs={'class': 'form-control', 'type': 'date'}
+            attrs={'class': 'form-control form-control-sm', 'type': 'date'}
         )
     )
     game = forms.ModelChoiceField(
@@ -90,16 +90,15 @@ class MeetingForm(forms.ModelForm):
             total_players_qty = self.instance.get_total_players()
             old_guests_qty = self.initial.get('guests')
         else:
-            total_players_qty = 1         #  organizer
+            total_players_qty = 1         # organizer
             old_guests_qty = 0
         new_guests_qty = int(self.data.get('guests'))
-        print(total_players_qty)
-        print(old_guests_qty)
-        print(new_guests_qty)
         new_total = total_players_qty - old_guests_qty + new_guests_qty
         if max_players < new_total:
             raise forms.ValidationError(
-                f'Максимум игроков ({max_players}) меньше кол-ва игроков с гостями({new_total})')
+                f'Максимум игроков ({max_players}) меньше кол-ва '
+                f'игроков с гостями({new_total})'
+            )
         return max_players
 
 
@@ -128,11 +127,8 @@ class GuestForm(forms.ModelForm):
     def clean_guests(self):
         data = self.cleaned_data['guests']
         players_without_user = self.other_participants.count()
-        # print(players_without_user)
         guests = sum(self.other_participants.values_list('guests', flat=True))
-        # print(guests)
         max_qty = self.meeting.max_players
-        # print(max_qty)
         if players_without_user + guests + data >= max_qty:
             print('aaa')
             raise forms.ValidationError(

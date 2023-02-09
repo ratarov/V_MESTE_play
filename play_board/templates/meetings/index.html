@@ -1,30 +1,62 @@
 {% extends "base.html" %}
+{% load user_filters %}
+{% load static %}
 {% block title %}Главная страница PlayBoardgame{% endblock %}
 {% block content %}
-  <div class="row border rounded shadow-sm bg-white">
-    <div class="col-12 col-md-12 mb-3">
-      <p><h4>Добро пожаловать на страницу Boardgame Friends!</h4></p>  
-      <p>Тут можно найти встречу для игры </p>
-      <form class="row" method="get" action="{% url 'meetings:meeting_search' %}">
-        <div class="col-5">
-          <input class="form-control" name="location" type="text" placeholder="Введите город или точный адрес">
-        </div>
-        <div class="col-auto">
-          <button type="submit" class="btn btn-primary">
-            <svg class="i-search" viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentcolor" stroke-width="2">
-              <circle cx="14" cy="14" r="12" />
-              <path d="M23 23 L30 30"  />
-            </svg>
-          </button>
-        </div>
-      </form>
-      <br>
+  <div class="row border rounded shadow-sm bg-white justify-content-center">
+    <div class="col-12 col-md-4 py-4">
       <p>
-        Или всегда можно <a href="{% url 'meetings:meeting_create' %}">создать свою встречу</a> <br><br><br>
+        <h2>Добро пожаловать на</h2>
+        <h1><b><span style="color:red">Boardgame Friends</span>!</b></h1>
+        <h5>Поиск компании для настольных игр</h5>
       </p>
-      <p>
-        Тут скоро будет красивое описание для начала работы с сайтом
+      <p>  
+        <h6>Не хватает игроков для любимой игры?<br>
+          Не знаете где и с кем поиграть?<br>
+          Просто ищете друзей-настольщиков?<br> 
+          <span style="color:red">Вы пришли по адресу!</span>
+        </h6>
       </p>
     </div>
+    <div class="col-12 col-md-4 py-4">
+      <img src="{% static 'img/playingboardgames.jpg' %}" class="img-fluid" alt="">
+    </div>
+    <div class="col-12 col-md-6 mb-3 text-center py-4">
+      <h4>Найдите встречу рядом с собой:</h4>
+      <form method="get" action="{% url 'meetings:meeting_search' %}">
+        <div class="form-group row my-3">
+          <div class="col-12 col-md-12 mb-2">
+            {{ form.location|addplaceholder:'Введите название города или адрес' }} 
+          </div>
+          <div class="col-12">
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-sm btn-danger">
+                Искать
+              </button>
+            </div>  
+          </div>
+        </div>
+      </form>
+    </div>  
+    <div class="col-12 text-center py-4">
+      <h4>Хотите создать встречу сами?</h4>
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-3">
+          <h6><a href="{% url 'users:signup' %}">Зарегистрируйтесь</a></h6>
+          <img src="{% static 'img/reg.jpg' %}" class="img-fluid rounded" alt="">
+        </div>
+        
+
+        <div class="col-12 col-md-3">
+          <h6><a href="{% url 'users:user_info' %}">Добавьте место</a></h6>
+          <img src="{% static 'img/place.jpg' %}" class="img-fluid rounded" alt="">
+        </div>
+
+        <div class="col-12 col-md-3">
+          <h6><a href="{% url 'meetings:meeting_create' %}">Создайте встречу</a></h6>
+          <img src="{% static 'img/meeting.jpg' %}" class="img-fluid rounded" alt="">
+        </div>
+      </div>
+    </div>  
   </div>
 {% endblock %}

@@ -16,7 +16,7 @@
           </div>
           <div class="col-3 col-md-2 mb-2">
             <label class="form-label">Радиус:</label>
-            {{ form.radius|addclass:'form-control' }}
+            {{ form.radius|addclass:'form-control form-control-sm' }}
           </div>
           <div class="col-6 col-md-2 mb-2">
             <label class="form-label">Не раньше:</label>
@@ -27,14 +27,16 @@
             {{ form.date_until }} 
           </div>
 
-          <div class="col-8 col-md-4 mb-2">
+          <div class="col-12 col-md-12">
             <label class="form-label">Выберите игру:</label>
+          </div>
+          <div class="col-8 col-md-5">
             {{ form.game }}
           </div>
-          <div class="col-4 col-md-2 align-self-center">
+          <div class="col-4 col-md-1 align-self-center">
             <div class=" d-flex justify-content-end ">
-              <button type="submit" class="btn btn-primary">
-                Искать
+              <button type="submit" class="btn btn-sm btn-danger">
+                Найти
               </button>
             </div>  
           </div>

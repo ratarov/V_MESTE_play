@@ -47,7 +47,7 @@
           </div>
           <div class="col-6 col-md-2 mb-1">
             <label class="form-label"><b>Номер дома *</b></label>
-            {{ form.address|addclass:'form-control' }}
+            {{ form.building|addclass:'form-control' }}
             <small class="form-text text-muted">
               Номер дома с корпусом
             </small> 
@@ -71,7 +71,7 @@
         
 
         <div class="d-flex">
-          <button type="submit" class="btn btn-primary">
+          <button type="submit" class="btn btn-danger">
             {% if is_edit %}
               Изменить
             {% else %}

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load thumbnail %}
 {% load static %}
+{% load user_filters %}
 {% block title %}Страница игрока {{ user.username }} {% endblock %}
 {% block content %}
   {% include 'users/_switcher.html' %}
@@ -9,6 +10,36 @@
       <p>
         <h4>Ваши встречи:</h4> 
       </p>
+      <form method="get">
+        <div class="form-group row my-3">
+          <div class="col-5 col-md-2 mb-2">
+            <label class="form-label"><small class="text-muted">Статус:</small></label>
+            {{ form.status|addclass:'form-control form-control-sm' }} 
+          </div>
+          <div class="col-5 col-md-2 mb-2">
+            <label class="form-label"><small class="text-muted">Хозяин:</small></label>
+            {{ form.host|addclass:'form-control form-control-sm' }}
+          </div>
+          <div class="col-5 col-md-2 mb-2">
+            <label class="form-label"><small class="text-muted">Не раньше:</small></label>
+            {{ form.date_since }} 
+          </div>
+          <div class="col-5 col-md-2 mb-2">
+            <label class="form-label"><small class="text-muted">Не позже:</small></label>
+            {{ form.date_until }} 
+          </div>
+          <div class="col-2 col-md-1 align-self-center">
+            <div class="row d-flex justify-content-end ">
+              <span style="color:white">.</span>
+            </div>
+            <div class="row d-flex justify-content-end ">
+              <button type="submit" class="btn btn-sm btn-danger">
+                Найти
+              </button>
+            </div>  
+          </div>
+        </div>
+      </form>
       <div class="table-responsive">
         <table class="table table-hover align-middle table-borderless">
           <thead>

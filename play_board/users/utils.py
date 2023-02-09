@@ -30,3 +30,24 @@ def get_paginated_games(queryset, request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return page_obj
+
+
+def filter_user_meetings(request):
+    status = request.GET.get('status')
+    host = request.GET.get('host')
+    date_since = request.GET.get('date_since')
+    date_until = request.GET.get('date_until')
+    meetings = request.user.played.order_by('-start_date')
+    if status:
+        print(status)
+        meetings = meetings.filter(status__name=status)
+    if host:
+        if host == 'Вы':
+            meetings = meetings.filter(creator=request.user)
+        else:
+            meetings = meetings.exclude(creator=request.user)
+    if date_since:
+        meetings = meetings.filter(start_date__gte=date_since)
+    if date_until:
+        meetings = meetings.filter(start_date__lte=date_until)
+    return meetings

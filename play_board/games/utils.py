@@ -57,7 +57,7 @@ def update_game_data(game):
     except Exception:
         print(f'Ошибка при запросе игры {game.slug} на tesera.ru')
     game.bgg_id = request.get('bggId')
-    game.name_eng = request.get('title2') if request.get('title2') else request.get('title3')
+    game.name_eng = request.get('title2', 'title3')
     game.description = request.get('description')
     game.year = request.get('year')
     game.players_min = request.get('playersMin')

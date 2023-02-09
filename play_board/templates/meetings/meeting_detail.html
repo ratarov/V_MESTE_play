@@ -13,10 +13,10 @@
       {% if not user.is_authenticated %}
         <i>Авторизуйтесь, чтобы присоединиться</i>
       {% elif meeting.creator == user %} 
-        <a class="btn btn-sm btn-outline-dark" href="{% url 'meetings:meeting_edit' meeting.id %}">
+        <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:meeting_edit' meeting.id %}">
           Изменить
         </a>
-        <a class="btn btn-sm btn-outline-dark" href="{% url 'meetings:meeting_cancel' meeting.id %}">
+        <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:meeting_cancel' meeting.id %}">
           Отменить
         </a>
       {% elif participation and participation.status == 'BAN' %}
@@ -30,11 +30,11 @@
           <div class="row">    
             <div class='col-auto'>
               {% if participation %}
-                <a class="btn btn-sm btn-outline-dark" href="{% url 'meetings:leave_meeting' meeting.id %}">
+                <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:leave_meeting' meeting.id %}">
                   Покинуть встречу
                 </a>
               {% else %}
-                <button type="submit" class="btn-sm btn-dark">
+                <button type="submit" class="btn-sm btn-danger">
                   Присоединиться
                 </button>
               {% endif %}
@@ -51,7 +51,7 @@
                     {{ guests_form.guests|addclass:'form-control form-control-sm' }}
                   </div>
                   <div class="col-2">
-                    <button type="submit" class="btn-sm btn-dark">ОК</button>
+                    <button type="submit" class="btn-sm btn-danger">ОК</button>
                   </div>
                 </div>
               </div>
@@ -247,7 +247,7 @@
           <div class="form-group mb-2">
             {{ comment_form.text }}
           </div>
-          <button type="submit" class="btn btn-primary">Отправить</button>
+          <button type="submit" class="btn btn-danger">Отправить</button>
         </form>
       {% endif %}
     </div>

@@ -2,18 +2,19 @@ import folium
 from folium.plugins import MarkerCluster
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils import timezone
-from games.models import Game
-from geopy.geocoders import Nominatim
-from meetings.forms import CommentForm, MeetingForm, MeetingSearchForm, GuestForm
-from meetings.models import Comment, Meeting, MeetingStatus, MeetingParticipation
+from meetings.forms import (CommentForm, MeetingForm, MeetingSearchForm,
+                            GuestForm)
+from meetings.models import (Comment, Meeting, MeetingStatus,
+                             MeetingParticipation)
 from users.models import User
 from meetings.utils import get_geolocation, filter_meetings, add_meeting_marker
 from django.conf import settings
 
 
 def index(request):
-    return render(request, 'meetings/index.html')
+    form = MeetingSearchForm()
+    context = {'form': form}
+    return render(request, 'meetings/index.html', context)
 
 
 def meeting_search(request):
@@ -25,7 +26,7 @@ def meeting_search(request):
         text = f'Место "{location}" не найдено на карте'
         geolocation = get_geolocation(location)
         if geolocation:
-            radius = request.GET.get('radius')
+            radius = request.GET.get('radius', settings.DEFAULT_SEARCH_RADIUS)
             meetings = filter_meetings(geolocation, request)
             text = (f'В радиусе {radius} км от "{location}" найдено '
                     f'встреч: {len(meetings)}')
@@ -52,7 +53,7 @@ def meeting_create(request):
     if meeting_form.is_valid():
         meeting = meeting_form.save(commit=False)
         meeting.creator = request.user
-        meeting.status = MeetingStatus.objects.get(name='готовится')
+        meeting.status = MeetingStatus.objects.get(name='Готовится')
         meeting.save()
         meeting.participants.create(
             player=request.user,
@@ -69,16 +70,17 @@ def meeting_create(request):
 
 def meeting_detail(request, meeting_id):
     meeting = get_object_or_404(Meeting, id=meeting_id)
-    comments = meeting.comments.all()
+    comments = meeting.comments.select_related('creator')
     comment_form = CommentForm()
 
     participation = None
-    if request.user.is_authenticated and meeting.participants.filter(player=request.user).exists():
+    if request.user.is_authenticated and meeting.participants.\
+            filter(player=request.user).exists():
         participation = meeting.participants.get(player=request.user)
-    
+
     guests_form = GuestForm(user=request.user, meeting=meeting,
                             data=request.POST or None, instance=participation)
-    
+
     if guests_form.is_valid():
         return redirect('meetings:join_meeting',
                         guests=guests_form.data.get('guests'),
@@ -99,11 +101,6 @@ def meeting_detail(request, meeting_id):
         'map': map,
         'participation': participation,
     }
-    # if request.user.is_authenticated and meeting.participants.filter(player=request.user).exists():
-    #     participation = meeting.participants.get(player=request.user)
-    #     guests_form = GuestForm(instance=participation)
-    #     context['participation'] = participation
-    #     context['guests_form'] = guests_form
     return render(request, 'meetings/meeting_detail.html', context)
 
 
@@ -136,7 +133,7 @@ def meeting_edit(request, meeting_id):
 def meeting_cancel(request, meeting_id):
     meeting = get_object_or_404(Meeting, id=meeting_id)
     if request.user == meeting.creator:
-        meeting.status = MeetingStatus.objects.get(name='отменена')
+        meeting.status = MeetingStatus.objects.get(name='Отменена')
         meeting.save()
     return redirect('meetings:meeting_detail', meeting_id)
 
@@ -159,7 +156,8 @@ def join_meeting(request, guests, meeting_id):
 @login_required
 def leave_meeting(request, meeting_id):
     meeting = get_object_or_404(Meeting, id=meeting_id)
-    participation = get_object_or_404(MeetingParticipation, meeting=meeting, player=request.user)
+    participation = get_object_or_404(MeetingParticipation, meeting=meeting,
+                                      player=request.user)
     if request.user != meeting.creator:
         participation.delete()
     return redirect('meetings:meeting_detail', meeting_id)
@@ -169,7 +167,8 @@ def leave_meeting(request, meeting_id):
 def ban_player(request, meeting_id, username):
     meeting = get_object_or_404(Meeting, id=meeting_id)
     player = get_object_or_404(User, username=username)
-    participation = get_object_or_404(MeetingParticipation, meeting=meeting, player=player)
+    participation = get_object_or_404(MeetingParticipation, meeting=meeting,
+                                      player=player)
     if meeting.creator == request.user and meeting.creator != player:
         participation.status = 'BAN'
         participation.save()
@@ -180,9 +179,11 @@ def ban_player(request, meeting_id, username):
 def unban_player(request, meeting_id, username):
     meeting = get_object_or_404(Meeting, id=meeting_id)
     player = get_object_or_404(User, username=username)
-    participation = get_object_or_404(MeetingParticipation, meeting=meeting, player=player)
+    participation = get_object_or_404(MeetingParticipation, meeting=meeting,
+                                      player=player)
     if meeting.creator == request.user:
-        if (participation.guests + 1 + meeting.get_total_players()) <= meeting.max_players:
+        if (participation.guests + 1 + meeting.get_total_players())\
+                <= meeting.max_players:
             participation.status = 'ACT'
             participation.save()
         else:
