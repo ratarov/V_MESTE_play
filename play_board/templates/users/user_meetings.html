@@ -57,7 +57,7 @@
             <tr>
               <td>
                 {% thumbnail meeting.status.logo "30x30" crop="center" as photo %}
-                  <img class="img-fluid rounded mx-auto" src="{{ photo.url }}">
+                  <img class="img-fluid rounded mx-auto" src="{{ photo.url }}" title="{{ meeting.status.name }}">
                 {% endthumbnail %}
               </td>
               <td>{{ meeting.start_date|date:"j b" }}</td>
@@ -69,7 +69,7 @@
                 {{ meeting.place.get_name }}<br>
                 <small class="text-muted">{{ meeting.place.address }}, {{ meeting.place.building }}</small>
               </td>
-              <td>{{ meeting.get_total_players }} / {{ meeting.max_players }}</td>
+              <td>{{ meeting.total_players }} / {{ meeting.max_players }}</td>
               <td>
                 {% for game in meeting.games.all %}
                   <a class="btn btn-sm btn-outline-dark" href="{% url 'games:game_detail' game.slug %}"

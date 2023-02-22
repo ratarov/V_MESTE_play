@@ -7,7 +7,10 @@
   <div class="row border-start border-end border-bottom rounded shadow-sm bg-white mb-3">
     <div class="col-12 col-md-12">
       <p>
-        <h4>Страница пользователя {{ user.username }}</h4> 
+        <h4>
+          Страница пользователя {{ user.username }} 
+          <a href="{% url 'users:password_change' %}"><span class="badge bg-danger">сменить пароль</span></a>
+        </h4>
       </p>
       <p>
         {% if user.photo %}
@@ -97,60 +100,41 @@
   </div>
   
   
-    <div class="col-12 col-md-8 border rounded shadow-sm bg-white mb-3"> <!-- для мест -->
+  <div class="col-12 col-md-8 border rounded shadow-sm bg-white mb-3"> <!-- для мест -->
+    <p>
+      <h5>Мои места для игр: <a href="{% url 'users:place_add' %}"><span class="badge bg-danger">добавить</span></a></h5>
+    </p>
+    <p>
+      {% for place in places.all %}
       <p>
-        <h5>Мои места для игр: <a href="{% url 'users:place_add' %}"><span class="badge bg-danger">добавить</span></a></h5>
+        {% thumbnail place.type.logo "24x24" as logo %}
+          <img class="img-fluid rounded mx-auto" src="{{ logo.url }}" title="{{place.type.name}}">
+        {% endthumbnail %} 
+        {{ place.name }} - 
+        <a href="{% url 'users:place_edit' place.id %}">изменить</a>
+        <a href="{% url 'users:place_del' place.id %}">удалить</a>
+        <br>
+        {{ place.city }}, {{ place.address }}, {{ place.building }}<br>
+        <i><small>{{ place.comments|linebreaksbr }}</small></i>
       </p>
-      <p>
-        {% for place in user.places.all %}
-        <p>
-          {% thumbnail place.type.logo "24x24" as logo %}
-            <img class="img-fluid rounded mx-auto" src="{{ logo.url }}" title="{{place.type.name}}">
-          {% endthumbnail %} 
-          {{ place.name }} - 
-          <a href="{% url 'users:place_edit' place.id %}">изменить</a>
-          <a href="{% url 'users:place_del' place.id %}">удалить</a>
-          <br>
-          {{ place.city }}, {{ place.address }}, {{ place.building }}<br>
-          <i><small>{{ place.comments|linebreaksbr }}</small></i>
-        </p>
-        {% empty %} 
-          Места пока не добавлены<br>
-        {% endfor %}
-      </p>
-      <p>
-        <h5>Коллекции игр:</h5>
-      </p>
-      <p>
-        Любимые игры: <a href="{% url 'users:user_collections' 'liked' %}">
-                        <span class="badge bg-danger">{{ user.liked_games.count }}</span>
-                      </a><br>
-        Коллекция на сайте: <a href="{% url 'users:user_collections' 'site' %}">
-                              <span class="badge bg-danger">{{ user.site_collection.count }}</span>
-                            </a><br>
-        Коллекция на tesera.ru: <a href="{% url 'users:user_collections' 'tesera' %}">
-                                  <span class="badge bg-danger">{{ user.tesera_collection.count }}</span>
-                                </a>
-                                <a href="{% url 'users:update_collection' %}"><span class="badge bg-danger">обновить</span></a>
-      </p>
-    </div>
+      {% empty %} 
+        Места пока не добавлены<br>
+      {% endfor %}
+    </p>
+    <p>
+      <h5>Коллекции игр:</h5>
+    </p>
+    <p>
+      Любимые игры: <a href="{% url 'users:user_collections' 'liked' %}">
+                      <span class="badge bg-danger">{{ user.liked_games.count }}</span>
+                    </a><br>
+      Коллекция на сайте: <a href="{% url 'users:user_collections' 'site' %}">
+                            <span class="badge bg-danger">{{ user.site_collection.count }}</span>
+                          </a><br>
+      Коллекция на tesera.ru: <a href="{% url 'users:user_collections' 'tesera' %}">
+                                <span class="badge bg-danger">{{ user.tesera_collection.count }}</span>
+                              </a>
+                              <a href="{% url 'users:update_collection' %}"><span class="badge bg-danger">обновить</span></a>
+    </p>
   </div>
-
-
-
-
-      
-      <p>
-        <h5></h5> 
-      </p>
-       
-      
-      <br>
-    </div>
-  </div>
-
-
-
-
-  
 {% endblock %}

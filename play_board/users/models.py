@@ -29,11 +29,11 @@ class User(AbstractUser):
         'Tesera ник', help_text='Имя пользователя на tesera.ru',
         max_length=50, null=True, blank=True)
     liked_games = models.ManyToManyField(
-        Game, related_name='liked_games')
+        Game, related_name='liked')
     site_collection = models.ManyToManyField(
-        Game, related_name='site_collection')
+        Game, related_name='collected')
     tesera_collection = models.ManyToManyField(
-        Game, related_name='tesera_collection')
+        Game, related_name='t_collected')
 
 
 class PlaceType(models.Model):

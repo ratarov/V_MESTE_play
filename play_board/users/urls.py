@@ -34,10 +34,10 @@ urlpatterns = [
      path('logout/', LogoutView.as_view(
                     template_name='users/reg_actions/logged_out.html'
                ), name='logout'),
-     path('password_change/', views.PasswordChangeView.as_view(
+     path('password_change/done/', PasswordChangeDoneView.as_view(
+                    template_name='users/reg_actions/password_change_done.html'
+               ), name='password_change_done'),
+     path('password_change/', views.MyPasswordChangeView.as_view(
                     template_name='users/reg_actions/password_change_form.html'
                ), name='password_change'),
-     path('password_change/done/', PasswordChangeDoneView.as_view(
-                    template_name='users/password_change_done.html'
-               ), name='password_change_done'),
 ]

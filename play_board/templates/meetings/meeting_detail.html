@@ -103,7 +103,7 @@
               <text class="text-muted">Команда:<text>
             </div>
             <div class="col-8 col-md-10">
-              {{ meeting.get_total_players }} / {{ meeting.max_players }}
+              {{ meeting.total_players }} / {{ meeting.max_players }}
             </div>
             <div class="col-12 col-md-2">
               <text class="text-muted">Игроки:<text>
@@ -123,7 +123,7 @@
                   {{ participation.player.username }}{% if participation.guests %} + {{ participation.guests }}{% endif %}
                 </a>
               </div>
-            {% endfor %}
+              {% endfor %}
             </div>
             {% if user == meeting.creator %}
               <div class="col-4 col-md-2">

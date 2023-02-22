@@ -1,6 +1,8 @@
 import requests
 from django.conf import settings
 from django.core.paginator import Paginator
+from django.db.models import Sum
+
 
 USER_DETAIL_URL = 'https://api.tesera.ru/user/'
 COLLECTION_URL = 'https://api.tesera.ru/collections/base/own/'
@@ -37,7 +39,10 @@ def filter_user_meetings(request):
     host = request.GET.get('host')
     date_since = request.GET.get('date_since')
     date_until = request.GET.get('date_until')
-    meetings = request.user.played.order_by('-start_date')
+    meetings = request.user.meetings.order_by('-start_date').\
+        select_related('creator', 'place', 'status', 'place__type').\
+        prefetch_related('games').\
+        annotate(total_players=Sum('participants__total_qty'))
     if status:
         print(status)
         meetings = meetings.filter(status__name=status)

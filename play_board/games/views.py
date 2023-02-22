@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from games.models import Game
 from games.utils import (parse_tesera_response, search_games,
                          update_game_data)

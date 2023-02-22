@@ -9,11 +9,11 @@
       <p>
         <h5>
           {% if type == 'liked' %} 
-            Любимые игры {{ user.username }}: <span class="badge bg-danger">{{ user.liked_games.count }}</span> 
+            Любимые игры {{ user.username }}: <span class="badge bg-danger">{{ page_obj.paginator.count }}</span> 
           {% elif type == 'site' %}
-            Коллекция на сайте {{ user.username }}: <span class="badge bg-danger">{{ user.site_collection.count }}</span>
+            Коллекция на сайте {{ user.username }}: <span class="badge bg-danger">{{ page_obj.paginator.count }}</span>
           {% elif type == 'tesera' %} 
-            Коллекция tesera {{ user.username }}: <span class="badge bg-danger">{{ user.tesera_collection.count }}</span>
+            Коллекция tesera {{ user.username }}: <span class="badge bg-danger">{{ page_obj.paginator.count }}</span>
             {% if user == request.user%}<a href="{% url 'users:update_collection' %}"><span class="badge bg-danger">обновить</span></a>{% endif %}
           {% endif %}
         </h5>

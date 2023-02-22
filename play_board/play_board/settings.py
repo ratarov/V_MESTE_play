@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'meetings.apps.MeetingsConfig',
     'games.apps.GamesConfig',
     'core.apps.CoreConfig',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -63,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'play_board.urls'
@@ -154,9 +156,13 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'meetings:index'
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+] 
 
 # CONSTATNTS
 
 KM_IN_DEGREE = 111
 GAMES_ON_PAGE = 20
 DEFAULT_SEARCH_RADIUS = 100
+

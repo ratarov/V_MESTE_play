@@ -9,6 +9,7 @@ from meetings.models import (Comment, Meeting, MeetingStatus,
 from users.models import User
 from meetings.utils import get_geolocation, filter_meetings, add_meeting_marker
 from django.conf import settings
+from django.db.models import Prefetch, Sum
 
 
 def index(request):
@@ -69,7 +70,12 @@ def meeting_create(request):
 
 
 def meeting_detail(request, meeting_id):
-    meeting = get_object_or_404(Meeting, id=meeting_id)
+    meeting = get_object_or_404(
+        Meeting.objects.select_related('creator', 'place', 'status').\
+            prefetch_related('games').\
+            annotate(total_players=Sum('participants__total_qty')),
+        id=meeting_id
+    )
     comments = meeting.comments.select_related('creator')
     comment_form = CommentForm()
 
@@ -133,7 +139,7 @@ def meeting_edit(request, meeting_id):
 def meeting_cancel(request, meeting_id):
     meeting = get_object_or_404(Meeting, id=meeting_id)
     if request.user == meeting.creator:
-        meeting.status = MeetingStatus.objects.get(name='Отменена')
+        meeting.status_id = 3
         meeting.save()
     return redirect('meetings:meeting_detail', meeting_id)
 
@@ -182,7 +188,7 @@ def unban_player(request, meeting_id, username):
     participation = get_object_or_404(MeetingParticipation, meeting=meeting,
                                       player=player)
     if meeting.creator == request.user:
-        if (participation.guests + 1 + meeting.get_total_players())\
+        if (participation.total_qty + meeting.get_total_players())\
                 <= meeting.max_players:
             participation.status = 'ACT'
             participation.save()

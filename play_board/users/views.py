@@ -38,13 +38,14 @@ def user_info(request):
 
 @login_required
 def user_info_edit(request):
+    places = Place.objects.filter(creator=request.user).select_related('type')
     form = UserInfoForm(request.POST or None, files=request.FILES or None,
                         instance=request.user)
     if form.is_valid():
         user = form.save(commit=False)
         user.save()
         return redirect('users:user_info')
-    context = {'form': form}
+    context = {'form': form, 'places': places}
     return render(request, 'users/user_info_edit.html', context)
 
 
@@ -59,13 +60,15 @@ def update_tesera_collection(request):
             request.user.tesera_collection.clear()
             new_games = []
             games_in_collection = []
+            games_in_base = list(Game.objects.values_list('slug', flat=True))
             for game_dataset in collection_dataset:
                 slug = game_dataset.get('slug')
-                if not Game.objects.filter(slug=slug).exists():
+                if slug not in games_in_base:
                     new_games.append(Game(**game_dataset))
                 games_in_collection.append(slug)
             Game.objects.bulk_create(new_games)
-            mapped_games = map(lambda x: Game.objects.get(slug=x).id,
+            games_in_base = dict(Game.objects.values_list('slug', 'id'))
+            mapped_games = map(lambda x: games_in_base.get(x),
                                games_in_collection)
             col = [User.tesera_collection.through(
                 user_id=request.user.id, game_id=xxx) for xxx in mapped_games]

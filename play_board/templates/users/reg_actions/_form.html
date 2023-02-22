@@ -37,11 +37,11 @@
               </div>
             {% endfor %}
             <div class="d-grid gap-2 col-6 mx-auto">
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-danger">
                 {{ form_button }}
               </button>
               {% if reset %}
-              <a href="{% url 'users:password_reset' %}" class="btn btn-link">
+              <a href="{% url 'users:password_reset' %}" class="btn btn-danger">
                   Забыли пароль?
               </a>
               {% endif %}

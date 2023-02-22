@@ -1,3 +1,4 @@
+from functools import total_ordering
 from django.db import models
 from users.models import User, Place
 from games.models import Game
@@ -28,12 +29,13 @@ class Meeting(models.Model):
     start_time = models.TimeField('Время встречи')
     creator = models.ForeignKey(
         User, on_delete=models.CASCADE,
-        related_name='meetings')
+        related_name='created')
     guests = models.PositiveSmallIntegerField(
         'Гости организатора', default=0)
     players = models.ManyToManyField(
         User, blank=True,
-        through='MeetingParticipation', related_name='played')
+        # through='MeetingParticipation', related_name='meetings')
+        through='MeetingParticipation')
     max_players = models.PositiveSmallIntegerField(
         'Максимальное кол-во игроков', default=7)
     description = models.TextField(blank=True, null=True)
@@ -46,21 +48,21 @@ class Meeting(models.Model):
         verbose_name = 'Встреча'
         verbose_name_plural = 'Встречи'
         ordering = ('start_date', 'start_time')
+        default_related_name = 'meetings'
 
     def __str__(self):
         return f'{self.start_date} - {self.creator} - {self.place}'
 
     def get_active_players(self):
-        return MeetingParticipation.objects.filter(meeting=self, status='ACT')
+        return MeetingParticipation.objects.filter(meeting=self, status='ACT').\
+            select_related('player')
 
     def get_banned_players(self):
-        return MeetingParticipation.objects.filter(meeting=self, status='BAN')
+        return MeetingParticipation.objects.filter(meeting=self, status='BAN').\
+            select_related('player')
 
     def get_total_players(self):
-        players_qty = self.participants.filter(status='ACT').count()
-        guests_qty = self.participants.filter(status='ACT').\
-            values_list('guests', flat=True)
-        return sum(guests_qty) + players_qty
+        return sum(self.participants.values_list('total_qty', flat=True))
 
     def get_price(self):
         return self.price or 'бесплатно'
@@ -84,6 +86,9 @@ class MeetingParticipation(models.Model):
         'Количество гостей', default=0)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICE, default='ACT')
+    total_qty = models.PositiveSmallIntegerField(
+        'Игрок + гости', default=1
+    )
 
     class Meta:
         verbose_name = 'Участник встречи'
@@ -98,8 +103,15 @@ class MeetingParticipation(models.Model):
     def __str__(self):
         return f'{self.player.username} + {self.guests}'
 
-    def get_player_with_guests(self):
-        return (self.guests + 1)
+    # def get_player_with_guests(self):
+    #     return (self.guests + 1)
+
+    def save(self, **kwargs):
+        if self.status == 'ACT':
+            self.total_qty = 1 + self.guests
+        else:
+            self.total_qty = 0
+        super(MeetingParticipation, self).save()
 
 
 class Comment(models.Model):

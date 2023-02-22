@@ -1,10 +1,11 @@
 from django.shortcuts import redirect
 from django.utils import timezone
 from geopy.geocoders import Nominatim
-from meetings.models import Meeting
+from meetings.models import Meeting, MeetingParticipation
 from django.conf import settings
 import folium
 from django.urls import reverse
+from django.db.models import Prefetch, Sum
 
 
 def get_geolocation(location):
@@ -24,12 +25,14 @@ def filter_meetings(place, request):
     game = request.GET.get('game')
     meetings = Meeting.objects.filter(
         start_date__gte=timezone.now(),
-        status__name='Готовится',
+        status_id=1,
         place__loc_lat__gt=(place.latitude - radius / settings.KM_IN_DEGREE),
         place__loc_lat__lt=(place.latitude + radius / settings.KM_IN_DEGREE),
         place__loc_lon__gt=(place.longitude - radius / settings.KM_IN_DEGREE),
         place__loc_lon__lt=(place.longitude + radius / settings.KM_IN_DEGREE),
-    ).select_related('status', 'creator', 'place').prefetch_related('games')
+    ).select_related('status', 'creator', 'place', 'place__type').\
+        prefetch_related('games').\
+        annotate(total_players=Sum('participants__total_qty'))
     if date_since:
         meetings = meetings.filter(start_date__gte=date_since)
     if date_until:
@@ -42,6 +45,7 @@ def filter_meetings(place, request):
 
 
 def add_meeting_marker(map, meeting):
+    # games = meeting.ge
     games = ','.join(meeting.games.values_list('name_rus', flat=True)[:3])
     url = reverse('meetings:meeting_detail', args=(meeting.id,))
     html = f'''
@@ -50,7 +54,7 @@ def add_meeting_marker(map, meeting):
             {meeting.start_date}
         </a>
         <br>
-        <b>Команда:</b> {meeting.get_total_players()}/{meeting.max_players}
+        <b>Команда:</b> {meeting.total_players}/{meeting.max_players}
         <br>
         <b>Игры:</b> {games}
     '''
