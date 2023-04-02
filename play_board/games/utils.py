@@ -1,18 +1,9 @@
-# from bs4 import BeautifulSoup
 import requests
 from games.models import Game
 
-TOP_GAMES = [
-    'Gloomhaven (Мрачная гавань)',
-    'Брасс. Бирмингем',
-    'Пандемия. Наследие: cезон первый',
-    'Покорение Марса',
-    'Сумерки империи. Четвёртая редакция'
-]
+
 SEARCH_URL = 'https://api.tesera.ru/search/games?query='
 DETAIL_URL = 'https://api.tesera.ru/games/'
-
-
 FIELDS = {
         'teseraId': 'tesera_id',
         'bggId': 'bgg_id',
@@ -32,6 +23,7 @@ FIELDS = {
 
 
 def search_games(name):
+    """Получение ответа на запрос с поиском игры от сайта tesera.ru"""
     try:
         return requests.get(f'{SEARCH_URL}{name}').json()
     except Exception:
@@ -39,6 +31,7 @@ def search_games(name):
 
 
 def parse_tesera_response(tesera_response):
+    """Парсинг ответа tesera со списком игр"""
     all_games_data = []
     for data_set in tesera_response:
         game_data = {}
@@ -52,27 +45,29 @@ def parse_tesera_response(tesera_response):
 
 
 def update_game_data(game):
+    """Обновление данных об игре при заходе на страницу игры (если надо)"""
     try:
         request = requests.get(f'{DETAIL_URL}{game.slug}').json().get('game')
+        game.bgg_id = request.get('bggId')
+        game.name_eng = request.get('title2', 'title3')
+        game.description = request.get('description')
+        game.year = request.get('year')
+        game.players_min = request.get('playersMin')
+        game.players_max = request.get('playersMax')
+        game.duration_min = request.get('playtimeMin')
+        game.duration_max = request.get('playtimeMax')
+        game.age = request.get('playersAgeMin')
+        game.time_to_learn = request.get('timeToLearn')
+        game.save(update_fields=['bgg_id', 'name_eng', 'description', 'year',
+                                 'players_min', 'players_max', 'duration_min',
+                                 'duration_max', 'age', 'time_to_learn'])
+        print(f'Игра {game.slug} обновлена')
     except Exception:
         print(f'Ошибка при запросе игры {game.slug} на tesera.ru')
-    game.bgg_id = request.get('bggId')
-    game.name_eng = request.get('title2', 'title3')
-    game.description = request.get('description')
-    game.year = request.get('year')
-    game.players_min = request.get('playersMin')
-    game.players_max = request.get('playersMax')
-    game.duration_min = request.get('playtimeMin')
-    game.duration_max = request.get('playtimeMax')
-    game.age = request.get('playersAgeMin')
-    game.time_to_learn = request.get('timeToLearn')
-    game.save(update_fields=['bgg_id', 'name_eng', 'description', 'year',
-                             'players_min', 'players_max', 'duration_min',
-                             'duration_max', 'age', 'time_to_learn'])
-    print(f'Игра {game.slug} обновлена')
 
 
 def create_game(dataset):
+    """Создание игры"""
     slug = dataset['slug']
     try:
         Game.objects.create(
@@ -94,25 +89,3 @@ def create_game(dataset):
     except Exception:
         print(f'Ошибка при создании игры {slug}')
     print(f'Создана игра {slug}')
-
-
-# db = []
-# slugs = search_games('санкт-петербург')
-# print(f'slugs: {slugs}')
-# if slugs:
-#     new = get_games_details(slugs, db)
-#     print(f'new games: {new}')
-
-
-# def get_top600():
-#     TOP_GAMES_URL = 'https://nastolki-spb.ru/ranks'
-#     r = requests.get(TOP_GAMES_URL)
-#     soup = BeautifulSoup(r.text, 'html.parser')
-#     games = soup.findAll('td', class_='rait-tit')
-#     listforbd = []
-#     for game in games:
-#         a = str(game)
-#         b = a.split('>')
-#         c = b[2].split('<')
-#         listforbd.append(c[0])
-#     return listforbd

@@ -14,12 +14,18 @@ from games.utils import parse_tesera_response
 
 
 def gamer_profile(request, username):
+    """Страница пользователя - доступна всем"""
     gamer = get_object_or_404(User, username=username)
-    context = {'gamer': gamer}
+    cancelled = gamer.created.filter(status=3).count()
+    joined = gamer.participated.exclude(meeting__creator=gamer).count()
+    context = {'gamer': gamer, 'cancelled': cancelled, 'joined': joined}
     return render(request, 'users/gamer_profile.html', context)
 
 
 def gamer_collections(request, username, collection):
+    """Страница со списком игр в выбранной коллекции:
+       любимые, коллекция на сайте и коллекция на tesra.ru
+    """
     gamer = get_object_or_404(User, username=username)
     qs = {
         'liked': gamer.liked_games.all(),
@@ -33,11 +39,13 @@ def gamer_collections(request, username, collection):
 
 @login_required
 def user_info(request):
+    """Личный кабинет пользователя"""
     return render(request, 'users/user_info.html')
 
 
 @login_required
 def user_info_edit(request):
+    """Страница изменения личных данных пользователя"""
     places = Place.objects.filter(creator=request.user).select_related('type')
     form = UserInfoForm(request.POST or None, files=request.FILES or None,
                         instance=request.user)
@@ -51,6 +59,7 @@ def user_info_edit(request):
 
 @login_required
 def update_tesera_collection(request):
+    """Функция обновления списка игр в коллекции на сайте tesera.ru"""
     if request.user.tesera_account:
         collection_qty = get_tesera_user(request.user.tesera_account)
         if collection_qty:
@@ -78,6 +87,7 @@ def update_tesera_collection(request):
 
 @login_required
 def user_collections(request, collection):
+    
     qs = {
         'liked': request.user.liked_games.all(),
         'site': request.user.site_collection.all(),

@@ -220,11 +220,11 @@
             {{ comment.text|linebreaksbr }}<br>
             <small class="text-muted">
               {{ comment.created|date:"j M H:i" }} 
-              {% if user == comment.creator %}
+              {% comment %} {% if user == comment.creator %}
               - 
               <a href="#" 
                title="Удалить комментарий">Изменить</a>
-              {% endif %}
+              {% endif %} {% endcomment %}
               {% if user == comment.creator or user == meeting.creator %} 
                - 
               <a href="{% url 'meetings:comment_del' comment_id=comment.id meeting_id=comment.meeting.id %}" 

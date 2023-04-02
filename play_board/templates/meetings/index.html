@@ -1,25 +1,22 @@
 {% extends "base.html" %}
 {% load user_filters %}
 {% load static %}
-{% block title %}Главная страница PlayBoardgame{% endblock %}
+{% block title %}Главная страница В МЕСТЕ{% endblock %}
 {% block content %}
   <div class="row border rounded shadow-sm bg-white justify-content-center">
     <div class="col-12 col-md-4 py-4">
       <p>
         <h2>Добро пожаловать на</h2>
-        <h1><b><span style="color:red">Boardgame Friends</span>!</b></h1>
-        <h5>Поиск компании для настольных игр</h5>
-      </p>
-      <p>  
-        <h6>Не хватает игроков для любимой игры?<br>
-          Не знаете где и с кем поиграть?<br>
-          Просто ищете друзей-настольщиков?<br> 
-          <span style="color:red">Вы пришли по адресу!</span>
-        </h6>
+        <h1 class="display-1" style="color:red"><b>В МЕСТЕ</b></h1>
+        {% comment %} <h1><b><span style="color:red">FRI</span>ends!</b></h1> {% endcomment %}
+        <h4>
+          Играем в настольные игры ВМЕСТЕ. <br>
+          Но в каком месте?
+        </h4>
       </p>
     </div>
     <div class="col-12 col-md-4 py-4">
-      <img src="{% static 'img/playingboardgames.jpg' %}" class="img-fluid" alt="">
+      <img src="{% static 'img/playingboardgames1.jpg' %}" class="img-fluid rounded" alt="">
     </div>
     <div class="col-12 col-md-6 mb-3 text-center py-4">
       <h4>Найдите встречу рядом с собой:</h4>

@@ -105,7 +105,7 @@
       <h5>Мои места для игр: <a href="{% url 'users:place_add' %}"><span class="badge bg-danger">добавить</span></a></h5>
     </p>
     <p>
-      {% for place in places.all %}
+      {% for place in user.places.all %}
       <p>
         {% thumbnail place.type.logo "24x24" as logo %}
           <img class="img-fluid rounded mx-auto" src="{{ logo.url }}" title="{{place.type.name}}">

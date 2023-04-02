@@ -9,6 +9,7 @@ COLLECTION_URL = 'https://api.tesera.ru/collections/base/own/'
 
 
 def get_tesera_user(tesera_account):
+    """Получение данных пользователя по нику с сайта tesera.ru"""
     try:
         request = requests.get(f'{USER_DETAIL_URL}{tesera_account}/').json()
     except Exception:
@@ -20,6 +21,7 @@ def get_tesera_user(tesera_account):
 
 
 def get_tesera_collection(tesera_account, games_in_col):
+    """Получение данных о коллекции игрока с сайта tesera.ru"""
     try:
         return requests.get(
             f'{COLLECTION_URL}{tesera_account}/?limit={games_in_col}').json()
@@ -28,6 +30,7 @@ def get_tesera_collection(tesera_account, games_in_col):
 
 
 def get_paginated_games(queryset, request):
+    """Пагинация списка игр"""
     paginator = Paginator(queryset, settings.GAMES_ON_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -35,6 +38,7 @@ def get_paginated_games(queryset, request):
 
 
 def filter_user_meetings(request):
+    """Фильтрация списка встреч пользователя"""
     status = request.GET.get('status')
     host = request.GET.get('host')
     date_since = request.GET.get('date_since')

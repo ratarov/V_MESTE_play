@@ -1,90 +1,14 @@
 <footer class="footer-bs bg-danger">
   <div class="container text-white ">
-    {% comment %} <div class="row py-4">
-      <div class="col-12 col-md-4">
-        <div class="row mb-1">
-          <div class="col-12 col-md-12">
-            <b>Аккаунт</b><br>
-          </div>
-          {% if not user.is_authenticated %}
-          <div class="col-6 col-md-12">
-            <a class="text-decoration-none text-reset" href="">
-              Вход
-            </a><br>
-          </div>
-          <div class="col-6 col-md-12">
-            <a class="text-decoration-none text-reset" href="">
-              Регистрация
-            </a><br>
-          </div>
-          {% else %}
-          <div class="col-6 col-md-12">
-            <a class="text-decoration-none text-reset" href="">
-              Личный кабинет
-            </a><br>
-          </div>
-          <div class="col-6 col-md-12">
-            <a class="text-decoration-none text-reset" href="">
-              Мои встречи
-            </a><br>
-          </div>
-          <div class="col-12 col-md-12">
-            <a class="text-decoration-none text-reset" href="">
-              Сменить пароль
-            </a><br>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-      <div class="col-12 col-md-4">
-        <div class="row  mb-1">
-          <div class="col-12 col-md-12">
-            <b>Встречи</b>
-          </div>
-          <div class="col-6 col-md-12">
-            <a class="text-decoration-none text-reset" href="">
-              Создать
-            </a>
-          </div>
-          <div class="col-6 col-md-12">
-            <a class="text-decoration-none text-reset" href="">
-              Найти
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="col-12 col-md-4">
-        <div class="row  mb-1">
-          <div class="col-12 col-md-12">
-            <b>Настольные игры</b><br>
-          </div>
-          <div class="col-6 col-md-12">
-            <a class="text-decoration-none text-reset" href="">
-              Найти игру
-            </a><br>
-          </div>
-          <div class="col-6 col-md-12">
-            <a class="text-decoration-none text-reset" href="">
-              Добавить игру
-            </a><br>
-          </div>
-        </div>
-      </div>
-    </div> {% endcomment %}
     <div class="row py-3 mb-3">
-      <div class="col-12 col-md-8">
-        <a class="text-decoration-none text-reset" href="">
-          © 2023 Company, Inc.
+      <div class="col-12 col-md-auto">
+        <a class="text-decoration-none text-reset" href="{% url 'meetings:index' %}">
+          © 2023 В МЕСТЕ
         </a>
       </div>
-      <div class="col-6 col-md-2 justify-content-end">
-        <a class="text-decoration-none text-reset" href="">
+      <div class="col-6 col-md-auto ms-auto">
+        <a class="text-decoration-none text-reset" href="{% url 'meetings:about' %}">
           О проекте
-        </a>
-      </div>
-      <div class="col-6 col-md-2 justify-content-end">
-        <a class="text-decoration-none text-reset" href="">
-          Помощь
         </a>
       </div>
     </div>

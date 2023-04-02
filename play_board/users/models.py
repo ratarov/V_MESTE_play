@@ -6,34 +6,31 @@ from django import forms
 
 
 class User(AbstractUser):
-    photo = models.ImageField(
-        'Фото', help_text='Можете загрузить Ваше фото',
-        upload_to='photos/', null=True, blank=True)
-    country = models.CharField(
-        'Страна проживания', help_text='Реальная страна для удобства поиска',
-        max_length=50, null=True, blank=True)
-    city = models.CharField(
-        'Город проживания', help_text='Реальный город для удобства поиска',
-        max_length=100, null=True, blank=True)
-    telegram = models.CharField(
-        'Телеграм аккаунт', help_text='Для связи с игроками и уведомлений',
-        max_length=50, null=True, blank=True)
-    about = models.TextField(
-        'О себе',
-        help_text='Расскажите о себе, своих увлечениях и опыте в играх',
-        null=True, blank=True)
-    bgg_account = models.CharField(
-        'BGG ник', help_text='Имя пользователя на boardgamegeek.com',
-        max_length=50, null=True, blank=True)
-    tesera_account = models.CharField(
-        'Tesera ник', help_text='Имя пользователя на tesera.ru',
-        max_length=50, null=True, blank=True)
-    liked_games = models.ManyToManyField(
-        Game, related_name='liked')
-    site_collection = models.ManyToManyField(
-        Game, related_name='collected')
-    tesera_collection = models.ManyToManyField(
-        Game, related_name='t_collected')
+    photo = models.ImageField('Фото', help_text='Можете загрузить Ваше фото',
+                              upload_to='photos/%Y-%m-%d',
+                              null=True, blank=True)
+    country = models.CharField('Страна проживания',
+                               help_text='Реальная страна для удобства поиска',
+                               max_length=50, null=True, blank=True)
+    city = models.CharField('Город проживания',
+                            help_text='Реальный город для удобства поиска',
+                            max_length=100, null=True, blank=True)
+    telegram = models.CharField('Телеграм аккаунт',
+                                help_text='Для связи с игроками и уведомлений',
+                                max_length=50, null=True, blank=True)
+    about = models.TextField('О себе',
+                             help_text='Расскажите о себе, своих увлечениях'
+                                       'и опыте в играх',
+                             null=True, blank=True)
+    bgg_account = models.CharField('BGG ник',
+                                   help_text='Аккаунт на boardgamegeek.com',
+                                   max_length=50, null=True, blank=True)
+    tesera_account = models.CharField('Tesera ник',
+                                      help_text='Аккаунт на tesera.ru',
+                                      max_length=50, null=True, blank=True)
+    liked_games = models.ManyToManyField(Game, related_name='liked')
+    site_collection = models.ManyToManyField(Game, related_name='collected')
+    tesera_collection = models.ManyToManyField(Game, related_name='t_collected')
 
 
 class PlaceType(models.Model):
@@ -49,16 +46,15 @@ class Place(models.Model):
     type = models.ForeignKey(PlaceType, on_delete=models.SET_NULL,
                              null=True)
     name = models.CharField(max_length=30)
-    creator = models.ForeignKey(
-        User, null=True, on_delete=models.CASCADE)
+    creator = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     city = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     building = models.CharField(max_length=10)
     flat = models.CharField(max_length=10, blank=True, null=True)
-    loc_lat = models.DecimalField(
-        blank=True, null=True, max_digits=9, decimal_places=6)
-    loc_lon = models.DecimalField(
-        blank=True, null=True, max_digits=9, decimal_places=6)
+    loc_lat = models.DecimalField(blank=True, null=True,
+                                  max_digits=9, decimal_places=6)
+    loc_lon = models.DecimalField(blank=True, null=True,
+                                  max_digits=9, decimal_places=6)
     comments = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -71,6 +67,7 @@ class Place(models.Model):
         return self.name
 
     def save(self, **kwargs):
+        """Получение координат места по API Nominatim при сохранении объекта"""
         if self.address:
             try:
                 geolocator = Nominatim(user_agent="Tester")
@@ -78,7 +75,6 @@ class Place(models.Model):
                 location = geolocator.geocode(full_address)
                 self.loc_lat = location.latitude
                 self.loc_lon = location.longitude
-                super(Place, self).save()
             except Exception:
                 raise forms.ValidationError('Адрес не найден, введите другой')
         super(Place, self).save()

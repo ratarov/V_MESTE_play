@@ -6,6 +6,7 @@ from django.utils import timezone
 
 
 class MeetingSearchForm(forms.ModelForm):
+    """Форма поиска встреч по заданным фильтрам"""
     radius_vars = (
         [100, 100],
         [50, 50],
@@ -44,6 +45,7 @@ class MeetingSearchForm(forms.ModelForm):
 
 
 class MeetingForm(forms.ModelForm):
+    """Форма создания встречи"""
     games = forms.ModelMultipleChoiceField(
         queryset=Game.objects.all(),
         widget=forms.SelectMultiple(
@@ -51,10 +53,6 @@ class MeetingForm(forms.ModelForm):
         )
     )
     place = forms.ModelChoiceField(queryset=None)
-
-    def __init__(self, user, *args, **kwargs):
-        super(MeetingForm, self).__init__(*args, **kwargs)
-        self.fields['place'].queryset = Place.objects.filter(creator=user)
 
     class Meta:
         model = Meeting
@@ -77,7 +75,13 @@ class MeetingForm(forms.ModelForm):
             'description': 'Информация'
         }
 
+    def __init__(self, user, *args, **kwargs):
+        """Переопределения queryset Place - только места пользователя"""
+        super(MeetingForm, self).__init__(*args, **kwargs)
+        self.fields['place'].queryset = Place.objects.filter(creator=user)
+
     def clean_start_date(self):
+        """Валидация поля start_date"""
         data = self.cleaned_data['start_date']
         if data < timezone.now().date():
             raise forms.ValidationError(
@@ -85,6 +89,7 @@ class MeetingForm(forms.ModelForm):
         return data
 
     def clean_max_players(self):
+        """Валидация поля с количеством гостей"""
         max_players = self.cleaned_data['max_players']
         if self.instance.get_total_players():
             total_players_qty = self.instance.get_total_players()
@@ -103,6 +108,7 @@ class MeetingForm(forms.ModelForm):
 
 
 class CommentForm(forms.ModelForm):
+    """Форма добавления комментария на странице встречи"""
     class Meta:
         model = Comment
         fields = ('text',)
@@ -113,24 +119,26 @@ class CommentForm(forms.ModelForm):
 
 
 class GuestForm(forms.ModelForm):
+    """Форма для указания количества гостей пользователя"""
     class Meta:
         model = MeetingParticipation
         fields = ('guests',)
 
     def __init__(self, user, meeting, *args, **kwargs):
+        """Получение данных о встрече, к которой присоединяется игрок"""
         super(GuestForm, self).__init__(*args, **kwargs)
         self.meeting = meeting
         if user.is_authenticated:
-            self.other_participants = meeting.participants.\
-                filter(status='ACT').exclude(player=user)
+            self.other_participants = meeting.participants.filter(
+                status='ACT').exclude(player=user)
 
     def clean_guests(self):
+        """Валидация количества гостей - проверка наличия мест"""
         data = self.cleaned_data['guests']
         players_without_user = self.other_participants.count()
         guests = sum(self.other_participants.values_list('guests', flat=True))
         max_qty = self.meeting.max_players
         if players_without_user + guests + data >= max_qty:
-            print('aaa')
             raise forms.ValidationError(
                 'Нет мест для указанного количества гостей')
         return data

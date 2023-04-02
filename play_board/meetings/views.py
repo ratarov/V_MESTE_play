@@ -9,16 +9,23 @@ from meetings.models import (Comment, Meeting, MeetingStatus,
 from users.models import User
 from meetings.utils import get_geolocation, filter_meetings, add_meeting_marker
 from django.conf import settings
-from django.db.models import Prefetch, Sum
+from django.db.models import Sum
 
 
 def index(request):
+    """Главная страница сайта"""
     form = MeetingSearchForm()
     context = {'form': form}
     return render(request, 'meetings/index.html', context)
 
 
+def about(request):
+    """Страница с информацией о проекте"""
+    return render(request, 'meetings/about.html')
+
+
 def meeting_search(request):
+    """Страница поиска встреч по параметрам"""
     form = MeetingSearchForm(data=request.GET or None)
     location = request.GET.get('location')
     context = {'form': form, }
@@ -50,6 +57,7 @@ def meeting_search(request):
 
 @login_required
 def meeting_create(request):
+    """Страница создания новой встречи"""
     meeting_form = MeetingForm(user=request.user, data=request.POST or None)
     if meeting_form.is_valid():
         meeting = meeting_form.save(commit=False)
@@ -58,7 +66,7 @@ def meeting_create(request):
         meeting.save()
         meeting.participants.create(
             player=request.user,
-            guests=meeting_form.data.get('guests')
+            guests=meeting_form.data.get('guests'),
         )
         for game in meeting_form.data.getlist('games'):
             meeting.games.add(game)
@@ -70,10 +78,13 @@ def meeting_create(request):
 
 
 def meeting_detail(request, meeting_id):
+    """Страница 1 выбранной встречи"""
     meeting = get_object_or_404(
-        Meeting.objects.select_related('creator', 'place', 'status').\
-            prefetch_related('games').\
-            annotate(total_players=Sum('participants__total_qty')),
+        Meeting.objects.select_related(
+            'creator', 'place', 'status'
+        ).prefetch_related('games').annotate(
+            total_players=Sum('participants__total_qty')
+        ),
         id=meeting_id
     )
     comments = meeting.comments.select_related('creator')
@@ -112,6 +123,7 @@ def meeting_detail(request, meeting_id):
 
 @login_required
 def meeting_edit(request, meeting_id):
+    """Страница редактирования встречи ее организатором"""
     meeting = get_object_or_404(Meeting, id=meeting_id)
     if meeting.creator != request.user:
         return redirect('meetings:meeting_detail', meeting.id)
@@ -137,6 +149,7 @@ def meeting_edit(request, meeting_id):
 
 @login_required
 def meeting_cancel(request, meeting_id):
+    """Отмена встречи организатором (со страницы встречи)"""
     meeting = get_object_or_404(Meeting, id=meeting_id)
     if request.user == meeting.creator:
         meeting.status_id = 3
@@ -146,6 +159,7 @@ def meeting_cancel(request, meeting_id):
 
 @login_required
 def join_meeting(request, guests, meeting_id):
+    """Присоединение пользователя к встрече с проверкой мест для гостей"""
     meeting = get_object_or_404(Meeting, id=meeting_id)
     if not meeting.participants.filter(player=request.user).exists():
         meeting.participants.create(
@@ -161,6 +175,7 @@ def join_meeting(request, guests, meeting_id):
 
 @login_required
 def leave_meeting(request, meeting_id):
+    """Пользователь покидает встречу, к которой ранее присоединился"""
     meeting = get_object_or_404(Meeting, id=meeting_id)
     participation = get_object_or_404(MeetingParticipation, meeting=meeting,
                                       player=request.user)
@@ -171,6 +186,7 @@ def leave_meeting(request, meeting_id):
 
 @login_required
 def ban_player(request, meeting_id, username):
+    """Добавление игрока, присоединившегося к встрече, в черный список"""
     meeting = get_object_or_404(Meeting, id=meeting_id)
     player = get_object_or_404(User, username=username)
     participation = get_object_or_404(MeetingParticipation, meeting=meeting,
@@ -183,6 +199,9 @@ def ban_player(request, meeting_id, username):
 
 @login_required
 def unban_player(request, meeting_id, username):
+    """Исключение игрока из черного списка встречи. Если есть место с учетом
+       гостя, игрок возвращается в список участников.
+    """
     meeting = get_object_or_404(Meeting, id=meeting_id)
     player = get_object_or_404(User, username=username)
     participation = get_object_or_404(MeetingParticipation, meeting=meeting,
@@ -199,6 +218,7 @@ def unban_player(request, meeting_id, username):
 
 @login_required
 def comment_add(request, meeting_id):
+    """Добавление комментария на странице встречи"""
     meeting = get_object_or_404(Meeting, id=meeting_id)
     form = CommentForm(request.POST or None)
     if form.is_valid():
@@ -211,6 +231,7 @@ def comment_add(request, meeting_id):
 
 @login_required
 def comment_del(request, meeting_id, comment_id):
+    """Удаление комментария на странице встречи"""
     comment = get_object_or_404(Comment, id=comment_id)
     if comment.creator == request.user:
         comment.delete()

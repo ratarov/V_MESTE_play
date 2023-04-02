@@ -1,14 +1,15 @@
 from django.shortcuts import redirect
 from django.utils import timezone
 from geopy.geocoders import Nominatim
-from meetings.models import Meeting, MeetingParticipation
+from meetings.models import Meeting
 from django.conf import settings
 import folium
 from django.urls import reverse
-from django.db.models import Prefetch, Sum
+from django.db.models import Sum
 
 
 def get_geolocation(location):
+    """Получение геопозиции по адресу"""
     try:
         geolocator = Nominatim(user_agent="Tester")
         geolocation = geolocator.geocode(location)
@@ -19,6 +20,7 @@ def get_geolocation(location):
 
 
 def filter_meetings(place, request):
+    """Фильтрация queryset Meeting по заданным фильтрам"""
     radius = int(request.GET.get('radius', settings.DEFAULT_SEARCH_RADIUS))
     date_since = request.GET.get('date_since')
     date_until = request.GET.get('date_until')
@@ -45,7 +47,7 @@ def filter_meetings(place, request):
 
 
 def add_meeting_marker(map, meeting):
-    # games = meeting.ge
+    """Добавление маркера встречи на карту Folium"""
     games = ','.join(meeting.games.values_list('name_rus', flat=True)[:3])
     url = reverse('meetings:meeting_detail', args=(meeting.id,))
     html = f'''

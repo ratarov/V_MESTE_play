@@ -6,7 +6,6 @@ from . import views
 app_name = 'meetings'
 
 urlpatterns = [
-
      path('meetings/create/', views.meeting_create, name='meeting_create'),
      path('meetings/<int:meeting_id>/edit/', views.meeting_edit,
           name='meeting_edit'),
@@ -27,5 +26,6 @@ urlpatterns = [
      path('meetings/<int:meeting_id>/comments/<int:comment_id>/del/',
           views.comment_del, name='comment_del'),
      path('meetings/', views.meeting_search, name='meeting_search'),
+     path('about/', views.about, name='about'),
      path('', views.index, name='index'),
 ]
