@@ -1,15 +1,18 @@
 import folium
-from folium.plugins import MarkerCluster
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
-from meetings.forms import (CommentForm, MeetingForm, MeetingSearchForm,
-                            GuestForm)
-from meetings.models import (Comment, Meeting, MeetingStatus,
-                             MeetingParticipation)
-from users.models import User
-from meetings.utils import get_geolocation, filter_meetings, add_meeting_marker
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404, redirect, render
+from folium.plugins import MarkerCluster
+
+from meetings.forms import (CommentForm, GuestForm, MeetingForm,
+                            MeetingSearchForm)
+from meetings.models import (Comment, Meeting, MeetingParticipation,
+                             MeetingStatus)
+from meetings.threads import (NewCommentInformThread, CancelMeetingInformThread,
+                              NewMeetingInformThread)
+from meetings.utils import add_meeting_marker, filter_meetings, get_geolocation
+from users.models import User
 
 
 def index(request):
@@ -70,6 +73,7 @@ def meeting_create(request):
         )
         for game in meeting_form.data.getlist('games'):
             meeting.games.add(game)
+        NewMeetingInformThread(meeting).start()
         return redirect('meetings:meeting_detail', meeting.pk)
     context = {
         'meeting_form': meeting_form,
@@ -151,9 +155,10 @@ def meeting_edit(request, meeting_id):
 def meeting_cancel(request, meeting_id):
     """Отмена встречи организатором (со страницы встречи)"""
     meeting = get_object_or_404(Meeting, id=meeting_id)
-    if request.user == meeting.creator:
+    if request.user == meeting.creator and meeting.status_id == 1:
         meeting.status_id = 3
         meeting.save()
+        CancelMeetingInformThread(meeting).start()
     return redirect('meetings:meeting_detail', meeting_id)
 
 
@@ -226,6 +231,7 @@ def comment_add(request, meeting_id):
         comment.creator = request.user
         comment.meeting = meeting
         comment.save()
+        NewCommentInformThread(comment, request.user).start()
     return redirect('meetings:meeting_detail', meeting_id)
 
 

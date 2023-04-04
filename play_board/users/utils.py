@@ -1,4 +1,6 @@
 import requests
+
+import folium
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Sum
@@ -60,3 +62,13 @@ def filter_user_meetings(request):
     if date_until:
         meetings = meetings.filter(start_date__lte=date_until)
     return meetings
+
+
+def add_search_marker(map, bot_config):
+    """Добавление маркера поиска на карту Folium"""
+    text = 'Точка отсчета для поиска'
+    folium.Marker(
+        location=[bot_config.loc_lat, bot_config.loc_lon],
+        tooltip=folium.Tooltip(text),
+    ).add_to(map)
+    return map

@@ -5,38 +5,164 @@ from games.models import Game
 from django import forms
 
 
+class BotConfig(models.Model):
+    user = models.OneToOneField('User', on_delete=models.CASCADE)
+    tg_username = models.CharField(
+        verbose_name='Telegram username',
+        max_length=50,
+    )
+    tg_id = models.IntegerField(
+        verbose_name='ID пользователя',
+        blank=True,
+        null=True,
+    )
+    is_active = models.BooleanField(
+        verbose_name='Включить рассылки',
+        default=False
+    )
+    comments_info = models.BooleanField(
+        verbose_name='Новые сообщения',
+        default=False,
+    )
+    cancel_meeting_info = models.BooleanField(
+        verbose_name='Отмена встречи',
+        default=False,
+    )
+    new_meeting_info = models.BooleanField(
+        verbose_name='Новые встречи',
+        default=False,
+    )
+    address = models.CharField(
+        verbose_name='Адрес для поиска',
+        max_length=150,
+        blank=True,
+    )
+    games = models.ManyToManyField(
+        Game,
+        blank=True,
+    )
+    loc_lat = models.DecimalField(
+        verbose_name='Широта координаты центра поиска',
+        blank=True, null=True,
+        max_digits=9, decimal_places=6,
+    )
+    loc_lon = models.DecimalField(
+        verbose_name='Долгота координаты центра поиска',
+        blank=True, null=True,
+        max_digits=9, decimal_places=6
+    )
+    min_lat = models.DecimalField(
+        verbose_name='Мин.граница по широте',
+        blank=True, null=True,
+        max_digits=9, decimal_places=6,
+    )
+    max_lat = models.DecimalField(
+        verbose_name='Макс.граница по широте',
+        blank=True, null=True,
+        max_digits=9, decimal_places=6,
+    )
+    min_lon = models.DecimalField(
+        verbose_name='Мин.граница по долготе',
+        blank=True, null=True,
+        max_digits=9, decimal_places=6,
+    )
+    max_lon = models.DecimalField(
+        verbose_name='Макс.граница по широте',
+        blank=True, null=True,
+        max_digits=9, decimal_places=6,
+    )
+
+    class Meta:
+        default_related_name = 'bot_config'
+
+    def __str__(self):
+        return f'Бот для {self.user}'
+
 class User(AbstractUser):
-    photo = models.ImageField('Фото', help_text='Можете загрузить Ваше фото',
-                              upload_to='photos/%Y-%m-%d',
-                              null=True, blank=True)
-    country = models.CharField('Страна проживания',
-                               help_text='Реальная страна для удобства поиска',
-                               max_length=50, null=True, blank=True)
-    city = models.CharField('Город проживания',
-                            help_text='Реальный город для удобства поиска',
-                            max_length=100, null=True, blank=True)
-    telegram = models.CharField('Телеграм аккаунт',
-                                help_text='Для связи с игроками и уведомлений',
-                                max_length=50, null=True, blank=True)
-    about = models.TextField('О себе',
-                             help_text='Расскажите о себе, своих увлечениях'
-                                       'и опыте в играх',
-                             null=True, blank=True)
-    bgg_account = models.CharField('BGG ник',
-                                   help_text='Аккаунт на boardgamegeek.com',
-                                   max_length=50, null=True, blank=True)
-    tesera_account = models.CharField('Tesera ник',
-                                      help_text='Аккаунт на tesera.ru',
-                                      max_length=50, null=True, blank=True)
-    liked_games = models.ManyToManyField(Game, related_name='liked')
-    site_collection = models.ManyToManyField(Game, related_name='collected')
-    tesera_collection = models.ManyToManyField(Game, related_name='t_collected')
+    photo = models.ImageField(
+        verbose_name='Фото',
+        help_text='Можете загрузить Ваше фото',
+        upload_to='photos/%Y-%m-%d',
+        null=True, blank=True,
+    )
+    country = models.CharField(
+        verbose_name='Страна проживания',
+        help_text='Реальная страна для удобства поиска',
+        max_length=50,
+        blank=True,
+    )
+    city = models.CharField(
+        verbose_name='Город проживания',
+        help_text='Реальный город для удобства поиска',
+        max_length=100,
+        blank=True,
+    )
+    telegram = models.CharField(
+        verbose_name='Телеграм аккаунт',
+        help_text='Для связи с игроками и уведомлений',
+        max_length=50,
+        blank=True,
+    )
+    about = models.TextField(
+        verbose_name='О себе',
+        help_text='Расскажите о себе, своих увлечениях и опыте в играх',
+        blank=True,
+    )
+    bgg_account = models.CharField(
+        verbose_name='BGG ник',
+        help_text='Аккаунт на boardgamegeek.com',
+        max_length=50,
+        blank=True,
+    )
+    tesera_account = models.CharField(
+        verbose_name='Tesera ник',
+        help_text='Аккаунт на tesera.ru',
+        max_length=50,
+        blank=True,
+    )
+    liked_games = models.ManyToManyField(
+        Game,
+        related_name='liked',
+    )
+    site_collection = models.ManyToManyField(
+        Game,
+        related_name='collected',
+    )
+    tesera_collection = models.ManyToManyField(
+        Game,
+        related_name='t_collected',
+    )
+
+    def __str__(self):
+        return self.username
+
+    def save(self, **kwargs):
+        """Создание экземпляра модели с настройками телеграм-бота"""
+        if self.telegram:
+            tg_username = (self.telegram if not self.telegram.startswith('@')
+                           else self.telegram[1:])
+            bot_config, _ = BotConfig.objects.get_or_create(
+                user=self,
+                defaults={'tg_username': tg_username},
+            )
+            print(bot_config.tg_username)
+            print(tg_username)
+            if bot_config.tg_username != tg_username:
+                bot_config.tg_username = tg_username
+                bot_config.save()
+        super(User, self).save()
 
 
 class PlaceType(models.Model):
-    logo = models.ImageField('Иконка', upload_to='icons',
-                             null=True, blank=True)
-    name = models.CharField(max_length=30)
+    logo = models.ImageField(
+        verbose_name='Иконка',
+        upload_to='icons',
+        null=True, blank=True,
+    )
+    name = models.CharField(
+        verbose_name='Название типа',
+        max_length=30,
+    )
 
     def __str__(self):
         return self.name
@@ -50,12 +176,12 @@ class Place(models.Model):
     city = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     building = models.CharField(max_length=10)
-    flat = models.CharField(max_length=10, blank=True, null=True)
+    flat = models.CharField(max_length=10, blank=True)
     loc_lat = models.DecimalField(blank=True, null=True,
                                   max_digits=9, decimal_places=6)
     loc_lon = models.DecimalField(blank=True, null=True,
                                   max_digits=9, decimal_places=6)
-    comments = models.TextField(blank=True, null=True)
+    comments = models.TextField(blank=True)
 
     class Meta:
         verbose_name = 'Место'

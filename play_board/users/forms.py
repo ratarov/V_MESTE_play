@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+
+from games.models import Game
 from meetings.models import Meeting
-from users.models import Place, User
+from users.models import Place, User, BotConfig
 
 
 class PlaceForm(forms.ModelForm):
@@ -62,3 +64,42 @@ class UserMeetingsForm(forms.ModelForm):
     class Meta:
         model = Meeting
         fields = ('status', 'host', 'date_since', 'date_until')
+
+
+class BotConfigForm(forms.ModelForm):
+    radius_vars = (
+        [50, 50],
+        [20, 20],
+        [10, 10],
+    )
+    radius = forms.ChoiceField(choices=radius_vars, required=False)
+    games = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Game.objects.all(),
+        widget=forms.SelectMultiple(
+            attrs={'class': 'form-control game-select'}
+        )
+    )
+
+    class Meta:
+        model = BotConfig
+        fields = ('is_active', 'comments_info', 'cancel_meeting_info',
+                  'new_meeting_info', 'address', 'radius', 'games')
+
+    def clean_games(self):
+        if all([self.cleaned_data['is_active'],
+                self.cleaned_data['new_meeting_info'],
+                not self.cleaned_data['games']]):
+            raise forms.ValidationError(
+                'Выберите хотя бы 1 игру для отслеживания новых встреч'
+            )
+        return self.cleaned_data['games']
+
+    def clean_address(self):
+        if all([self.cleaned_data['is_active'],
+                self.cleaned_data['new_meeting_info'],
+                not self.cleaned_data['address']]):
+            raise forms.ValidationError(
+                'Укажите адрес для отслеживания новых встреч'
+            )
+        return self.cleaned_data['address']

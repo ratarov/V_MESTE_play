@@ -10,55 +10,56 @@
         <h4>Встреча "{{ meeting.get_name }}"</h4>
         <small class="text-muted">Статус встречи: <b>{{ meeting.status }}</b></small>
       </p>
-      {% if not user.is_authenticated %}
-        <i>Авторизуйтесь, чтобы присоединиться</i>
-      {% elif meeting.creator == user %} 
-        <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:meeting_edit' meeting.id %}">
-          Изменить
-        </a>
-        <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:meeting_cancel' meeting.id %}">
-          Отменить
-        </a>
-      {% elif participation and participation.status == 'BAN' %}
-        Вы не можете присоединиться
-      {% elif not participation and meeting.get_total_players >= meeting.max_players %}
-        Набран максимум игроков
-      {% else %}
-        <form method="post">
-          {% csrf_token %}
-          {% for error in guests_form.guests.errors %} <i>{{ error|escape }}</i> {% endfor %}
-          <div class="row">    
-            <div class='col-auto'>
-              {% if participation %}
-                <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:leave_meeting' meeting.id %}">
-                  Покинуть встречу
-                </a>
-              {% else %}
-                <button type="submit" class="btn-sm btn-danger">
-                  Присоединиться
+      {% if meeting.status.id == 1 %}
+        {% if not user.is_authenticated %}
+          <i>Авторизуйтесь, чтобы присоединиться</i>
+        {% elif meeting.creator == user %} 
+          <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:meeting_edit' meeting.id %}">
+            Изменить
+          </a>
+          <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:meeting_cancel' meeting.id %}">
+            Отменить
+          </a>
+        {% elif participation and participation.status == 'BAN' %}
+          Вы не можете присоединиться
+        {% elif not participation and meeting.get_total_players >= meeting.max_players %}
+          Набран максимум игроков
+        {% else %}
+          <form method="post">
+            {% csrf_token %}
+            {% for error in guests_form.guests.errors %} <i>{{ error|escape }}</i> {% endfor %}
+            <div class="row">    
+              <div class='col-auto'>
+                {% if participation %}
+                  <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:leave_meeting' meeting.id %}">
+                    Покинуть встречу
+                  </a>
+                {% else %}
+                  <button type="submit" class="btn-sm btn-danger">
+                    Присоединиться
+                  </button>
+                {% endif %}
+              </div>
+              <div class='col-auto'>
+                <button class="btn-sm btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
+                  Приду не один
                 </button>
-              {% endif %}
-            </div>
-            <div class='col-auto'>
-              <button class="btn-sm btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
-                Приду не один
-              </button>
-            </div>
-            <div class='col-3'>
-              <div class="collapse collapse-horizontal" id="collapseWidthExample">
-                <div class="row" style="width: 550px;">
-                  <div class="col-2">
-                    {{ guests_form.guests|addclass:'form-control form-control-sm' }}
-                  </div>
-                  <div class="col-2">
-                    <button type="submit" class="btn-sm btn-danger">ОК</button>
+              </div>
+              <div class='col-3'>
+                <div class="collapse collapse-horizontal" id="collapseWidthExample">
+                  <div class="row" style="width: 550px;">
+                    <div class="col-2">
+                      {{ guests_form.guests|addclass:'form-control form-control-sm' }}
+                    </div>
+                    <div class="col-2">
+                      <button type="submit" class="btn-sm btn-danger">ОК</button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </form>
-        
+          </form>
+        {% endif%}
       {% endif%}
     </div>
 
