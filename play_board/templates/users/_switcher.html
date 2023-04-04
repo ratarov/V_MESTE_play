@@ -10,14 +10,6 @@
             Моя инфо
           </a>
         </li>
-        {% comment %} <li class="nav-item">
-          <a 
-            class="nav-link {% if view_name == 'users:user_collections' %}active{% endif %}"
-            href="{% url 'users:user_collections' %}"
-          >
-            Коллекции
-          </a>
-        </li> {% endcomment %}
         <li class="nav-item">
           <a 
             class="nav-link {% if view_name == 'users:user_meetings' %} active {% endif %}"
@@ -26,6 +18,16 @@
             Встречи
           </a>
         </li>
+        {% if user.telegram %}
+          <li class="nav-item">
+            <a 
+              class="nav-link {% if view_name == 'users:user_bot_config' %} active {% endif %}"
+              href="{% url 'users:user_bot_config' %}"
+            >
+              Телеграм Бот
+            </a>
+          </li>
+        {% endif %}
       </ul>
     </div>
   {% endif %}

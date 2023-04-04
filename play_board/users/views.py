@@ -1,16 +1,21 @@
+import folium
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
+
 from games.models import Game
-from users.forms import (CreateUserForm, PlaceForm, UserInfoForm,
-                         UserMeetingsForm)
-from users.models import Place, User
-from users.utils import (get_tesera_collection, get_tesera_user,
-                         get_paginated_games, filter_user_meetings)
 from games.utils import parse_tesera_response
+from meetings.utils import get_geolocation
+from users.forms import (CreateUserForm, PlaceForm, UserInfoForm,
+                         UserMeetingsForm, BotConfigForm)
+from users.models import Place, User, BotConfig
+from users.utils import (get_tesera_collection, get_tesera_user,
+                         get_paginated_games, filter_user_meetings,
+                         add_search_marker)
 
 
 def gamer_profile(request, username):
@@ -87,7 +92,7 @@ def update_tesera_collection(request):
 
 @login_required
 def user_collections(request, collection):
-    
+    """Страница со списком игр в коллекции пользователя"""
     qs = {
         'liked': request.user.liked_games.all(),
         'site': request.user.site_collection.all(),
@@ -99,7 +104,43 @@ def user_collections(request, collection):
 
 
 @login_required
+def user_bot_config(request):
+    """Страница с настройками телеграм-бота"""
+    bot_config = get_object_or_404(BotConfig, user=request.user)
+    form = BotConfigForm(request.POST or None, instance=bot_config)
+    if form.is_valid():
+        bot_config = form.save(commit=False)
+        if form.data.get('new_meeting_info'):
+            geolocation = get_geolocation(form.data.get('address'))
+            if geolocation:
+                diff = int(form.data.get('radius')) / settings.KM_IN_DEGREE
+                bot_config.loc_lat = geolocation.latitude
+                bot_config.loc_lon = geolocation.longitude
+                bot_config.min_lat = bot_config.loc_lat - diff
+                bot_config.max_lat = bot_config.loc_lat + diff
+                bot_config.min_lon = bot_config.loc_lon - diff
+                bot_config.max_lon = bot_config.loc_lon + diff
+        bot_config.save()
+        bot_config.games.clear()
+        for game in form.data.getlist('games'):
+            bot_config.games.add(game)
+        return redirect('users:user_bot_config')
+    context = {'form': form}
+    if bot_config.new_meeting_info:
+        start = [bot_config.loc_lat, bot_config.loc_lon]
+        map = folium.Map(
+            location=start,
+            zoom_start=13,
+        )
+        add_search_marker(map, bot_config)
+        map = map._repr_html_()
+        context['map'] = map
+    return render(request, 'users/user_bot_config.html', context)
+
+
+@login_required
 def user_meetings(request):
+    """Страница со спиком встреч пользователя"""
     form = UserMeetingsForm(data=request.GET or None)
     meetings = filter_user_meetings(request)
     context = {'meetings': meetings, 'form': form}
@@ -108,6 +149,7 @@ def user_meetings(request):
 
 @login_required
 def place_add(request):
+    """Страница добавления новых мест пользователя для встреч"""
     form = PlaceForm(request.POST or None)
     if form.is_valid():
         place = form.save(commit=False)
@@ -120,6 +162,7 @@ def place_add(request):
 
 @login_required
 def place_edit(request, place_id):
+    """Страница изменения существующего места пользователя для встреч"""
     place = get_object_or_404(Place, id=place_id)
     if request.user != place.creator:
         return redirect('users:user_info')
@@ -137,6 +180,7 @@ def place_edit(request, place_id):
 
 @login_required
 def place_del(request, place_id):
+    """Функция удаления места пользователя для встреч"""
     place = get_object_or_404(Place, id=place_id)
     if request.user == place.creator:
         place.delete()

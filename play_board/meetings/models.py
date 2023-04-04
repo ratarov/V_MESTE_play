@@ -17,23 +17,51 @@ class MeetingStatus(models.Model):
 
 
 class Meeting(models.Model):
-    name = models.CharField('Название', max_length=30, blank=True, null=True)
-    status = models.ForeignKey(MeetingStatus, related_name='meetings',
-                               default=1, on_delete=models.SET_DEFAULT)
-    games = models.ManyToManyField(Game, blank=True, related_name='meetings')
-    start_date = models.DateField('Дата встречи')
-    start_time = models.TimeField('Время встречи')
-    creator = models.ForeignKey(User, on_delete=models.CASCADE,
-                                related_name='created')
-    guests = models.PositiveSmallIntegerField('Гости организатора', default=0)
-    players = models.ManyToManyField(User, blank=True,
-                                     through='MeetingParticipation')
+    name = models.CharField(
+        verbose_name='Название',
+        max_length=30,
+        blank=True,
+    )
+    status = models.ForeignKey(
+        MeetingStatus,
+        default=1,
+        on_delete=models.SET_DEFAULT,
+    )
+    games = models.ManyToManyField(
+        Game,
+        blank=True,
+    )
+    start_date = models.DateField(verbose_name='Дата встречи')
+    start_time = models.TimeField(verbose_name='Время встречи')
+    creator = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='created',
+    )
+    guests = models.PositiveSmallIntegerField(
+        verbose_name='Гости организатора',
+        default=0,
+    )
+    players = models.ManyToManyField(
+        User, through='MeetingParticipation',
+        blank=True,
+    )
     max_players = models.PositiveSmallIntegerField(
-        'Максимальное кол-во игроков', default=7)
-    description = models.TextField(blank=True, null=True)
-    price = models.PositiveIntegerField(default=0)
-    place = models.ForeignKey(Place, null=True, on_delete=models.SET_NULL,
-                              related_name='meetings')
+        verbose_name='Максимальное кол-во игроков',
+        default=7,
+    )
+    description = models.TextField(
+        verbose_name='Описание',
+        blank=True,
+    )
+    price = models.PositiveIntegerField(
+        verbose_name='Цена участия',
+        default=0,
+    )
+    place = models.ForeignKey(
+        Place, null=True,
+        on_delete=models.SET_NULL,
+    )
 
     class Meta:
         verbose_name = 'Встреча'
@@ -42,7 +70,7 @@ class Meeting(models.Model):
         default_related_name = 'meetings'
 
     def __str__(self):
-        return f'{self.start_date} - {self.creator} - {self.place}'
+        return f'{self.start_date}: {self.name}'
 
     def get_active_players(self):
         return MeetingParticipation.objects.filter(
@@ -69,14 +97,29 @@ class MeetingParticipation(models.Model):
         ('ACT', 'active'),
         ('BAN', 'banned'),
     )
-    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE,
-                                related_name='participants')
-    player = models.ForeignKey(User, on_delete=models.CASCADE,
-                               related_name='participated')
-    guests = models.PositiveSmallIntegerField('Количество гостей', default=0)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICE,
-                              default='ACT')
-    total_qty = models.PositiveSmallIntegerField('Игрок + гости', default=1)
+    meeting = models.ForeignKey(
+        Meeting,
+        on_delete=models.CASCADE,
+        related_name='participants',
+    )
+    player = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='participated',
+    )
+    guests = models.PositiveSmallIntegerField(
+        verbose_name='Количество гостей',
+        default=0,
+    )
+    status = models.CharField(
+        verbose_name='Статус участника',
+        max_length=20,
+        choices=STATUS_CHOICE,
+        default='ACT'
+    )
+    total_qty = models.PositiveSmallIntegerField(
+        verbose_name='Игрок + гости',
+    )
 
     class Meta:
         verbose_name = 'Участник встречи'

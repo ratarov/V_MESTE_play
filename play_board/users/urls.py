@@ -18,12 +18,14 @@ urlpatterns = [
      path('my-collections/update', views.update_tesera_collection,
           name='update_collection'),
      path('my-meetings/', views.user_meetings, name='user_meetings'),
+     path('my-bot-settings/', views.user_bot_config, name='user_bot_config'),
      path('places/add/', views.place_add, name='place_add'),
      path('places/<int:place_id>/edit/', views.place_edit, name='place_edit'),
      path('places/<int:place_id>/del/', views.place_del, name='place_del'),
      path('profile-<slug:username>/', views.gamer_profile, name='profile'),
      path('profile-<slug:username>/<str:collection>', views.gamer_collections,
           name='gamer_collections'),
+          
      # registration_actions
      path('signup/',
           views.SignUp.as_view(template_name='users/reg_actions/signup.html'),
