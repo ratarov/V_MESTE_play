@@ -8,3 +8,4 @@ folium==0.14.0
 django-debug-toolbar==3.4.0
 APScheduler==3.10.0
 psycopg2-binary
+pyTelegramBotAPI==4.10.0

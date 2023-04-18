@@ -66,7 +66,7 @@ class Meeting(models.Model):
     class Meta:
         verbose_name = 'Встреча'
         verbose_name_plural = 'Встречи'
-        ordering = ('start_date', 'start_time')
+        ordering = ('start_date',)
         default_related_name = 'meetings'
 
     def __str__(self):

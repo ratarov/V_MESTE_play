@@ -46,7 +46,7 @@ def filter_meetings(place, request):
             'status', 'creator', 'place', 'place__type',
         ).prefetch_related('games').annotate(
             total_players=Sum('participants__total_qty')
-        )
+        ).order_by('start_date')
 
 
 def add_meeting_marker(map, meeting):

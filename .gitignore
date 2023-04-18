@@ -145,8 +145,5 @@ dmypy.json
 
 .mypy_cache
 
-# папки со статикой и медиа
-static/
-play_board/posts/static/
-play_board/media/
+# папки
 add_files/
