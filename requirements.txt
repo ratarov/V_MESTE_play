@@ -5,5 +5,6 @@ geopy==2.3.0
 sorl-thumbnail==12.9.0
 requests==2.28.2
 folium==0.14.0
-django-filter==22.1
-django-debug-toolbar==3.8.1
+django-debug-toolbar==3.4.0
+APScheduler==3.10.0
+psycopg2-binary
