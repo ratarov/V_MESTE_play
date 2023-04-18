@@ -4,6 +4,8 @@ from geopy.geocoders import Nominatim
 from games.models import Game
 from django import forms
 
+from users.validators import username_validator
+
 
 class BotConfig(models.Model):
     user = models.OneToOneField('User', on_delete=models.CASCADE)
@@ -80,6 +82,16 @@ class BotConfig(models.Model):
 
 
 class User(AbstractUser):
+    username = models.CharField(
+        'username',
+        max_length=150,
+        unique=True,
+        help_text='Обязательное поле: до 50 символов, буквы, цифры, _ и -',
+        validators=[username_validator],
+        error_messages={
+            'unique': "Такой пользователь уже существует",
+        },
+    )
     photo = models.ImageField(
         verbose_name='Фото',
         help_text='Можете загрузить Ваше фото',
