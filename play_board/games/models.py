@@ -4,9 +4,9 @@ from django.db import models
 class Game(models.Model):
     tesera_id = models.PositiveIntegerField(null=True)
     bgg_id = models.PositiveIntegerField(null=True)
-    name_rus = models.CharField(max_length=255, null=True)
-    name_eng = models.CharField(max_length=255, null=True)
-    slug = models.SlugField(unique=True)
+    name_rus = models.CharField(null=True, max_length=255)
+    name_eng = models.CharField(null=True, max_length=255)
+    slug = models.SlugField(unique=True, max_length=100)
     description = models.TextField(null=True)
     photo_url = models.URLField(null=True)
     year = models.IntegerField(null=True)

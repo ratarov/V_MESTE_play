@@ -20,13 +20,15 @@ class Command(BaseCommand):
         counter, new_games = 0, []
         for file in Path('static', 'json').iterdir():
             counter += 1
-            self.stdout.write(f'{"---"*40}\n{counter}. Открываем: {file}')
+            self.stdout.write(f'{counter}. Открываем: {file}')
             with open(file, encoding='utf-8') as f:
                 data = json.load(f)
                 try:
                     game_dataset = self.parse_file(data)
                     new_games.append(Game(**game_dataset))
                 except Exception:
+                    self.stderr.write(
+                        f"Не записана игра {game_dataset.get('alias')}.")
                     continue
         try:
             Game.objects.bulk_create(new_games, ignore_conflicts=True)

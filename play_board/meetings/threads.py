@@ -3,14 +3,13 @@ import requests
 from abc import abstractmethod
 
 from django.conf import settings
-from django.db.models import Q
 from django.urls import reverse
 
-from users.models import User, BotConfig
+from users.models import BotConfig
 
 
 TG_URL = f'https://api.telegram.org/bot{settings.TELEGRAM_TOKEN}/sendMessage'
-DOMEN = "http://127.0.0.1:8000"
+DOMAIN = settings.DOMAIN
 
 
 class InformThread(threading.Thread):
@@ -63,7 +62,7 @@ class NewCommentInformThread(InformThread):
                 f"({self.comment.meeting.start_date})\n"
                 f"Игрок {self.comment.creator} написал:\n"
                 f"{self.comment.text}\n"
-                f"Детали: {DOMEN}{url_end}")
+                f"Детали: {DOMAIN}{url_end}")
 
 
 class CancelMeetingInformThread(InformThread):
@@ -81,7 +80,7 @@ class CancelMeetingInformThread(InformThread):
     def get_message(self):
         url_end = reverse('meetings:meeting_detail', args=(self.meeting.id,))
         return (f"Ваша встреча отменена\n{self.meeting}\n"
-                f"Детали: {DOMEN}{url_end}")
+                f"Детали: {DOMAIN}{url_end}")
 
 
 class NewMeetingInformThread(InformThread):
@@ -107,7 +106,7 @@ class NewMeetingInformThread(InformThread):
     def get_message(self):
         url_end = reverse('meetings:meeting_detail', args=(self.meeting.id,))
         return (f"Новая встреча по Вашему фильтру\n{self.meeting}\n"
-                f"Детали: {DOMEN}{url_end}")
+                f"Детали: {DOMAIN}{url_end}")
 
     def run(self):
         for recipient in self.get_recipients():

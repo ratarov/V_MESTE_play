@@ -200,57 +200,59 @@
     </div>
   </div>
   
-  <div class="row border rounded shadow-sm bg-white mb-3">
-    <div class="col-12 col-md-12 mb-1"><!--комментарии-->
-      <p><h5> Комментарии игроков: </h5></p>
-      {% for comment in comments %}
-        <div class="row mb-2">
-          <div class="col-auto">
-            {% if comment.creator.photo %}
-              {% thumbnail comment.creator.photo "40x40" crop="center" as photo %}
-                <img class="img-fluid rounded mx-auto" src="{{ photo.url }}">
-              {% endthumbnail %}
-            {% else %}
-              <img src="{% static 'img/avatar.jpg' %}" width="200" height="200" class="d-inline-block" alt="">
-            {% endif %}
-          </div>
-          <div class="col-auto">
-            <a href="{% url 'users:profile' comment.creator.username %}">
-              {{ comment.creator.username }}
-            </a><br>
-            {{ comment.text|linebreaksbr }}<br>
-            <small class="text-muted">
-              {{ comment.created|date:"j M H:i" }} 
-              {% comment %} {% if user == comment.creator %}
-              - 
-              <a href="#" 
-               title="Удалить комментарий">Изменить</a>
-              {% endif %} {% endcomment %}
-              {% if user == comment.creator or user == meeting.creator %} 
-               - 
-              <a href="{% url 'meetings:comment_del' comment_id=comment.id meeting_id=comment.meeting.id %}" 
-               title="Удалить комментарий">Удалить</a>
+  {% if participation and participation.status == 'ACT' %}
+    <div class="row border rounded shadow-sm bg-white mb-3">
+      <div class="col-12 col-md-12 mb-1"><!--комментарии-->
+        <p><h5> Комментарии игроков: </h5></p>
+        {% for comment in comments %}
+          <div class="row mb-2">
+            <div class="col-auto">
+              {% if comment.creator.photo %}
+                {% thumbnail comment.creator.photo "40x40" crop="center" as photo %}
+                  <img class="img-fluid rounded mx-auto" src="{{ photo.url }}">
+                {% endthumbnail %}
+              {% else %}
+                <img src="{% static 'img/avatar.jpg' %}" width="40" height="40" class="d-inline-block" alt="">
               {% endif %}
-            </small>
+            </div>
+            <div class="col-auto">
+              <a href="{% url 'users:profile' comment.creator.username %}">
+                {{ comment.creator.username }}
+              </a><br>
+              {{ comment.text|linebreaksbr }}<br>
+              <small class="text-muted">
+                {{ comment.created|date:"j M H:i" }} 
+                {% comment %} {% if user == comment.creator %}
+                - 
+                <a href="#" 
+                title="Удалить комментарий">Изменить</a>
+                {% endif %} {% endcomment %}
+                {% if user == comment.creator or user == meeting.creator %} 
+                - 
+                <a href="{% url 'meetings:comment_del' comment_id=comment.id meeting_id=comment.meeting.id %}" 
+                title="Удалить комментарий">Удалить</a>
+                {% endif %}
+              </small>
+            </div>
           </div>
-        </div>
-        {% if not forloop.last %} <hr> {% endif %}
-      {% empty %}
-        Пока нет комментариев
-      {% endfor %} 
-      <hr>
-      {% if user.is_authenticated %}
-        <h5>
-          Добавить комментарий:
-        </h5>
-        <form method="post" action="{% url 'meetings:comment_add' meeting.id %}">
-          {% csrf_token %}      
-          <div class="form-group mb-2">
-            {{ comment_form.text }}
-          </div>
-          <button type="submit" class="btn btn-danger">Отправить</button>
-        </form>
-      {% endif %}
+          {% if not forloop.last %} <hr> {% endif %}
+        {% empty %}
+          Пока нет комментариев
+        {% endfor %} 
+        <hr>
+        {% if user.is_authenticated %}
+          <h5>
+            Добавить комментарий:
+          </h5>
+          <form method="post" action="{% url 'meetings:comment_add' meeting.id %}">
+            {% csrf_token %}      
+            <div class="form-group mb-2">
+              {{ comment_form.text }}
+            </div>
+            <button type="submit" class="btn btn-danger">Отправить</button>
+          </form>
+        {% endif %}
+      </div>
     </div>
-  </div>
+  {% endif %}
 {% endblock %}

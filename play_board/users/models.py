@@ -78,6 +78,7 @@ class BotConfig(models.Model):
     def __str__(self):
         return f'Бот для {self.user}'
 
+
 class User(AbstractUser):
     photo = models.ImageField(
         verbose_name='Фото',

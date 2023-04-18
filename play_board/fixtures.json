@@ -1,0 +1,9 @@
+[
+    {"model": "meetings.meetingstatus", "pk": 1, "fields": {"logo": "icons/status_process.jpg", "name": "Готовится"}}, 
+    {"model": "meetings.meetingstatus", "pk": 2, "fields": {"logo": "icons/finished_hUT5dbF.jpg", "name": "Прошла"}}, 
+    {"model": "meetings.meetingstatus", "pk": 3, "fields": {"logo": "icons/status_cancell_CAS6m62.jpg", "name": "Отменена"}}, 
+    {"model": "users.placetype", "pk": 1, "fields": {"logo": "icons/70083_yfILG4o.png", "name": "квартира/дом"}}, 
+    {"model": "users.placetype", "pk": 2, "fields": {"logo": "icons/control_MT4ytjY.png", "name": "клуб настолок/антикафе"}}, 
+    {"model": "users.placetype", "pk": 3, "fields": {"logo": "icons/cafe-PhotoRoom.png-PhotoRoom.png", "name": "кафе/бар"}}, 
+    {"model": "users.placetype", "pk": 4, "fields": {"logo": "icons/date_x0TXbXT.png", "name": "мероприятие"}},
+]
