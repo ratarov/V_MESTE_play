@@ -16,6 +16,19 @@ class UserAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+class PlaceAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'name',
+        'creator',
+        'city',
+        'address',
+        'building',
+    )
+    search_fields = ('creator', 'name')
+    empty_value_display = '-пусто-'
+
+
 admin.site.register(User, UserAdmin)
-admin.site.register(Place)
+admin.site.register(Place, PlaceAdmin)
 admin.site.register(PlaceType)

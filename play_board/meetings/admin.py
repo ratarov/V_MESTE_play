@@ -17,7 +17,26 @@ class MeetingAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+class CommentAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'creator',
+        'created',
+        'meeting',
+        'text',
+    )
+
+
+class MeetingParticipationAdmin(admin.ModelAdmin):
+    list_display = (
+        'meeting',
+        'player',
+        'guests',
+        'status',
+    )
+
+
 admin.site.register(Meeting, MeetingAdmin)
-admin.site.register(Comment)
+admin.site.register(Comment, CommentAdmin)
 admin.site.register(MeetingStatus)
-admin.site.register(MeetingParticipation)
+admin.site.register(MeetingParticipation, MeetingParticipationAdmin)

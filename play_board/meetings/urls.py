@@ -27,5 +27,6 @@ urlpatterns = [
           views.comment_del, name='comment_del'),
      path('meetings/', views.meeting_search, name='meeting_search'),
      path('about/', views.about, name='about'),
+     path('help/', views.help, name='help'),
      path('', views.index, name='index'),
 ]

@@ -27,6 +27,11 @@ def about(request):
     return render(request, 'meetings/about.html')
 
 
+def help(request):
+    """Страница с описанием, как работать с сайтом"""
+    return render(request, 'meetings/help.html')
+
+
 def meeting_search(request):
     """Страница поиска встреч по параметрам"""
     form = MeetingSearchForm(data=request.GET or None)

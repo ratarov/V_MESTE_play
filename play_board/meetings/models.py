@@ -70,7 +70,9 @@ class Meeting(models.Model):
         default_related_name = 'meetings'
 
     def __str__(self):
-        return f'{self.start_date}: {self.name}'
+        if self.name:
+            return f'{self.start_date}: {self.name}'
+        return f'{self.start_date}: Настолки с {self.creator}'
 
     def get_active_players(self):
         return MeetingParticipation.objects.filter(

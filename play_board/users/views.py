@@ -87,7 +87,8 @@ def update_tesera_collection(request):
             col = [User.tesera_collection.through(
                 user_id=request.user.id, game_id=xxx) for xxx in mapped_games]
             User.tesera_collection.through.objects.bulk_create(col)
-    return redirect('users:user_collections', 'tesera')
+        return redirect('users:user_collections', 'tesera')
+    return redirect('users:user_info')
 
 
 @login_required

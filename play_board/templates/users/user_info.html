@@ -134,7 +134,9 @@
       Коллекция на tesera.ru: <a href="{% url 'users:user_collections' 'tesera' %}">
                                 <span class="badge bg-danger">{{ user.tesera_collection.count }}</span>
                               </a>
-                              <a href="{% url 'users:update_collection' %}"><span class="badge bg-danger">обновить</span></a>
+                              {% if user.tesera_account %}
+                                <a href="{% url 'users:update_collection' %}"><span class="badge bg-danger">обновить</span></a>
+                              {% endif %}
     </p>
   </div>
 {% endblock %}

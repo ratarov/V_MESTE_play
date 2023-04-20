@@ -177,6 +177,10 @@ class PlaceType(models.Model):
         max_length=30,
     )
 
+    class Meta:
+        verbose_name = 'Тип мест'
+        verbose_name_plural = 'Типы мест'
+
     def __str__(self):
         return self.name
 
