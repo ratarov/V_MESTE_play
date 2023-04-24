@@ -9,7 +9,8 @@ from meetings.forms import (CommentForm, GuestForm, MeetingForm,
                             MeetingSearchForm)
 from meetings.models import (Comment, Meeting, MeetingParticipation,
                              MeetingStatus)
-from meetings.threads import (NewCommentInformThread, CancelMeetingInformThread,
+from meetings.threads import (NewCommentInformThread,
+                              CancelMeetingInformThread,
                               NewMeetingInformThread)
 from meetings.utils import add_meeting_marker, filter_meetings, get_geolocation
 from users.models import User

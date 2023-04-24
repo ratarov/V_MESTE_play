@@ -22,7 +22,6 @@ https://vmeste.ddns.net/
 - Страница с помощью по сайту
 - Схема развертки проекта (добавлен docker) -> указания по разворачиванию проекта
 
-
 ### Установка
 TBD - идет настройка контейнеров docker-compose
 Пока доступна только стандартное разворачивание:
@@ -31,5 +30,17 @@ git clone git@github.com:ratarov/V_MESTE_play.git
 py -m venv venv
 pip install -r requirements.txt
 python manage.py migrate
+python manage.py runserver
+```
+### Шаблон файла .env
+```
+SECRET_KEY='django-insecure-...'
+TELEGRAM_TOKEN=1111111111:xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_HOST=localhost
+DB_PORT=5432
 ```
