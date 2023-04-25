@@ -17,9 +17,28 @@
           <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:meeting_edit' meeting.id %}">
             Изменить
           </a>
-          <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:meeting_cancel' meeting.id %}">
+          <!-- Button trigger modal -->
+          <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Отменить
-          </a>
+          </button>
+          <!-- Modal -->
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-body">
+                  Уверены? Нельзя будет восстановить встречу.
+                </div>
+                <div class="modal-footer">
+                  <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:meeting_cancel' meeting.id %}">
+                    Да, отменить
+                  </a>
+                  <button type="button" class="btn btn-sm btn-outline-danger" data-bs-dismiss="modal">
+                    Нет, передумал(а)
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         {% elif participation and participation.status == 'BAN' %}
           Вы не можете присоединиться
         {% elif not participation and meeting.get_total_players >= meeting.max_players %}

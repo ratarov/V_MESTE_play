@@ -1,3 +1,5 @@
+from math import cos, pi
+
 from django.shortcuts import redirect
 from django.utils import timezone
 from geopy.geocoders import Nominatim
@@ -22,17 +24,20 @@ def get_geolocation(location):
 def filter_meetings(place, request):
     """Фильтрация queryset Meeting по заданным фильтрам"""
     radius = int(request.GET.get('radius', settings.DEFAULT_SEARCH_RADIUS))
-    dist_diff = radius / settings.KM_IN_DEGREE
+    latitude_diff = radius / settings.KM_IN_DEGREE
+    longitude_diff = radius / (
+        cos(place.latitude / 180 * pi) * settings.KM_IN_DEGREE
+    )
     date_since = request.GET.get('date_since')
     date_until = request.GET.get('date_until')
     game = request.GET.get('game')
     meetings = Meeting.objects.filter(
         start_date__gte=timezone.now(),
         status_id=1,
-        place__loc_lat__gt=(place.latitude - dist_diff),
-        place__loc_lat__lt=(place.latitude + dist_diff),
-        place__loc_lon__gt=(place.longitude - dist_diff),
-        place__loc_lon__lt=(place.longitude + dist_diff),
+        place__loc_lat__gt=(place.latitude - latitude_diff),
+        place__loc_lat__lt=(place.latitude + latitude_diff),
+        place__loc_lon__gt=(place.longitude - longitude_diff),
+        place__loc_lon__lt=(place.longitude + longitude_diff),
     )
     if date_since:
         meetings = meetings.filter(start_date__gte=date_since)
@@ -51,7 +56,7 @@ def filter_meetings(place, request):
 
 def add_meeting_marker(map, meeting):
     """Добавление маркера встречи на карту Folium"""
-    games = ','.join(meeting.games.values_list('name_rus', flat=True)[:3])
+    games = ', '.join([str(x) for x in list(meeting.games.all()[:3])])
     url = reverse('meetings:meeting_detail', args=(meeting.id,))
     html = f'''
         <b>Дата: </b>

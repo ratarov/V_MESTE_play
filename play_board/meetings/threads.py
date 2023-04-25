@@ -9,7 +9,6 @@ from users.models import BotConfig
 
 
 TG_URL = f'https://api.telegram.org/bot{settings.TELEGRAM_TOKEN}/sendMessage'
-DOMAIN = settings.DOMAIN
 
 
 class InformThread(threading.Thread):
@@ -62,7 +61,7 @@ class NewCommentInformThread(InformThread):
                 f"({self.comment.meeting.start_date})\n"
                 f"Игрок {self.comment.creator} написал:\n"
                 f"{self.comment.text}\n"
-                f"Детали: {DOMAIN}{url_end}")
+                f"Детали: {settings.DOMAIN}{url_end}")
 
 
 class CancelMeetingInformThread(InformThread):
@@ -80,7 +79,7 @@ class CancelMeetingInformThread(InformThread):
     def get_message(self):
         url_end = reverse('meetings:meeting_detail', args=(self.meeting.id,))
         return (f"Ваша встреча отменена\n{self.meeting}\n"
-                f"Детали: {DOMAIN}{url_end}")
+                f"Детали: {settings.DOMAIN}{url_end}")
 
 
 class NewMeetingInformThread(InformThread):
@@ -106,7 +105,7 @@ class NewMeetingInformThread(InformThread):
     def get_message(self):
         url_end = reverse('meetings:meeting_detail', args=(self.meeting.id,))
         return (f"Новая встреча по Вашему фильтру\n{self.meeting}\n"
-                f"Детали: {DOMAIN}{url_end}")
+                f"Детали: {settings.DOMAIN}{url_end}")
 
     def run(self):
         for recipient in self.get_recipients():

@@ -1,3 +1,5 @@
+from math import cos, pi
+
 import folium
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -114,17 +116,19 @@ def user_bot_config(request):
         if form.data.get('new_meeting_info'):
             geolocation = get_geolocation(form.data.get('address'))
             if geolocation:
-                diff = int(form.data.get('radius')) / settings.KM_IN_DEGREE
+                lat_diff = int(form.data.get('radius')) / settings.KM_IN_DEGREE
+                lon_diff = int(form.data.get('radius')) / (cos(
+                    float(bot_config.loc_lat) / 180 * pi
+                ) * settings.KM_IN_DEGREE)
                 bot_config.loc_lat = geolocation.latitude
                 bot_config.loc_lon = geolocation.longitude
-                bot_config.min_lat = bot_config.loc_lat - diff
-                bot_config.max_lat = bot_config.loc_lat + diff
-                bot_config.min_lon = bot_config.loc_lon - diff
-                bot_config.max_lon = bot_config.loc_lon + diff
+                bot_config.min_lat = bot_config.loc_lat - lat_diff
+                bot_config.max_lat = bot_config.loc_lat + lat_diff
+                bot_config.min_lon = bot_config.loc_lon - lon_diff
+                bot_config.max_lon = bot_config.loc_lon + lon_diff
         bot_config.save()
         bot_config.games.clear()
-        for game in form.data.getlist('games'):
-            bot_config.games.add(game)
+        bot_config.games.set(form.data.getlist('games'))
         return redirect('users:user_bot_config')
     context = {'form': form}
     if bot_config.new_meeting_info:

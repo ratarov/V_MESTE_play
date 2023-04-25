@@ -5,5 +5,5 @@
     {"model": "users.placetype", "pk": 1, "fields": {"logo": "icons/70083_yfILG4o.png", "name": "квартира/дом"}}, 
     {"model": "users.placetype", "pk": 2, "fields": {"logo": "icons/control_MT4ytjY.png", "name": "клуб настолок/антикафе"}}, 
     {"model": "users.placetype", "pk": 3, "fields": {"logo": "icons/cafe-PhotoRoom.png-PhotoRoom.png", "name": "кафе/бар"}}, 
-    {"model": "users.placetype", "pk": 4, "fields": {"logo": "icons/date_x0TXbXT.png", "name": "мероприятие"}},
+    {"model": "users.placetype", "pk": 4, "fields": {"logo": "icons/date_x0TXbXT.png", "name": "мероприятие"}}
 ]

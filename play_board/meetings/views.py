@@ -77,8 +77,7 @@ def meeting_create(request):
             player=request.user,
             guests=meeting_form.data.get('guests'),
         )
-        for game in meeting_form.data.getlist('games'):
-            meeting.games.add(game)
+        meeting.games.set(meeting_form.data.getlist('games'))
         NewMeetingInformThread(meeting).start()
         return redirect('meetings:meeting_detail', meeting.pk)
     context = {
@@ -145,8 +144,7 @@ def meeting_edit(request, meeting_id):
         meeting = meeting_form.save(commit=False)
         meeting.save()
         meeting.games.clear()
-        for game in meeting_form.data.getlist('games'):
-            meeting.games.add(game)
+        meeting.games.set(meeting_form.data.getlist('games'))
         participation.guests = meeting_form.data.get('guests')
         participation.save()
         return redirect('meetings:meeting_detail', meeting.id)

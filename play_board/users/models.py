@@ -8,6 +8,7 @@ from users.validators import username_validator
 
 
 class BotConfig(models.Model):
+    RADIUS_CHOICES = ((50, 50), (20, 20), (10, 10))
     user = models.OneToOneField('User', on_delete=models.CASCADE)
     tg_username = models.CharField(
         verbose_name='Telegram username',
@@ -38,6 +39,11 @@ class BotConfig(models.Model):
         verbose_name='Адрес для поиска',
         max_length=150,
         blank=True,
+    )
+    radius = models.PositiveSmallIntegerField(
+        verbose_name='Радиус поиска',
+        choices=RADIUS_CHOICES,
+        default=50,
     )
     games = models.ManyToManyField(
         Game,
@@ -186,18 +192,29 @@ class PlaceType(models.Model):
 
 
 class Place(models.Model):
-    type = models.ForeignKey(PlaceType, on_delete=models.SET_NULL,
-                             null=True)
+    type = models.ForeignKey(
+        PlaceType,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
     name = models.CharField(max_length=30)
-    creator = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    creator = models.ForeignKey(
+        User,
+        null=True,
+        on_delete=models.CASCADE,
+    )
     city = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     building = models.CharField(max_length=10)
     flat = models.CharField(max_length=10, blank=True)
-    loc_lat = models.DecimalField(blank=True, null=True,
-                                  max_digits=9, decimal_places=6)
-    loc_lon = models.DecimalField(blank=True, null=True,
-                                  max_digits=9, decimal_places=6)
+    loc_lat = models.DecimalField(
+        blank=True, null=True,
+        max_digits=9, decimal_places=6,
+    )
+    loc_lon = models.DecimalField(
+        blank=True, null=True,
+        max_digits=9, decimal_places=6,
+    )
     comments = models.TextField(blank=True)
 
     class Meta:

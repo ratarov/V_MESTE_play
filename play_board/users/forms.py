@@ -67,12 +67,6 @@ class UserMeetingsForm(forms.ModelForm):
 
 
 class BotConfigForm(forms.ModelForm):
-    radius_vars = (
-        [50, 50],
-        [20, 20],
-        [10, 10],
-    )
-    radius = forms.ChoiceField(choices=radius_vars, required=False)
     games = forms.ModelMultipleChoiceField(
         required=False,
         queryset=Game.objects.all(),
