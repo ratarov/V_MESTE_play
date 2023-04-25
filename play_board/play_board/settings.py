@@ -12,8 +12,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
-DOMAIN = '127.0.0.1:8000'
-# DOMAIN = 'v-meste.fun'
+DOMAIN = '127.0.0.1:8000' if DEBUG else 'v-meste.fun'
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
