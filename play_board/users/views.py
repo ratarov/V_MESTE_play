@@ -118,7 +118,7 @@ def user_bot_config(request):
             if geolocation:
                 lat_diff = int(form.data.get('radius')) / settings.KM_IN_DEGREE
                 lon_diff = int(form.data.get('radius')) / (cos(
-                    float(bot_config.loc_lat) / 180 * pi
+                    float(geolocation.latitude) / 180 * pi
                 ) * settings.KM_IN_DEGREE)
                 bot_config.loc_lat = geolocation.latitude
                 bot_config.loc_lon = geolocation.longitude
@@ -131,7 +131,7 @@ def user_bot_config(request):
         bot_config.games.set(form.data.getlist('games'))
         return redirect('users:user_bot_config')
     context = {'form': form}
-    if bot_config.new_meeting_info:
+    if bot_config.new_meeting_info and bot_config.loc_lat:
         start = [bot_config.loc_lat, bot_config.loc_lon]
         map = folium.Map(
             location=start,

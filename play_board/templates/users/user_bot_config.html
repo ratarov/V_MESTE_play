@@ -17,7 +17,7 @@
         {% csrf_token %}
         <p>
           {% for field in form %}
-            {% for error in field.errors %} <b><i>{{ error|escape }}</i></b> {% endfor %}
+            {% for error in field.errors %} <b><i>{{ error|escape }}</i></b><br> {% endfor %}
           {% endfor %}
         </p>
         <div class="form-check form-switch">
