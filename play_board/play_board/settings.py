@@ -10,7 +10,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+DEBUG = False
 
 DOMAIN = '127.0.0.1:8000' if DEBUG else 'v-meste.fun'
 ALLOWED_HOSTS = [
