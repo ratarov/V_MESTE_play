@@ -11,6 +11,7 @@ from django.views.generic import CreateView
 
 from games.models import Game
 from games.utils import parse_tesera_response
+from meetings.exceptions import EndpointError
 from meetings.utils import get_geolocation
 from users.forms import (CreateUserForm, PlaceForm, UserInfoForm,
                          UserMeetingsForm, BotConfigForm)
@@ -114,7 +115,10 @@ def user_bot_config(request):
     if form.is_valid():
         bot_config = form.save(commit=False)
         if form.data.get('new_meeting_info'):
-            geolocation = get_geolocation(form.data.get('address'))
+            try:
+                geolocation = get_geolocation(form.data.get('address'))
+            except EndpointError:
+                return redirect('users:user_bot_config')
             if geolocation:
                 lat_diff = int(form.data.get('radius')) / settings.KM_IN_DEGREE
                 lon_diff = int(form.data.get('radius')) / (cos(

@@ -1,8 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from geopy.geocoders import Nominatim
 from games.models import Game
-from django import forms
 
 from users.validators import username_validator
 
@@ -49,35 +47,29 @@ class BotConfig(models.Model):
         Game,
         blank=True,
     )
-    loc_lat = models.DecimalField(
+    loc_lat = models.FloatField(
         verbose_name='Широта координаты центра поиска',
         blank=True, null=True,
-        max_digits=9, decimal_places=6,
     )
-    loc_lon = models.DecimalField(
+    loc_lon = models.FloatField(
         verbose_name='Долгота координаты центра поиска',
         blank=True, null=True,
-        max_digits=9, decimal_places=6
     )
-    min_lat = models.DecimalField(
+    min_lat = models.FloatField(
         verbose_name='Мин.граница по широте',
         blank=True, null=True,
-        max_digits=9, decimal_places=6,
     )
-    max_lat = models.DecimalField(
+    max_lat = models.FloatField(
         verbose_name='Макс.граница по широте',
         blank=True, null=True,
-        max_digits=9, decimal_places=6,
     )
-    min_lon = models.DecimalField(
+    min_lon = models.FloatField(
         verbose_name='Мин.граница по долготе',
         blank=True, null=True,
-        max_digits=9, decimal_places=6,
     )
-    max_lon = models.DecimalField(
+    max_lon = models.FloatField(
         verbose_name='Макс.граница по широте',
         blank=True, null=True,
-        max_digits=9, decimal_places=6,
     )
 
     class Meta:
@@ -164,8 +156,6 @@ class User(AbstractUser):
                 user=self,
                 defaults={'tg_username': tg_username},
             )
-            print(bot_config.tg_username)
-            print(tg_username)
             if bot_config.tg_username != tg_username:
                 bot_config.tg_username = tg_username
                 bot_config.save()
@@ -207,14 +197,8 @@ class Place(models.Model):
     address = models.CharField(max_length=100)
     building = models.CharField(max_length=10)
     flat = models.CharField(max_length=10, blank=True)
-    loc_lat = models.DecimalField(
-        blank=True, null=True,
-        max_digits=9, decimal_places=6,
-    )
-    loc_lon = models.DecimalField(
-        blank=True, null=True,
-        max_digits=9, decimal_places=6,
-    )
+    loc_lat = models.FloatField(blank=True)
+    loc_lon = models.FloatField(blank=True)
     comments = models.TextField(blank=True)
 
     class Meta:
@@ -225,19 +209,6 @@ class Place(models.Model):
 
     def __str__(self):
         return self.name
-
-    def save(self, **kwargs):
-        """Получение координат места по API Nominatim при сохранении объекта"""
-        if self.address:
-            try:
-                geolocator = Nominatim(user_agent="Tester")
-                full_address = f'{self.city}, {self.address} {self.building}'
-                location = geolocator.geocode(full_address)
-                self.loc_lat = location.latitude
-                self.loc_lon = location.longitude
-            except Exception:
-                raise forms.ValidationError('Адрес не найден, введите другой')
-        super(Place, self).save()
 
     def get_info(self):
         if self.type.name == 'квартира/дом':

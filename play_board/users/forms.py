@@ -2,18 +2,44 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
 from games.models import Game
+from meetings.exceptions import EndpointError
 from meetings.models import Meeting
+from meetings.utils import get_geolocation
 from users.models import Place, User, BotConfig
 
 
 class PlaceForm(forms.ModelForm):
+    loc_lat = forms.FloatField(required=False, disabled=True)
+    loc_lon = forms.FloatField(required=False, disabled=True)
+
     class Meta:
         model = Place
         fields = ('type', 'name', 'city', 'address', 'building', 'flat',
-                  'comments')
+                  'comments', 'loc_lat', 'loc_lon')
         widgets = {'comments': forms.Textarea(attrs={
             'rows': '5', 'class': 'form-control',
         })}
+
+    def clean_address(self):
+        city = self.data['city']
+        address = self.cleaned_data['address']
+        building = self.data['building']
+        try:
+            location = get_geolocation(f'{city}, {address} {building}')
+            self.cleaned_data['loc_lat'] = location.latitude
+            self.cleaned_data['loc_lon'] = location.longitude
+            print(location.latitude)
+            print(location.longitude)
+        except EndpointError:
+            raise forms.ValidationError(
+                'Сервис поиска адресов не работает, попробуйте позже.'
+            )
+        except AttributeError:
+            raise forms.ValidationError(
+                'Адрес не найден, попробуйте другой. '
+                'Например, не сокращайте улицы: "пр." и "ул.".'
+            )
+        return self.cleaned_data['address']
 
 
 class UserInfoForm(forms.ModelForm):

@@ -1,13 +1,14 @@
 from math import cos, pi
 
-from django.shortcuts import redirect
+import folium
+from django.conf import settings
+from django.db.models import Sum
+from django.urls import reverse
 from django.utils import timezone
 from geopy.geocoders import Nominatim
+
 from meetings.models import Meeting
-from django.conf import settings
-import folium
-from django.urls import reverse
-from django.db.models import Sum
+from meetings.exceptions import EndpointError
 
 
 def get_geolocation(location):
@@ -16,8 +17,7 @@ def get_geolocation(location):
         geolocator = Nominatim(user_agent="Tester")
         geolocation = geolocator.geocode(location)
     except Exception:
-        print('Ошибка доступа к сервису геолокации')
-        return redirect('meetings:meeting_search')
+        raise EndpointError('Ошибка доступа к сервису геолокации')
     return geolocation
 
 
