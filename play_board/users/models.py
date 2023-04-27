@@ -231,7 +231,7 @@ class Place(models.Model):
         if self.address:
             try:
                 geolocator = Nominatim(user_agent="Tester")
-                full_address = f'{self.city}, {self.address}, {self.building}'
+                full_address = f'{self.city}, {self.address} {self.building}'
                 location = geolocator.geocode(full_address)
                 self.loc_lat = location.latitude
                 self.loc_lon = location.longitude
