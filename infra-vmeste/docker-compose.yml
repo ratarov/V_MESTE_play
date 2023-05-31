@@ -11,7 +11,7 @@ services:
 
   backend:
     container_name: vmeste-back
-    image: ratarov:vmeste_back:latest
+    image: ratarov/vmeste_back:latest
     # build: ../play_board/
     restart: always
     volumes:
