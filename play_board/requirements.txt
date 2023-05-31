@@ -10,3 +10,4 @@ APScheduler==3.10.0
 psycopg2-binary
 pyTelegramBotAPI==4.10.0
 sentry-sdk
+gunicorn==20.1.0

@@ -4,21 +4,22 @@
     <div class="card">
       <div class="card-header">{{ form_header }}</div>
         <div class="card-body">
-            {% if form.errors %}
-              {% for field in form %}
-                {% for error in field.errors %}
-                  <div class="alert alert-danger">
-                    {{ error|escape }}
-                  </div>
-                {% endfor %}
-              {% endfor %}
-              {% for error in form.non_field_errors %}
+          {% if form.errors %}
+            {% for field in form %}
+              {% for error in field.errors %}
                 <div class="alert alert-danger">
                   {{ error|escape }}
                 </div>
               {% endfor %}
-            {% endif %}
-            <form method="post">
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+              <div class="alert alert-danger">
+                {{ error|escape }}
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="post">
             {% csrf_token %}
             {% for field in form %} 
               <div class="form-group row my-3">
@@ -41,12 +42,13 @@
                 {{ form_button }}
               </button>
               {% if reset %}
-              <a href="{% url 'users:password_reset' %}" class="btn btn-danger">
-                  Забыли пароль?
-              </a>
+                <a href="{% url 'users:password_reset' %}" class="btn btn-danger">
+                    Забыли пароль?
+                </a>
               {% endif %}
             </div>
           </form>
+          
         </div> 
       </div> 
     </div> 

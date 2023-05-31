@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-from django.shortcuts import get_object_or_404
 from django.conf import settings
 
 import telebot
@@ -12,7 +11,7 @@ class Command(BaseCommand):
 
     def start(self, message):
         tg_user = message.chat.username
-        bot_config = get_object_or_404(BotConfig, tg_username=tg_user)
+        bot_config = BotConfig.objects.filter(tg_username=tg_user).first()
         if bot_config:
             bot_config.tg_id = message.chat.id
             bot_config.is_active = True
@@ -25,7 +24,7 @@ class Command(BaseCommand):
 
     def stop(self, message):
         tg_user = message.chat.username
-        bot_config = get_object_or_404(BotConfig, tg_username=tg_user)
+        bot_config = BotConfig.objects.filter(tg_username=tg_user).first()
         if bot_config:
             bot_config.is_active = False
             bot_config.save()

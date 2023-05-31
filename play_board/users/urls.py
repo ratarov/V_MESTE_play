@@ -1,8 +1,5 @@
 from django.contrib.auth.views import (LoginView, LogoutView,
                                        PasswordChangeDoneView,
-                                       PasswordResetCompleteView,
-                                       PasswordResetConfirmView,
-                                       PasswordResetDoneView,
                                        PasswordResetView)
 from django.urls import path
 
@@ -25,21 +22,28 @@ urlpatterns = [
      path('profile-<slug:username>/', views.gamer_profile, name='profile'),
      path('profile-<slug:username>/<str:collection>', views.gamer_collections,
           name='gamer_collections'),
-          
-     # registration_actions
+
+     # registration & authentication actions
      path('signup/',
           views.SignUp.as_view(template_name='users/reg_actions/signup.html'),
           name='signup'),
      path('login/',
           LoginView.as_view(template_name='users/reg_actions/login.html'),
           name='login'),
-     path('logout/', LogoutView.as_view(
-                    template_name='users/reg_actions/logged_out.html'
-               ), name='logout'),
-     path('password_change/done/', PasswordChangeDoneView.as_view(
-                    template_name='users/reg_actions/password_change_done.html'
-               ), name='password_change_done'),
-     path('password_change/', views.MyPasswordChangeView.as_view(
-                    template_name='users/reg_actions/password_change_form.html'
-               ), name='password_change'),
+     path('logout/',
+          LogoutView.as_view(
+               template_name='users/reg_actions/logged_out.html'),
+          name='logout'),
+     path('password_change/done/',
+          PasswordChangeDoneView.as_view(
+               template_name='users/reg_actions/password_change_done.html'),
+          name='password_change_done'),
+     path('password_change/',
+          views.MyPasswordChangeView.as_view(
+               template_name='users/reg_actions/password_change_form.html'),
+          name='password_change'),
+     path('password_reset/',
+          PasswordResetView.as_view(
+               template_name='users/reg_actions/password_reset_form.html'),
+          name='password_reset'),
 ]

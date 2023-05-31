@@ -5,27 +5,22 @@ import sentry_sdk
 from dotenv import load_dotenv
 from sentry_sdk.integrations.django import DjangoIntegration
 
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR.parent, 'infra-vmeste/.env'), verbose=True)
+
 SECRET_KEY = os.getenv('SECRET_KEY')
-
-DEBUG = False
-
+DEBUG = os.getenv('DEBUG', default='False') == 'True'
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='*').split(', ')
 DOMAIN = '127.0.0.1:8000' if DEBUG else 'v-meste.fun'
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '[::1]',
-    'testserver',
-    'www.v-meste.fun',
-    'v-meste.fun',
-]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'users.apps.UsersConfig',
+    'meetings.apps.MeetingsConfig',
+    'games.apps.GamesConfig',
+    'core.apps.CoreConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -33,10 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sorl.thumbnail',
-    'users.apps.UsersConfig',
-    'meetings.apps.MeetingsConfig',
-    'games.apps.GamesConfig',
-    'core.apps.CoreConfig',
     'debug_toolbar',
 ]
 
@@ -132,8 +123,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-STATICFILES_DIRS = [Path(BASE_DIR, 'static')]
+STATIC_ROOT = Path(BASE_DIR, 'static')
+# STATICFILES_DIRS = [Path(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = Path(BASE_DIR, 'media')
@@ -168,7 +159,17 @@ if not DEBUG:
         send_default_pii=True
     )
 
-# CONSTATNTS
+# EMAIL
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+
+# CONSTANTS
 
 KM_IN_DEGREE = 111
 GAMES_ON_PAGE = 20
