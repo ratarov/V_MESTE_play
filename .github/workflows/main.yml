@@ -86,7 +86,7 @@ jobs:
             echo EMAIL_HOST=${{ secrets.EMAIL_HOST }} >> .env
 
             sudo docker-compose stop
-            # sudo docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs sudo docker rm
-            # sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/vmeste_back
+            sudo docker rm vmeste-back
+            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/vmeste_back
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vmeste_back:latest
             sudo docker-compose up -d --build
