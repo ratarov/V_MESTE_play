@@ -67,7 +67,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          # password: ${{ secrets.PASSPHRASE }}
+          password: ${{ secrets.PASSPHRASE }}
           script: |
             cd vmeste/infra-vmeste/
             echo ENV_CONTENT > .env
