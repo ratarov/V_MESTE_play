@@ -57,7 +57,6 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           password: ${{ secrets.PASSPHRASE }}
-          # tar: --overwrite
           source: "infra-vmeste/*"
           target: "vmeste/"
       - name: executing remote ssh commands to deploy
@@ -86,7 +85,7 @@ jobs:
             echo EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} >> .env
             echo EMAIL_HOST=${{ secrets.EMAIL_HOST }} >> .env
 
-            printf "${{ secrets.PASSPHRASE }}\n" | sudo -S docker-compose stop
-            printf "${{ secrets.PASSPHRASE }}\n" | sudo -S docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs sudo docker rm
-            printf "${{ secrets.PASSPHRASE }}\n" | sudo -S docker rmi ${{ secrets.DOCKER_USERNAME }}/vmeste_back
-            printf "${{ secrets.PASSPHRASE }}\n" | sudo -S docker-compose up -d --build
+            sudo docker-compose stop
+            sudo docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs sudo docker rm
+            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/vmeste_back
+            sudo docker-compose up -d --build
