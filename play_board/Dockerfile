@@ -11,4 +11,5 @@ RUN pip3 install -r requirements.txt --no-cache-dir
 
 COPY . .
 
-ENTRYPOINT ["/app/run_app.sh"]
+CMD ["gunicorn", "play_board.wsgi:application", "--bind", "0:8000" ]
+# ENTRYPOINT ["/app/run_app.sh"]
