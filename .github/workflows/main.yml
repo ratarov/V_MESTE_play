@@ -67,12 +67,12 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          password: ${{ secrets.PASSPHRASE }}
+          # password: ${{ secrets.PASSPHRASE }}
           script: |
             cd vmeste/infra-vmeste/
             echo ENV_CONTENT > .env
 
-            sudo docker-compose stop
+            printf "${{ secrets.PASSPHRASE }}\n" | sudo docker-compose stop
             sudo docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs sudo docker rm
             sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/vmeste_back
             sudo docker-compose up -d --build
