@@ -70,9 +70,9 @@ jobs:
           password: ${{ secrets.PASSPHRASE }}
           script: |
             cd vmeste/infra-vmeste/
-            echo ENV_CONTENT > .env
+            echo ${{ secrets.ENV_CONTENT }} > .env
 
             printf "${{ secrets.PASSPHRASE }}\n" | sudo -S docker-compose stop
-            sudo docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs sudo docker rm
-            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/vmeste_back
-            sudo docker-compose up -d --build
+            printf "${{ secrets.PASSPHRASE }}\n" | sudo -S docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs sudo docker rm
+            printf "${{ secrets.PASSPHRASE }}\n" | sudo -S docker rmi ${{ secrets.DOCKER_USERNAME }}/vmeste_back
+            printf "${{ secrets.PASSPHRASE }}\n" | sudo -S docker-compose up -d --build
