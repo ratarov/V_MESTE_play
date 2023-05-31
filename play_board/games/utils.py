@@ -5,21 +5,21 @@ from games.models import Game
 SEARCH_URL = 'https://api.tesera.ru/search/games?query='
 DETAIL_URL = 'https://api.tesera.ru/games/'
 FIELDS = {
-        'teseraId': 'tesera_id',
-        'bggId': 'bgg_id',
-        'title': 'name_rus',
-        'title2': 'name_eng',
-        'alias': 'slug',
-        'description': 'description',
-        'photoUrl': 'photo_url',
-        'year': 'year',
-        'playersMin': 'players_min',
-        'playersMax': 'players_max',
-        'playtimeMin': 'duration_min',
-        'playtimeMax': 'duration_max',
-        'playersAgeMin': 'age',
-        'timeToLearn': 'time_to_learn',
-    }
+    'teseraId': 'tesera_id',
+    'bggId': 'bgg_id',
+    'title': 'name_rus',
+    'title2': 'name_eng',
+    'alias': 'slug',
+    'description': 'description',
+    'photoUrl': 'photo_url',
+    'year': 'year',
+    'playersMin': 'players_min',
+    'playersMax': 'players_max',
+    'playtimeMin': 'duration_min',
+    'playtimeMax': 'duration_max',
+    'playersAgeMin': 'age',
+    'timeToLearn': 'time_to_learn',
+}
 
 
 def search_games(name):

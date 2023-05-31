@@ -11,10 +11,10 @@ def game_detail(request, game_slug):
     game = get_object_or_404(Game, slug=game_slug)
     if not any([game.bgg_id, game.description]):
         update_game_data(game)
-    liked = (request.user.is_authenticated and
-             request.user.liked_games.filter(slug=game_slug).exists())
-    collected = (request.user.is_authenticated and
-                 request.user.site_collection.filter(slug=game_slug).exists())
+    liked = (request.user.is_authenticated and request.
+             user.liked_games.filter(slug=game_slug).exists())
+    collected = (request.user.is_authenticated and request.
+                 user.site_collection.filter(slug=game_slug).exists())
     context = {'game': game, 'liked': liked, 'collected': collected}
     return render(request, 'games/game_detail.html', context)
 
