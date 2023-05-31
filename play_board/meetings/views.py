@@ -104,8 +104,8 @@ def meeting_detail(request, meeting_id):
     comment_form = CommentForm()
 
     participation = None
-    if request.user.is_authenticated and meeting.participants.\
-            filter(player=request.user).exists():
+    if (request.user.is_authenticated and meeting.participants.
+            filter(player=request.user).exists()):
         participation = meeting.participants.get(player=request.user)
 
     guests_form = GuestForm(user=request.user, meeting=meeting,
@@ -220,8 +220,8 @@ def unban_player(request, meeting_id, username):
     participation = get_object_or_404(MeetingParticipation, meeting=meeting,
                                       player=player)
     if meeting.creator == request.user:
-        if (participation.total_qty + meeting.get_total_players())\
-                <= meeting.max_players:
+        if (participation.total_qty + meeting.get_total_players()
+                <= meeting.max_players):
             participation.status = 'ACT'
             participation.save()
         else:

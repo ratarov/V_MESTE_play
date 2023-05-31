@@ -213,11 +213,9 @@ class Place(models.Model):
     def get_info(self):
         if self.type.name == 'квартира/дом':
             return f'{self.address}, {self.building}'
-        else:
-            return f'"{self.name}": {self.address}, {self.building}'
+        return f'"{self.name}": {self.address}, {self.building}'
 
     def get_name(self):
         if self.type.name == 'квартира/дом':
             return 'Квартира/дом'
-        else:
-            return self.name
+        return self.name

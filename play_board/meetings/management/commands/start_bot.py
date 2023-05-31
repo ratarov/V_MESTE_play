@@ -18,9 +18,8 @@ class Command(BaseCommand):
             bot_config.save()
             return (f'Привет, {message.chat.first_name}!\n'
                     'Вы включили рассылку сервиса V MESTE!')
-        else:
-            return (f'Пользователь {message.chat.username} не найден.\n'
-                    'Пожалуйста, проверьте профиль на сайте.')
+        return (f'Пользователь {message.chat.username} не найден.\n'
+                'Пожалуйста, проверьте профиль на сайте.')
 
     def stop(self, message):
         tg_user = message.chat.username
@@ -29,9 +28,8 @@ class Command(BaseCommand):
             bot_config.is_active = False
             bot_config.save()
             return ('Вы отключили рассылку сервиса V MESTE.')
-        else:
-            return (f'Пользователь {message.chat.username} не найден.\n'
-                    'Пожалуйста, проверьте профиль на сайте.')
+        return (f'Пользователь {message.chat.username} не найден.\n'
+                'Пожалуйста, проверьте профиль на сайте.')
 
     def handle(self, *args, **kwargs):
         bot = telebot.TeleBot(token=settings.TELEGRAM_TOKEN, parse_mode=None)

@@ -17,8 +17,7 @@ def get_tesera_user(tesera_account):
     except Exception:
         print(f'Ошибка при запросе инфо игрока {tesera_account}')
     if request:
-        games_in_col = int(request.get('gamesInCollection'))
-        return games_in_col
+        return int(request.get('gamesInCollection'))
     return 0
 
 
@@ -35,8 +34,7 @@ def get_paginated_games(queryset, request):
     """Пагинация списка игр"""
     paginator = Paginator(queryset, settings.GAMES_ON_PAGE)
     page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return page_obj
+    return paginator.get_page(page_number)
 
 
 def filter_user_meetings(request):
@@ -45,12 +43,14 @@ def filter_user_meetings(request):
     host = request.GET.get('host')
     date_since = request.GET.get('date_since')
     date_until = request.GET.get('date_until')
-    meetings = request.user.meetings.order_by('-start_date').\
-        select_related('creator', 'place', 'status', 'place__type').\
-        prefetch_related('games').\
+    meetings = (
+        request.user.meetings.
+        order_by('-start_date').
+        select_related('creator', 'place', 'status', 'place__type').
+        prefetch_related('games').
         annotate(total_players=Sum('participants__total_qty'))
+    )
     if status:
-        print(status)
         meetings = meetings.filter(status__name=status)
     if host:
         if host == 'Вы':
@@ -60,7 +60,7 @@ def filter_user_meetings(request):
     if date_since:
         meetings = meetings.filter(start_date__gte=date_since)
     if date_until:
-        meetings = meetings.filter(start_date__lte=date_until)
+        return meetings.filter(start_date__lte=date_until)
     return meetings
 
 

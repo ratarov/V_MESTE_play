@@ -99,7 +99,7 @@ class NewMeetingInformThread(InformThread):
             games__in=self.meeting.games.all(),
         )
         if self.meeting.creator.telegram:
-            recipients = recipients.exclude(user=self.meeting.creator)
+            return recipients.exclude(user=self.meeting.creator)
         return recipients
 
     def get_message(self):
