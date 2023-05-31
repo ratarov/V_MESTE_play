@@ -70,7 +70,21 @@ jobs:
           password: ${{ secrets.PASSPHRASE }}
           script: |
             cd vmeste/infra-vmeste/
-            echo ${{ secrets.ENV_CONTENT }} > .env
+            echo SECRET_KEY=${{ secrets.SECRET_KEY }} > .env
+            echo TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }} >> .env
+            echo SENTRY_DSN=${{ secrets.SENTRY_DSN }} >> .env
+            echo DEBUG=${{ secrets.DEBUG }} >> .env
+            echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
+            echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
+            echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+            echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+            echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+            echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+            echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+            echo EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }} >> .env
+            echo EMAIL_PORT=${{ secrets.EMAIL_PORT }} >> .env
+            echo EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} >> .env
+            echo EMAIL_HOST=${{ secrets.EMAIL_HOST }} >> .env
 
             printf "${{ secrets.PASSPHRASE }}\n" | sudo -S docker-compose stop
             printf "${{ secrets.PASSPHRASE }}\n" | sudo -S docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs sudo docker rm
