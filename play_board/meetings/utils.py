@@ -47,11 +47,11 @@ def filter_meetings(place, request):
         meetings = meetings.filter(games__id=game)
     if request.user.is_authenticated:
         meetings = meetings.exclude(creator=request.user)
-    return meetings.select_related(
-            'status', 'creator', 'place', 'place__type',
-        ).prefetch_related('games').annotate(
-            total_players=Sum('participants__total_qty')
-        ).order_by('start_date')
+    return (meetings.
+            select_related('status', 'creator', 'place', 'place__type').
+            prefetch_related('games').
+            annotate(total_players=Sum('participants__total_qty')).
+            order_by('start_date'))
 
 
 def add_meeting_marker(map, meeting):
