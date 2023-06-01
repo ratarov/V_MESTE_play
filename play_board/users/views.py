@@ -12,7 +12,7 @@ from django.views.generic import CreateView
 from games.models import Game
 from games.utils import parse_tesera_response
 from meetings.exceptions import EndpointError
-from meetings.utils import get_geolocation
+from services.geolocation import get_geolocation
 from users.forms import (CreateUserForm, PlaceForm, UserInfoForm,
                          UserMeetingsForm, BotConfigForm)
 from users.models import Place, User, BotConfig
@@ -163,6 +163,8 @@ def place_add(request):
     if form.is_valid():
         place = form.save(commit=False)
         place.creator = request.user
+        place.loc_lat = form.cleaned_data.get('loc_lat')
+        place.loc_lon = form.cleaned_data.get('loc_lon')
         place.save()
         return redirect('users:user_info')
     context = {'form': form}
@@ -178,6 +180,8 @@ def place_edit(request, place_id):
     form = PlaceForm(request.POST or None, instance=place)
     if form.is_valid():
         place = form.save(commit=False)
+        place.loc_lat = form.cleaned_data.get('loc_lat')
+        place.loc_lon = form.cleaned_data.get('loc_lon')
         place.save()
         return redirect('users:user_info')
     context = {

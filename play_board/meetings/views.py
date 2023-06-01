@@ -13,7 +13,8 @@ from meetings.models import (Comment, Meeting, MeetingParticipation,
 from meetings.threads import (NewCommentInformThread,
                               CancelMeetingInformThread,
                               NewMeetingInformThread)
-from meetings.utils import add_meeting_marker, filter_meetings, get_geolocation
+from meetings.utils import add_meeting_marker, filter_meetings
+from services.geolocation import get_geolocation
 from users.models import User
 
 

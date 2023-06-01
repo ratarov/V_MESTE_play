@@ -3,7 +3,14 @@ from games.models import Game
 
 
 class GameAdmin(admin.ModelAdmin):
-    search_fields = ['name_rus']
+    list_display = (
+        'id',
+        'name_rus',
+        'name_eng',
+        'slug',
+        'year',
+    )
+    search_fields = ['name_rus', 'name_eng']
 
 
 admin.site.register(Game, GameAdmin)

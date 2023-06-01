@@ -13,6 +13,7 @@
       </p>
       <form method="post">
         {% csrf_token %}
+        <i>{{ form.non_field_errors }}</i>
         {% for field in form %}
           {% for error in field.errors %} <i>{{ error|escape }}</i> {% endfor %}
         {% endfor %}

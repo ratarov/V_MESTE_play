@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'meetings.apps.MeetingsConfig',
     'games.apps.GamesConfig',
     'core.apps.CoreConfig',
+    'services.apps.ServicesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

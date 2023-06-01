@@ -9,6 +9,7 @@
       <p><h4>Вы создаете новую встречу:</h4></p>       
       <form method="post">
         {% csrf_token %}
+        <i>{{ meeting_form.non_field_errors }}</i>
         {% for field in meeting_form %}
           {% for error in field.errors %} <i>{{ error|escape }}</i> {% endfor %}
         {% endfor %}

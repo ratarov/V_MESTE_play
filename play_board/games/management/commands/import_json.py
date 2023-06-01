@@ -34,5 +34,5 @@ class Command(BaseCommand):
             Game.objects.bulk_create(new_games, ignore_conflicts=True)
             self.stdout.write('Процесс успешно завершен\n'
                               f'Добавлено: {len(new_games)} / {counter}')
-        except ValueError:
+        except (ValueError,):
             self.stderr.write('Критическая ошибка - процесс остановлен.')

@@ -113,6 +113,8 @@ class User(AbstractUser):
         help_text='Для связи с игроками и уведомлений',
         max_length=50,
         blank=True,
+        null=True,
+        unique=True,
     )
     about = models.TextField(
         verbose_name='О себе',
