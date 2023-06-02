@@ -19,7 +19,7 @@ class MeetingStatus(models.Model):
 class Meeting(models.Model):
     name = models.CharField(
         verbose_name='Название',
-        max_length=30,
+        max_length=50,
         blank=True,
     )
     status = models.ForeignKey(
