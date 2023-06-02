@@ -38,6 +38,11 @@
               </div>
             {% endfor %}
             <div class="d-grid gap-2 col-6 mx-auto">
+              {% if disclaimer%}
+              <small class="form-text text-muted">
+                Подтверждая регистрацию, Вы соглашаетесь с условиями <a href="{% url 'meetings:agreement' %}">Пользовательского соглашения</a>.
+              </small>
+              {% endif %}
               <button type="submit" class="btn btn-danger">
                 {{ form_button }}
               </button>

@@ -8,63 +8,282 @@
         <h4>Помощь по сайту</h4>
       </p>
     </div>
-    <div class="col-12">
-      <p>
-        <h5>Что такое <b style="color:red">"В МЕСТЕ"?</b></h5>  
-      </p>
-      <p>
-        <b style="color:red">В МЕСТЕ</b> - платформа для поиска компании для настольных игр.<br>
-        Краткий набор возможностей сайта: <br>
-        Создание встречи
-        Поиск встречи по фильтру
-        Поиск настольных игр
-        Добавление настольных игр на сайт с базы данных tesera.ru
-        Загрузка коллекции с игр с сайта tesera.ru
-        Создание собственных коллекций игр
-        Получение рассылки от телеграм-бота об изменения в Ваших встречах и создании новых встреч по фильтру
-      </p>
-      <p>
-        <h5>Регистрация</h5>  
-      </p>
-      <p>
-        .<br> 
-      </p>
-      <p>
-        <h5>Создание встречи</h5>  
-      </p>
-      <p>
-        .<br>
-      </p>
-      <p>
-        <h5>Поиск встреч</h5>  
-      </p>
-      <p>
-        .<br>
-      </p>
-      <p>
-        <h5>Добавление настольных игр на сайт с базы данных tesera.ru</h5>  
-      </p>
-      <p>
-        .<br>
-      </p>
-      <p>
-        <h5>Загрузка коллекции с игр с сайта tesera.ru</h5>  
-      </p>
-      <p>
-        .<br>
-      </p>
-      <p>
-        <h5>Создание собственных коллекций игр</h5>  
-      </p>
-      <p>
-        .<br>
-      </p>
-      <p>
-        <h5>Настройка телеграм-бота</h5>  
-      </p>
-      <p>
-        .<br>
-      </p>
+    <div class="col-12 mb-3">
+      
+      <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+             data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              Что такое <b style="color:red">"В МЕСТЕ"?</b>
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <b style="color:red">В МЕСТЕ</b> - платформа для поиска компании для настольных игр.<br>
+              Ниже инструкции по основным действиям, доступным на сайте.<br>
+              Если что-то не получается/не работает, напишите письмо на <a href="mailto:support@v-meste.ru">support@v-meste.ru</a> или в группе в ВК.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+             data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              Регистрация на сайте
+            </button>
+          </h2>
+          <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              Обязательные поля: username (будет отображаться у других игроков на страницах встреч), пароль.<br>
+              Email желателен - может потребоваться для восстановления доступа, если забудете пароль. <br>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+             data-bs-target="#forgotpass" aria-expanded="false" aria-controls="forgotpass">
+              Забыли пароль?
+            </button>
+          </h2>
+          <div id="forgotpass" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              Если не можете вспомнить пароль, доступен сброс пароля при условии, что Вы указали при регистрации или в личном кабинете электронную почту.<br>
+              1. Зайдите на страницу <a href="{% url 'users:login' %}">входа на сайт</a>.<br>
+              2. Нажмите кнопку "Забыли пароль?". <br>
+              3. Укажите электронную почту.<br>
+              4. Проверьте свой почтовый ящик, в течение минуты должно прийти письмо от <a href="mailto:support@v-meste.ru">support@v-meste.ru</a>. Если не пришло, проверьте папку "спам".<br>
+              5. Перейдите по ссылке в письме и на открывшейся странице введите новый пароль.<br>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#createplace" aria-expanded="false" aria-controls="createplace">
+              Создание и редактирование места встречи
+            </button>
+          </h2>
+          <div id="createplace" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              Перейдите в <a href="{% url 'users:user_info' %}">личный кабинет</a> (ссылка на верхней панели навигации по кнопке "Вы: <Ваш username>"), 
+              нажмите на кнопку <a href="{% url 'users:place_add' %}">добавить</a> рядом с <b>"Мои места для игр"</b><br>
+              Заполните поля, отмеченные *<br>
+              Полезно знать:
+                <li>
+                  Номер квартиры не является публичным, он виден только на странице встречи и только участникам встречи.
+                  Но при желании Вы можете не указывать его явно, а сообщить его участникам другим удобным для Вас способом.
+                </li>
+                <li>
+                  Название квартиры будет видно только Вам. Остальные будут видеть его как "Квартира/дом". 
+                  Прочие типы мест будут отображаться так, как Вы их укажете в поле "Название места".
+                </li>
+              Редактирование и удаление мест доступно по кнопкам "изменить" и "удалить" в списке <b>"Мои места для игр"</b>.<br>
+              Изменение места отразится во всех встречах, связанных с этим местом!
+            </div>
+          </div>
+        </div>     
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#createmeeting" aria-expanded="false" aria-controls="createmeeting">
+              Создание встреч
+            </button>
+          </h2>
+          <div id="createmeeting" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <a href="{% url 'meetings:meeting_create' %}">Создание встреч</a> доступно только зарегистрированным пользователям.<br>
+              Это действие невозможно без указания места встречи в личном кабинете (см. предыдущий пункт).<br>
+              Обязательные поля отмечены *.<br>
+              Если Вы не один, не забудьте указать количество гостей, которые тоже будут играть.<br>
+              Полезно знать:
+              <li>
+                Поиск производится по русскому наименованию, но у некоторых не очень популярных игр перепутаны названия на русском и английском языках. 
+                Если не можете найти игру, попробуй английское название!
+              </li>
+              <li>
+                Если игры нет в базе, Вы можете добавить игры буквально <a href='{% url 'games:game_add' %}'>в 1 клик!</a>. 
+                Игры подгружаются из базы tesera.ru. Если игры нет, пишите в группу ВК, что-нибудь придумаем!
+              </li>  
+              <li>
+                Вы можете добавить сколько угодно игр для встречи. В списке встреч в результатах поиска будут отражены все. Но на карте - только первые 3 (в алфавитном порядке). 
+              </li>
+              <li>
+                Название встречи будет заголовком встречи в результатах поиска. Попробуйте придумать что-то привлекательное =)
+              </li>
+              <li>
+                Все поля впоследствии будут доступны для изменения. Но если к игре уже кто-то присоединился, не забудьте уведомить других игроков об изменениях. 
+              </li>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#editmeeting" aria-expanded="false" aria-controls="editmeeting">
+              Управление встречей и контроль игроков
+            </button>
+          </h2>
+          <div id="editmeeting" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              Кнопки изменения и отмены встречи доступны на странице встречи только ее организатору.<br>
+              Если Вы отмените встречу, ее статус изменится на "отменена", вернуться к статусу "готовится" нельзя.<br>
+              Вы можете обсуждать детали встречи в комментариях к встрече - они доступны только участникам.<br>
+              Организатор встречи может по своему желанию удалять чужие комментарии.<br>
+              Как работает блокировка игроков:
+              <li>
+                Если по каким-то причинам Вы не хотите, чтобы один из игроков участвовал во встрече, 
+                Вы можете его забанить (заблокировать), нажав на "х" рядом с именем пользователя. Пользователь вместе с гостями перейдет в раздел "Забанены".
+              </li>
+              <li>
+                Раздел "Забанены" виден только организатору встречи.
+              </li>
+              <li>
+                Заблокированный игрок не сможет больше присоединиться ко встрече. Доступа к комментариям у него тоже не будет.
+              </li>
+              <li>
+                Организатор может разбанить игрока, повторно нажав на "х" рядом с именем пользователя. Если во встрече есть места для игрока и его гостей, он вернется в список игроков; 
+                если мест нет - игрок просто покинет список "Забанены" и сможет повторно присоединиться к встрече (с гостями в пределах доступного лимита). 
+              </li>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#searchmeeting" aria-expanded="false" aria-controls="searchmeeting">
+              Поиск встреч
+            </button>
+          </h2>
+          <div id="searchmeeting" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <a href="{% url 'meetings:meeting_search' %}">Поиск</a> встречи осуществляется по нескольким критериям:
+              <li>
+                Адрес: точка на карте, центр поиска. Укажите название города или точный адрес. Следите за картой, чтобы убедиться, что адрес определен верно
+              </li>
+              <li>
+                Радиус: радиус поиска в км. Варианты на выбор от 5 до 100 км.
+              </li>
+              <li>
+                Не раньше и не позже: диапазон дат, в котором надо искать встречи.
+              </li>
+              <li>
+                Игра: поиск встреч на сайте производится по 1 игре за раз. Просто начните вводить название игры.
+              </li>
+              Результат поиска включает встречи в статусе "готовится", удовлетворяющие критериям поиска и отсортированные по дате (от более ранних к более поздним).<br>
+              Обратите внимание, Ваши встречи не отображаются в результатах Вашего поиска.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#joinmeeting" aria-expanded="false" aria-controls="joinmeeting">
+              Страница встречи
+            </button>
+          </h2>
+          <div id="joinmeeting" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              Зарегистрированные игроки могут присоединиться к встрече при условии наличия мест.<br>
+              Если участник хочет прийти не один, он может указать количество гостей, нажав на кнопку "Приду не один".<br>
+              Возможности участников встречи:
+              <li>
+                Если встреча в квартире, только учатники видят ее номер.
+              </li>
+              <li>
+                Только участники видят комментарии к встрече и могут оставлять новые.
+              </li>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#whytelegram" aria-expanded="false" aria-controls="whytelegram">
+              Зачем указывать аккаунт в Telegram?
+            </button>
+          </h2>
+          <div id="whytelegram" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              Ваш телеграм-аккаунт не будет виден никому из других пользователей, но его указание открывает доступ к нашему телеграм-боту.              
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#howbotworks" aria-expanded="false" aria-controls="howbotworks">
+              Как работает Telegram-бот?
+            </button>
+          </h2>
+          <div id="howbotworks" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              Телеграм бот позволяет отслеживать изменения во встречах, к которым Вы присоединились, 
+              или получать уведомления о новых встречах с интересующими Вас играми максимально оперативно и без посещения сайта.<br>
+              Укажите свой telegram-аккаунт (@username) на странице в <a href="{% url 'users:user_info' %}">личном кабинете</a>
+              и следуйте инструкциям на вкладе "Телеграм Бот", которая появится в личнмо кабинете рядом с "Моя инфо" и "Встречи".<br>
+              После активации бота будут доступны 3 типа уведомлений:<br>
+              <li>
+                Уведомление, если организатор встречи отменит встречу, к которой Вы присоединились.
+              </li>
+              <li>
+                Уведомление о новых сообщениях в чате встречи (новые комментарии).
+              </li>
+              <li>
+                Уведомление о создании новых встреч по 3 критериям (нужно указать все 3): точка поиска, радиус поиска и настольные игры. 
+                При попадании любой игры из списка Вы получите уведомление.
+              </li>
+              Для удобства при выборе типа №3 появится карта - убедитесь, что сервис геопоиска правильно распознал указанный Вами адрес.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mymeetings" aria-expanded="false" aria-controls="mymeetings">
+              Где список моих встреч?
+            </button>
+          </h2>
+          <div id="mymeetings" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              Список встреч доступен в личном кабинете в разделе <a href="{% url 'users:user_meetings' %}">Встречи</a>.<br>
+              Для навигации по встречам доступны фильтры по статусу, организатору и дате проведения.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mycollections" aria-expanded="false" aria-controls="mycollections">
+              Коллекции игр пользователя
+            </button>
+          </h2>
+          <div id="mycollections" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              Чтобы другие игроки видели Ваши интересы и коллекции и просто для своего удобства, Вы можете добавлять игры в коллекции<br>
+              На сайте доступны 3 варианта коллекций:
+              <li>
+                Коллекция на tesera.ru - просто добавьте в личном кабинете свой ник-нейм на сайте и 
+                нажмите кнопку "обновить" рядом со счетчиком игр в коллекции. Коллекция автоматически загрузится на сайт.
+              </li>
+              <li>
+                Ваша коллекция на v-meste.fun - если не пользуетесь tesera.ru, 
+                Вы можете поместить игру в коллекцию на странице игры на v-meste.fun, нажав на иконку с подписью "В коллекции".
+              </li>
+              <li>
+                Коллекция любимых игр - не важно, есть они в у Вас в коллекции или нет, добавьте свои любимые игры, 
+                чтобы другие игроки знали больше о Ваших интересах и что можно захватить с собой на Вашу встречу.
+              </li>
+              Перейти к списку игр в коллекции можно, нажав на красный счетчик игр рядом с названием коллекции в <a href="{% url 'users:user_info' %}">личном кабинете</a>.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </div>
 {% endblock %}

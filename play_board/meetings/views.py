@@ -35,6 +35,11 @@ def help(request):
     return render(request, 'meetings/help.html')
 
 
+def agreement(request):
+    """Страница с пользовательским соглашением сайта"""
+    return render(request, 'meetings/agreement.html')
+
+
 def meeting_search(request):
     """Страница поиска встреч по параметрам"""
     form = MeetingSearchForm(data=request.GET or None)

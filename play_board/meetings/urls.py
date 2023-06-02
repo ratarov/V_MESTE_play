@@ -28,5 +28,6 @@ urlpatterns = [
     path('meetings/', views.meeting_search, name='meeting_search'),
     path('about/', views.about, name='about'),
     path('help/', views.help, name='help'),
+    path('agreement/', views.agreement, name='agreement'),
     path('', views.index, name='index'),
 ]

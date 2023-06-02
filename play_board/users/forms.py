@@ -54,7 +54,7 @@ class UserInfoForm(forms.ModelForm):
 class CreateUserForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('first_name', 'last_name', 'username', 'email')
+        fields = ('username', 'email')
 
 
 class UserMeetingsForm(forms.ModelForm):
