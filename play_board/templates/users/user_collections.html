@@ -18,7 +18,9 @@
             Коллекция на сайте {{ user.username }}: <span class="badge bg-danger">{{ page_obj.paginator.count }}</span>
           {% elif type == 'tesera' %} 
             Коллекция tesera {{ user.username }}: <span class="badge bg-danger">{{ page_obj.paginator.count }}</span>
-            {% if user == request.user%}<a href="{% url 'users:update_collection' %}"><span class="badge bg-danger">обновить</span></a>{% endif %}
+            {% if user == request.user and user.tesera_account %}
+              <a href="{% url 'users:update_collection' %}"><span class="badge bg-danger">обновить</span></a>
+            {% endif %}
           {% endif %}
         </h5>
       </p>

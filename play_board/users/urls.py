@@ -10,7 +10,7 @@ app_name = 'users'
 urlpatterns = [
     path('my-info/edit', views.user_info_edit, name='user_info_edit'),
     path('my-info/', views.user_info, name='user_info'),
-    path('my-info/<str:collection>/', views.user_collections,
+    path('my-collections/<str:collection>/', views.user_collections,
          name='user_collections'),
     path('my-collections/update', views.update_tesera_collection,
          name='update_collection'),

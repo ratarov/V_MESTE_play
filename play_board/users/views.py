@@ -40,7 +40,9 @@ def gamer_collections(request, username, collection):
         'site': gamer.site_collection.all(),
         'tesera': gamer.tesera_collection.all(),
     }
-    games = get_paginated_games(qs[collection], request)
+    if collection not in qs:
+        return redirect('users:profile', username)
+    games = get_paginated_games(qs.get(collection), request)
     context = {'page_obj': games, 'type': collection, 'user': gamer}
     return render(request, 'users/user_collections.html', context)
 
@@ -102,7 +104,9 @@ def user_collections(request, collection):
         'site': request.user.site_collection.all(),
         'tesera': request.user.tesera_collection.all(),
     }
-    games = get_paginated_games(qs[collection], request)
+    if collection not in qs:
+        return redirect('users:user_info')
+    games = get_paginated_games(qs.get(collection), request)
     context = {'page_obj': games, 'type': collection}
     return render(request, 'users/user_collections.html', context)
 
