@@ -7,7 +7,7 @@
   <div class="row border rounded shadow-sm bg-white mb-3">
     <div class="col-12 mb-3">
       <p>
-        <h4>Встреча "{{ meeting.get_name }}"</h4>
+        <h4>Встреча "{{ meeting.get_name }}" <button class="btn-sm btn-danger" id="copy-link-btn">Ссылка на встречу</button></h4>
         <small class="text-muted">Статус встречи: <b>{{ meeting.status }}</b></small>
       </p>
       {% if meeting.status.id == 1 %}
@@ -47,7 +47,7 @@
           <form method="post">
             {% csrf_token %}
             {% for error in guests_form.guests.errors %} <i>{{ error|escape }}</i> {% endfor %}
-            <div class="row">    
+            <div class="row">
               <div class='col-auto'>
                 {% if participation %}
                   <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:leave_meeting' meeting.id %}">
@@ -241,11 +241,6 @@
               {{ comment.text|linebreaksbr }}<br>
               <small class="text-muted">
                 {{ comment.created|date:"j M H:i" }} 
-                {% comment %} {% if user == comment.creator %}
-                - 
-                <a href="#" 
-                title="Удалить комментарий">Изменить</a>
-                {% endif %} {% endcomment %}
                 {% if user == comment.creator or user == meeting.creator %} 
                 - 
                 <a href="{% url 'meetings:comment_del' comment_id=comment.id meeting_id=comment.meeting.id %}" 
@@ -274,4 +269,17 @@
       </div>
     </div>
   {% endif %}
+
+  <script>
+    const copyLinkBtn = document.querySelector('#copy-link-btn');
+    
+    copyLinkBtn.addEventListener('click', () => {
+      const link = window.location.href;
+      navigator.clipboard.writeText(link);
+      copyLinkBtn.textContent = 'Скопировано';
+      setTimeout(() => {
+        copyLinkBtn.textContent = 'Ссылка на встречу';
+      }, 1000);
+    });
+  </script>
 {% endblock %}
