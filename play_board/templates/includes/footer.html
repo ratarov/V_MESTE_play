@@ -1,3 +1,4 @@
+{% load static %}
 <footer class="footer-bs bg-danger">
   <div class="container text-white ">
     <div class="row py-3 mb-3">
@@ -23,9 +24,14 @@
       </div>
       <div class="col-6 col-md-auto">
         <a class="text-decoration-none text-reset" href="https://vk.com/club220940294" target="_blank">
-          VK
+          <img src="{% static 'img/VK_logo_white.svg' %}"
+             width="24"
+             height="24"
+             class="d-inline-block align-top"
+             alt="">
         </a>
       </div>
+      
     </div>
   </div>
 </footer>
