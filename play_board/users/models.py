@@ -12,8 +12,9 @@ class BotConfig(models.Model):
         verbose_name='Telegram username',
         max_length=50,
     )
-    tg_id = models.IntegerField(
+    tg_id = models.CharField(
         verbose_name='ID пользователя',
+        max_length=50,
         blank=True,
         null=True,
     )
