@@ -87,6 +87,7 @@ jobs:
 
             sudo docker-compose stop
             sudo docker rm vmeste-back
+            sudo docker rm vmeste-nginx
             sudo docker volume rm infra-vmeste_static_value
             sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/vmeste_back
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vmeste_back:latest
