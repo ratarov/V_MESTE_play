@@ -104,14 +104,14 @@ class BotConfigForm(forms.ModelForm):
         fields = ('is_active', 'comments_info', 'cancel_meeting_info',
                   'new_meeting_info', 'address', 'radius', 'games')
 
-    def clean_games(self):
-        if all([self.cleaned_data['is_active'],
-                self.cleaned_data['new_meeting_info'],
-                not self.cleaned_data['games']]):
-            raise forms.ValidationError(
-                'Выберите хотя бы 1 игру для отслеживания новых встреч'
-            )
-        return self.cleaned_data['games']
+    # def clean_games(self):
+    #     if all([self.cleaned_data['is_active'],
+    #             self.cleaned_data['new_meeting_info'],
+    #             not self.cleaned_data['games']]):
+    #         raise forms.ValidationError(
+    #             'Выберите хотя бы 1 игру для отслеживания новых встреч'
+    #         )
+    #     return self.cleaned_data['games']
 
     def clean_address(self):
         if all([self.cleaned_data['is_active'],

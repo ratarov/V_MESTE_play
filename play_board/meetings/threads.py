@@ -3,6 +3,7 @@ import requests
 from abc import abstractmethod
 
 from django.conf import settings
+from django.db.models import Q
 from django.urls import reverse
 
 from users.models import BotConfig
@@ -92,11 +93,13 @@ class NewMeetingInformThread(InformThread):
         lat = self.meeting.place.loc_lat
         lon = self.meeting.place.loc_lon
         recipients = BotConfig.objects.filter(
+            Q(games__in=self.meeting.games.all()) | Q(games=None),
+            is_active=True,
+            new_meeting_info=True,
             min_lat__lte=lat,
             max_lat__gte=lat,
             min_lon__lte=lon,
             max_lon__gte=lon,
-            games__in=self.meeting.games.all(),
         )
         if self.meeting.creator.telegram:
             return recipients.exclude(user=self.meeting.creator)
