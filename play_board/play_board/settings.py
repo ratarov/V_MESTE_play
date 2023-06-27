@@ -21,7 +21,6 @@ INSTALLED_APPS = [
     'meetings.apps.MeetingsConfig',
     'games.apps.GamesConfig',
     'core.apps.CoreConfig',
-    'services.apps.ServicesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -137,6 +136,24 @@ MEDIA_ROOT = Path(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# EMAIL
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+
+# CONSTANTS
+
+KM_IN_DEGREE = 111
+GAMES_ON_PAGE = 20
+DEFAULT_SEARCH_RADIUS = 100
+TESERA_GAMES_IN_REQUEST = 30
+
+
 # OTHER SETTINGS
 
 AUTH_USER_MODEL = 'users.User'
@@ -160,18 +177,7 @@ if not DEBUG:
         send_default_pii=True
     )
 
-# EMAIL
-
-EMAIL_USE_TLS = True
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = os.getenv('EMAIL_PORT')
-DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-
-
-# CONSTANTS
-
-KM_IN_DEGREE = 111
-GAMES_ON_PAGE = 20
-DEFAULT_SEARCH_RADIUS = 100
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+# }

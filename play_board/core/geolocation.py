@@ -1,6 +1,8 @@
+import logging
+
 from geopy.geocoders import Nominatim
 
-from .exceptions import EndpointError
+logger = logging.getLogger(__name__)
 
 
 def get_geolocation(location):
@@ -8,6 +10,7 @@ def get_geolocation(location):
     try:
         geolocator = Nominatim(user_agent="Tester")
         geolocation = geolocator.geocode(location)
+        return geolocation
     except Exception:
-        raise EndpointError('Ошибка доступа к сервису геолокации')
-    return geolocation
+        logger.error('Ошибка доступа к сервису геолокации')
+    return None

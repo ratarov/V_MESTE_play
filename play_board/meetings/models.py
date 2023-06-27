@@ -1,6 +1,7 @@
 from django.db import models
-from users.models import User, Place
+
 from games.models import Game
+from users.models import Place, User
 
 
 class MeetingStatus(models.Model):

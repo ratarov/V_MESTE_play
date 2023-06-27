@@ -1,8 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
 from games.models import Game
 
-from users.validators import username_validator
+from .validators import username_validator
 
 
 class BotConfig(models.Model):

@@ -9,16 +9,16 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
+from core.geolocation import get_geolocation
+from core.tesera_api import parse_tesera_response, get_tesera_collection
+from core.exceptions import EndpointError
 from games.models import Game
-from games.utils import parse_tesera_response
-from meetings.exceptions import EndpointError
-from services.geolocation import get_geolocation
-from users.forms import (CreateUserForm, PlaceForm, UserInfoForm,
-                         UserMeetingsForm, BotConfigForm)
-from users.models import Place, User, BotConfig
-from users.utils import (get_tesera_collection, get_tesera_user,
-                         get_paginated_games, filter_user_meetings,
-                         add_search_marker)
+
+from .forms import (CreateUserForm, PlaceForm, UserInfoForm,
+                    UserMeetingsForm, BotConfigForm)
+from .models import Place, User, BotConfig
+from .utils import (get_paginated_games, filter_user_meetings,
+                    add_search_marker)
 
 
 def gamer_profile(request, username):
@@ -31,8 +31,9 @@ def gamer_profile(request, username):
 
 
 def gamer_collections(request, username, collection):
-    """Страница со списком игр в выбранной коллекции:
-       любимые, коллекция на сайте и коллекция на tesra.ru
+    """
+    Страница со списком игр в выбранной коллекции:
+    любимые, коллекция на сайте и коллекция на tesera.ru
     """
     gamer = get_object_or_404(User, username=username)
     qs = {
@@ -71,27 +72,24 @@ def user_info_edit(request):
 def update_tesera_collection(request):
     """Функция обновления списка игр в коллекции на сайте tesera.ru"""
     if request.user.tesera_account:
-        collection_qty = get_tesera_user(request.user.tesera_account)
-        if collection_qty:
-            collection_raw = get_tesera_collection(
-                request.user.tesera_account, collection_qty)
-            collection_dataset = parse_tesera_response(collection_raw)
-            request.user.tesera_collection.clear()
-            new_games = []
-            games_in_collection = []
-            games_in_base = list(Game.objects.values_list('slug', flat=True))
-            for game_dataset in collection_dataset:
-                slug = game_dataset.get('slug')
-                if slug not in games_in_base:
-                    new_games.append(Game(**game_dataset))
-                games_in_collection.append(slug)
-            Game.objects.bulk_create(new_games)
-            games_in_base = dict(Game.objects.values_list('slug', 'id'))
-            mapped_games = map(lambda x: games_in_base.get(x),
-                               games_in_collection)
-            col = [User.tesera_collection.through(
-                user_id=request.user.id, game_id=xxx) for xxx in mapped_games]
-            User.tesera_collection.through.objects.bulk_create(col)
+        collection_raw = get_tesera_collection(request.user.tesera_account)
+        collection_dataset = parse_tesera_response(collection_raw)
+        request.user.tesera_collection.clear()
+        new_games = []
+        games_in_collection = []
+        games_in_base = list(Game.objects.values_list('slug', flat=True))
+        for game_dataset in collection_dataset:
+            slug = game_dataset.get('slug')
+            if slug not in games_in_base:
+                new_games.append(Game(**game_dataset))
+            games_in_collection.append(slug)
+        Game.objects.bulk_create(new_games)
+        games_in_base = dict(Game.objects.values_list('slug', 'id'))
+        mapped_games = map(lambda x: games_in_base.get(x),
+                           games_in_collection)
+        col = [User.tesera_collection.through(
+            user_id=request.user.id, game_id=xxx) for xxx in mapped_games]
+        User.tesera_collection.through.objects.bulk_create(col)
         return redirect('users:user_collections', 'tesera')
     return redirect('users:user_info')
 
@@ -122,6 +120,7 @@ def user_bot_config(request):
             try:
                 geolocation = get_geolocation(form.data.get('address'))
             except EndpointError:
+                
                 return redirect('users:user_bot_config')
             if geolocation:
                 lat_diff = int(form.data.get('radius')) / settings.KM_IN_DEGREE

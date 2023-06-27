@@ -1,9 +1,11 @@
-from django.shortcuts import get_object_or_404, render, redirect
-from django.db.models import Q
-from games.models import Game
-from games.utils import (parse_tesera_response, search_games,
-                         update_game_data)
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, redirect, render
+
+from core.tesera_api import (parse_tesera_response, search_games,
+                             update_game_data)
+
+from .models import Game
 
 
 def game_detail(request, game_slug):
@@ -26,10 +28,9 @@ def game_add(request):
     if search:
         new_games = []
         games_in_base = list(Game.objects.values_list('slug', flat=True))
-        search_result = search_games(search)
-        if search_result:
-            games_data = parse_tesera_response(search_result)
-            print(f'геймз дата: {games_data}')
+        found_games = search_games(search)
+        if found_games:
+            games_data = parse_tesera_response(found_games)
             for game_dataset in games_data:
                 if game_dataset.get('slug') not in games_in_base:
                     new_games.append(Game(**game_dataset))

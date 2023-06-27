@@ -13,6 +13,8 @@ class UserAdmin(admin.ModelAdmin):
         'city',
     )
     search_fields = ('username',)
+    autocomplete_fields = ['liked_games', 'site_collection',
+                           'tesera_collection']
     empty_value_display = '-пусто-'
 
 
@@ -24,6 +26,7 @@ class BotConfigAdmin(admin.ModelAdmin):
         'is_active',
     )
     search_fields = ('user', 'tg_username')
+    autocomplete_fields = ['games']
     empty_value_display = '-пусто-'
 
 

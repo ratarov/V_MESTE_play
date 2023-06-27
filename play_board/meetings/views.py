@@ -1,21 +1,20 @@
 import folium
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from folium.plugins import MarkerCluster
 
-from meetings.exceptions import EndpointError
-from meetings.forms import (CommentForm, GuestForm, MeetingForm,
-                            MeetingSearchForm)
-from meetings.models import (Comment, Meeting, MeetingParticipation,
-                             MeetingStatus)
-from meetings.threads import (NewCommentInformThread,
-                              CancelMeetingInformThread,
-                              NewMeetingInformThread)
-from meetings.utils import add_meeting_marker, filter_meetings
-from services.geolocation import get_geolocation
+from core.exceptions import EndpointError
+from core.geolocation import get_geolocation
 from users.models import User
+
+from .forms import CommentForm, GuestForm, MeetingForm, MeetingSearchForm
+from .models import Comment, Meeting, MeetingParticipation, MeetingStatus
+from .threads import (CancelMeetingInformThread, NewCommentInformThread,
+                      NewMeetingInformThread)
+from .utils import add_meeting_marker, filter_meetings
 
 
 def index(request):
@@ -48,10 +47,7 @@ def meeting_search(request):
 
     if location:
         text = f'Место "{location}" не найдено на карте'
-        try:
-            geolocation = get_geolocation(location)
-        except EndpointError:
-            return redirect('meetings:meeting_search')
+        geolocation = get_geolocation(location)
         if geolocation:
             radius = request.GET.get('radius', settings.DEFAULT_SEARCH_RADIUS)
             meetings = filter_meetings(geolocation, request)

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from games.models import Game
+
+from .models import Game
 
 
 class GameAdmin(admin.ModelAdmin):

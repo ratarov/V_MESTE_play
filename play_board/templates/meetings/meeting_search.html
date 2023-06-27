@@ -48,8 +48,6 @@
       {% if map %}
         {% for meeting in meetings %}
           {% include "meetings/meeting_card.html" %}
-        {% empty %}
-          <p>Подходящих игр не найдено</p>
         {% endfor %}
       {% endif %}
     </div>

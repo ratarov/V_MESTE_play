@@ -6,7 +6,7 @@ from django.db.models import Sum
 from django.urls import reverse
 from django.utils import timezone
 
-from meetings.models import Meeting
+from .models import Meeting
 
 
 def filter_meetings(place, request):

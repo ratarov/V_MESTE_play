@@ -1,11 +1,12 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
+from core.exceptions import EndpointError
+from core.geolocation import get_geolocation
 from games.models import Game
 from meetings.models import Meeting
-from services.exceptions import EndpointError
-from services.geolocation import get_geolocation
-from users.models import Place, User, BotConfig
+
+from .models import BotConfig, Place, User
 
 
 class PlaceForm(forms.ModelForm):
@@ -29,10 +30,6 @@ class PlaceForm(forms.ModelForm):
             location = get_geolocation(f'{city}, {address} {building}')
             cleaned_data['loc_lat'] = location.latitude
             cleaned_data['loc_lon'] = location.longitude
-        except EndpointError:
-            raise forms.ValidationError(
-                'Сервис поиска адресов не работает, попробуйте позже.'
-            )
         except AttributeError:
             raise forms.ValidationError(
                 'Адрес не найден, попробуйте другой. '

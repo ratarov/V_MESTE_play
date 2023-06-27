@@ -1,8 +1,10 @@
 from django import forms
-from meetings.models import Comment, Meeting, MeetingParticipation
-from users.models import Place
-from games.models import Game
 from django.utils import timezone
+
+from games.models import Game
+from users.models import Place
+
+from .models import Comment, Meeting, MeetingParticipation
 
 
 class MeetingSearchForm(forms.ModelForm):

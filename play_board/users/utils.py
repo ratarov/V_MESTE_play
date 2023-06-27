@@ -1,33 +1,7 @@
-import requests
-
 import folium
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Sum
-
-
-USER_DETAIL_URL = 'https://api.tesera.ru/user/'
-COLLECTION_URL = 'https://api.tesera.ru/collections/base/own/'
-
-
-def get_tesera_user(tesera_account):
-    """Получение данных пользователя по нику с сайта tesera.ru"""
-    try:
-        request = requests.get(f'{USER_DETAIL_URL}{tesera_account}/').json()
-    except Exception:
-        print(f'Ошибка при запросе инфо игрока {tesera_account}')
-    if request:
-        return int(request.get('gamesInCollection'))
-    return 0
-
-
-def get_tesera_collection(tesera_account, games_in_col):
-    """Получение данных о коллекции игрока с сайта tesera.ru"""
-    try:
-        return requests.get(
-            f'{COLLECTION_URL}{tesera_account}/?limit={games_in_col}').json()
-    except Exception:
-        print(f'Ошибка при запросе коллекции игрока {tesera_account}')
 
 
 def get_paginated_games(queryset, request):
