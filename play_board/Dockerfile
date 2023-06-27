@@ -1,10 +1,6 @@
 FROM python:3.11-slim
 
-# RUN apt-get update && apt-get -y install libpq-dev gcc python3-dev musl-dev netcat
-RUN apt-get update &&\
-    apt-get upgrade -y
-    # apt-get upgrade -y &&\
-    # apt-get install -y libpq-dev gcc netcat
+RUN apt-get update && apt-get upgrade -y
 
 WORKDIR /app
 
