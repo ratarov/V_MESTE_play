@@ -6,7 +6,6 @@ from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from folium.plugins import MarkerCluster
 
-from core.exceptions import EndpointError
 from core.geolocation import get_geolocation
 from users.models import User
 
@@ -22,21 +21,6 @@ def index(request):
     form = MeetingSearchForm()
     context = {'form': form}
     return render(request, 'meetings/index.html', context)
-
-
-def about(request):
-    """Страница с информацией о проекте"""
-    return render(request, 'meetings/about.html')
-
-
-def help(request):
-    """Страница с описанием, как работать с сайтом"""
-    return render(request, 'meetings/help.html')
-
-
-def agreement(request):
-    """Страница с пользовательским соглашением сайта"""
-    return render(request, 'meetings/agreement.html')
 
 
 def meeting_search(request):
@@ -252,3 +236,18 @@ def comment_del(request, meeting_id, comment_id):
     if comment.creator == request.user:
         comment.delete()
     return redirect('meetings:meeting_detail', meeting_id)
+
+
+def about(request):
+    """Страница с информацией о проекте"""
+    return render(request, 'meetings/about.html')
+
+
+def help(request):
+    """Страница с описанием, как работать с сайтом"""
+    return render(request, 'meetings/help.html')
+
+
+def agreement(request):
+    """Страница с пользовательским соглашением сайта"""
+    return render(request, 'meetings/agreement.html')

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (Comment, Meeting, MeetingStatus,
-                             MeetingParticipation)
+                     MeetingParticipation)
 
 
 class MeetingAdmin(admin.ModelAdmin):

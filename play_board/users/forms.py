@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from core.exceptions import EndpointError
 from core.geolocation import get_geolocation
 from games.models import Game
 from meetings.models import Meeting

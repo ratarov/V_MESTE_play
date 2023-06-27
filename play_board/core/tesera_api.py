@@ -82,29 +82,24 @@ def update_game_data(game):
 
 def get_tesera_collection(tesera_account):
     """Получение данных о коллекции игрока с сайта tesera.ru"""
-    # try:
-    raw_games = []
-    offset, limit = 0, settings.TESERA_GAMES_IN_REQUEST
-    while True:
-        response = requests.get(
-            f'{COLLECTION_URL}{tesera_account}/?offset={offset}&limit={limit}',
-            timeout=TIMEOUT
-        )
-        collection_size = int(response.headers.get('X-Total-Count', 0))
-        games_batch = response.json()
-        raw_games.extend(games_batch)
-        offset += 1
-        if limit * (offset) >= collection_size:
-            break
-    return raw_games
-    # except requests.exceptions.Timeout:
-    #     logger.error('Истек срок ответа api.tesera.ru')
-    # except Exception:
-        # logger.error(f'Ошибка при запросе коллекции игрока {tesera_account}')
-    # return []
-    
-    # try:
-    #     return requests.get(
-    #         f'{COLLECTION_URL}{tesera_account}/?limit=10').json()
-    # except Exception:
-    #     print(f'Ошибка при запросе коллекции игрока {tesera_account}')
+    try:
+        raw_games = []
+        offset, limit = 0, settings.TESERA_GAMES_IN_REQUEST
+        while True:
+            response = requests.get(
+                (f'{COLLECTION_URL}{tesera_account}/'
+                 f'?offset={offset}&limit={limit}'),
+                timeout=TIMEOUT
+            )
+            collection_size = int(response.headers.get('X-Total-Count', 0))
+            games_batch = response.json()
+            raw_games.extend(games_batch)
+            offset += 1
+            if limit * (offset) >= collection_size:
+                break
+        return raw_games
+    except requests.exceptions.Timeout:
+        logger.error('Истек срок ответа api.tesera.ru')
+    except Exception:
+        logger.error(f'Ошибка при запросе коллекции игрока {tesera_account}')
+    return []
