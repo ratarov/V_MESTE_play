@@ -14,6 +14,6 @@ COPY . .
 
 RUN chmod +x run_app.sh
 
-ENTRYPOINT ["/app/run_app.sh"]
+# ENTRYPOINT ["/app/run_app.sh"]
 
 # CMD ["gunicorn", "play_board.wsgi:application", "--bind", "0:8000" ]
