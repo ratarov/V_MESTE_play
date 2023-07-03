@@ -1,7 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Custom 403{% endblock %}
+{% block title %}Ошибка 403{% endblock %}
 {% block content %}
-    <h1>Custom 403</h1>
+  <div class="text-center">
+    <h1 class="display-1">Ошибка 403</h1>
+    <p>Кажется, у Вас нет сюда доступа...</p>
+    Лучше возвращайтесь на <a href="{% url 'meetings:index' %}">главную страницу</a> и поищите новые встречи.
+  </div>  
 {% endblock %}
 
 
