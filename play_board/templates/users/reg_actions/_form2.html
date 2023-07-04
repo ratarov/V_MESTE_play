@@ -4,7 +4,7 @@
   <div class="col-12 col-sm-10 col-xl-6 px-5">
     <div class="card p-3">
       <h3 class="card-title text-center">{{ form_header }}</h3>
-        <div class="card-body">
+        <div class="card-body py-3">
           {% if form.errors %}
             {% for field in form %}
               {% for error in field.errors %}
@@ -43,7 +43,7 @@
                   Регистрируясь, Вы принимаете условия <a href="{% url 'meetings:agreement' %}">Пользовательского соглашения</a>.
                 </small>
               {% endif %}
-            <div class="d-grid gap-2 col-6 mx-auto">
+            <div class="d-grid gap-2 col-10 col-sm-8 col-md-6 mx-auto">
               <button type="submit" class="btn btn-danger">
                 {{ form_button }}
               </button>
@@ -55,7 +55,39 @@
             </div>
           </form>
           
-        </div> 
+        </div>
+        {% if form_header == 'Войти на сайт' %}
+          <div class="card-footer bg-transparent">
+            Продолжить через соц.сети:
+            <a href="#" data-bs-toggle="tooltip" data-bs-title="Default tooltip">
+              как это работает?</a>  
+            <div class="row">
+              <div = class="col-auto">
+              <a href="{% url "social:begin" "vk-oauth2" %}">
+                <img src="{% static 'img/VK_logo.svg' %}"
+                width="36"
+                height="36"
+                class="d-inline-block align-top"
+                alt="">
+              </a>
+            </div>
+            <div = class="col-auto">
+              <a href="{% url "social:begin" "google-oauth2" %}">
+                <img src="{% static 'img/G.png' %}"
+                width="36"
+                height="36"
+                class="d-inline-block align-top"
+                fill="red"
+                alt="">
+              </a>
+            </div>
+          </div>
+          </div>
+          <div class="card-footer bg-transparent">
+            Нет аккаунта на сайте и в соц.сетях?
+            <a href="{% url 'users:signup' %}">Зарегистрируйтесь</a>!
+          </div>
+        {% endif %}
       </div> 
     </div> 
 </div> 

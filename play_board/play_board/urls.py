@@ -11,6 +11,7 @@ urlpatterns = [
     path('adminka/', admin.site.urls),
     path('games/', include('games.urls', namespace='games')),
     path('users/', include('users.urls', namespace='users')),
+    path('users/', include('social_django.urls', namespace='social')),
 
     path('users/reset/<uidb64>/<token>/',
          PasswordResetConfirmView.as_view(
@@ -24,6 +25,7 @@ urlpatterns = [
          PasswordResetCompleteView.as_view(
              template_name='users/reg_actions/password_reset_complete.html'),
          name='password_reset_complete'),
+
 
     path('', include('meetings.urls', namespace='meetings')),
 ]
