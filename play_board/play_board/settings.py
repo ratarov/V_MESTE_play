@@ -32,7 +32,7 @@ INSTALLED_APPS = [
 
     'sorl.thumbnail',
     'debug_toolbar',
-    # 'social_django',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -103,8 +103,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    # 'social_core.backends.vk.VKOAuth2',
-    # 'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.vk.VKOAuth2',
+    'social_core.backends.google.GoogleOAuth2',
 ]
 
 LOGIN_URL = 'users:login'
