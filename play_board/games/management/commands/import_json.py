@@ -4,7 +4,7 @@ from pathlib import Path
 from django.core.management.base import BaseCommand
 
 from games.models import Game
-from games.utils import FIELDS
+from core.tesera_api import FIELDS
 
 
 class Command(BaseCommand):
