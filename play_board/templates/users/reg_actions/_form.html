@@ -1,8 +1,9 @@
 {% load user_filters %}
+{% load static %}
 <div class="row justify-content-center">
-  <div class="col-md-8 p-5">
-    <div class="card">
-      <div class="card-header">{{ form_header }}</div>
+  <div class="col-12 col-sm-10 col-xl-6 px-5">
+    <div class="card p-3">
+      <h3 class="card-title text-center">{{ form_header }}</h3>
         <div class="card-body">
           {% if form.errors %}
             {% for field in form %}
@@ -37,12 +38,12 @@
                   {% endif %}
               </div>
             {% endfor %}
-            <div class="d-grid gap-2 col-6 mx-auto">
-              {% if disclaimer%}
-              <small class="form-text text-muted">
-                Подтверждая регистрацию, Вы соглашаетесь с условиями <a href="{% url 'meetings:agreement' %}">Пользовательского соглашения</a>.
-              </small>
+            {% if disclaimer%}
+                <small class="form-text text-muted">
+                  Регистрируясь, Вы принимаете условия <a href="{% url 'meetings:agreement' %}">Пользовательского соглашения</a>.
+                </small>
               {% endif %}
+            <div class="d-grid gap-2 col-6 mx-auto">
               <button type="submit" class="btn btn-danger">
                 {{ form_button }}
               </button>
