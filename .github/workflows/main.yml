@@ -106,15 +106,6 @@ jobs:
     if: github.ref == 'refs/heads/test'
     steps:
       - uses: actions/checkout@v3
-      - name: copy docker-compose, nginx files via ssh
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.TEST_HOST }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.SSH_KEY }}
-          password: ${{ secrets.PASSPHRASE }}
-          source: "infra-vmeste/*"
-          target: "vmeste/"
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
