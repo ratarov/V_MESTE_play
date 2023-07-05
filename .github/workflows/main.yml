@@ -84,6 +84,10 @@ jobs:
             echo EMAIL_PORT=${{ secrets.EMAIL_PORT }} >> .env
             echo EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }} >> .env
             echo EMAIL_HOST=${{ secrets.EMAIL_HOST }} >> .env
+            echo SOCIAL_AUTH_VK_OAUTH2_KEY=${{ secrets.SOCIAL_AUTH_VK_OAUTH2_KEY }} >> .env
+            echo SOCIAL_AUTH_VK_OAUTH2_SECRET=${{ secrets.SOCIAL_AUTH_VK_OAUTH2_SECRET }} >> .env
+            echo SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY }} >> .env
+            echo SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET }} >> .env
 
             sudo docker-compose stop
             sudo docker rm vmeste-back

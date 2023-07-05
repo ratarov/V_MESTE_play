@@ -4,7 +4,7 @@
   <div class="col-12 col-sm-10 col-xl-6 px-5">
     <div class="card p-3">
       <h3 class="card-title text-center">{{ form_header }}</h3>
-        <div class="card-body py-3">
+        <div class="card-body py-2">
           {% if form.errors %}
             {% for field in form %}
               {% for error in field.errors %}
@@ -59,9 +59,19 @@
         {% if form_header == 'Войти на сайт' %}
           <div class="card-footer bg-transparent">
             Продолжить через соц.сети:
-            <a href="#" data-bs-toggle="tooltip" data-bs-title="Default tooltip">
-              как это работает?</a>  
-            <div class="row">
+                <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                  как это работает?
+                </a>
+              <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                  Мы получаем и сохраняем только следующие данные:<br>
+                  <li>VK - имя (без фамилии) и username на сайте;</li>
+                  <li>Google - имя (без фамилии), эл.почта, фото; username формируется из почты до символа @.</li>
+                  Если username уже занят, к нему добавятся 4 случайных символа.<br>
+                  Вы можете изменить username в личном кабинете 
+                </div>
+              </div>
+            <div class="row py-1">
               <div = class="col-auto">
               <a href="{% url "social:begin" "vk-oauth2" %}">
                 <img src="{% static 'img/VK_logo.svg' %}"

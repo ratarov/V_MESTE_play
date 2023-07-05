@@ -95,6 +95,8 @@ class User(AbstractUser):
     email = models.EmailField(
         verbose_name='Email',
         blank=True,
+        null=True,
+        # unique=True,
     )
     photo = models.ImageField(
         verbose_name='Фото',
