@@ -83,14 +83,20 @@ class BotConfig(models.Model):
 
 class User(AbstractUser):
     username = models.CharField(
-        'username',
+        verbose_name='username',
         max_length=150,
         unique=True,
-        help_text='Обязательное поле: до 50 символов, буквы, цифры, _ и -',
+        help_text='Обязательное поле: буквы, цифры, символы: . @ _ -',
         validators=[username_validator],
         error_messages={
             'unique': "Такой пользователь уже существует",
         },
+    )
+    email = models.EmailField(
+        verbose_name='Email',
+        blank=True,
+        null=True,
+        # unique=True,
     )
     photo = models.ImageField(
         verbose_name='Фото',
@@ -137,14 +143,17 @@ class User(AbstractUser):
     liked_games = models.ManyToManyField(
         Game,
         related_name='liked',
+        blank=True,
     )
     site_collection = models.ManyToManyField(
         Game,
         related_name='collected',
+        blank=True,
     )
     tesera_collection = models.ManyToManyField(
         Game,
         related_name='t_collected',
+        blank=True,
     )
 
     def __str__(self):

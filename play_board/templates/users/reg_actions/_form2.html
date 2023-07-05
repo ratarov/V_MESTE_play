@@ -1,0 +1,103 @@
+{% load user_filters %}
+{% load static %}
+<div class="row justify-content-center">
+  <div class="col-12 col-sm-10 col-xl-6 px-5">
+    <div class="card p-3">
+      <h3 class="card-title text-center">{{ form_header }}</h3>
+        <div class="card-body py-2">
+          {% if form.errors %}
+            {% for field in form %}
+              {% for error in field.errors %}
+                <div class="alert alert-danger">
+                  {{ error|escape }}
+                </div>
+              {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+              <div class="alert alert-danger">
+                {{ error|escape }}
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="post">
+            {% csrf_token %}
+            {% for field in form %} 
+              <div class="form-group row my-3">
+                <label for="{{ field.id_for_label }}">
+                  {{ field.label }}
+                    {% if field.field.required %}
+                      <span class="required text-danger">*</span>
+                    {% endif %}
+                </label>
+                {{ field|addclass:'form-control' }} 
+                  {% if field.help_text %}
+                    <small id="{{ field.id_for_label }}-help" class="form-text text-muted">
+                      {{ field.help_text|safe }}
+                    </small>
+                  {% endif %}
+              </div>
+            {% endfor %}
+            {% if disclaimer%}
+                <small class="form-text text-muted">
+                  Регистрируясь, Вы принимаете условия <a href="{% url 'meetings:agreement' %}">Пользовательского соглашения</a>.
+                </small>
+              {% endif %}
+            <div class="d-grid gap-2 col-10 col-sm-8 col-md-6 mx-auto">
+              <button type="submit" class="btn btn-danger">
+                {{ form_button }}
+              </button>
+              {% if reset %}
+                <a href="{% url 'users:password_reset' %}" class="btn btn-danger">
+                    Забыли пароль?
+                </a>
+              {% endif %}
+            </div>
+          </form>
+          
+        </div>
+        {% if form_header == 'Войти на сайт' %}
+          <div class="card-footer bg-transparent">
+            Продолжить через соц.сети:
+                <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                  как это работает?
+                </a>
+              <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                  Мы получаем и сохраняем только следующие данные:<br>
+                  <li>VK - имя (без фамилии) и username на сайте;</li>
+                  <li>Google - имя (без фамилии), эл.почта, фото; username формируется из почты до символа @.</li>
+                  Если username уже занят, к нему добавятся 4 случайных символа.<br>
+                  Вы можете изменить username в личном кабинете 
+                </div>
+              </div>
+            <div class="row py-1">
+              <div = class="col-auto">
+              <a href="{% url "social:begin" "vk-oauth2" %}">
+                <img src="{% static 'img/VK_logo.svg' %}"
+                width="36"
+                height="36"
+                class="d-inline-block align-top"
+                alt="">
+              </a>
+            </div>
+            <div = class="col-auto">
+              <a href="{% url "social:begin" "google-oauth2" %}">
+                <img src="{% static 'img/G.png' %}"
+                width="36"
+                height="36"
+                class="d-inline-block align-top"
+                fill="red"
+                alt="">
+              </a>
+            </div>
+          </div>
+          </div>
+          <div class="card-footer bg-transparent">
+            Нет аккаунта на сайте и в соц.сетях?
+            <a href="{% url 'users:signup' %}">Зарегистрируйтесь</a>!
+          </div>
+        {% endif %}
+      </div> 
+    </div> 
+</div> 
