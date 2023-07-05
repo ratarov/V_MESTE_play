@@ -11,3 +11,4 @@ psycopg2-binary
 pyTelegramBotAPI==4.10.0
 sentry-sdk
 gunicorn==20.1.0
+social-auth-app-django==5.2.0
