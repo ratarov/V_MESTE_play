@@ -103,7 +103,7 @@ jobs:
   deploy_to_test_server:
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
-    if: github.ref == 'test'
+    if: github.ref == 'refs/heads/test'
     steps:
       - uses: actions/checkout@v3
       - name: copy docker-compose, nginx files via ssh
