@@ -11,7 +11,7 @@ urlpatterns = [
     path('adminka/', admin.site.urls),
     path('games/', include('games.urls', namespace='games')),
     path('users/', include('users.urls', namespace='users')),
-    # path('users/', include('social_django.urls', namespace='social')),
+    path('users/', include('social_django.urls', namespace='social')),
 
     path('users/reset/<uidb64>/<token>/',
          PasswordResetConfirmView.as_view(
