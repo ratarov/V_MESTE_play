@@ -4,6 +4,7 @@ from pathlib import Path
 import sentry_sdk
 from dotenv import load_dotenv
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.logging import ignore_logger
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR.parent, 'infra-vmeste/.env'), verbose=True)
@@ -204,5 +205,6 @@ if not DEBUG:
             DjangoIntegration(),
         ],
         traces_sample_rate=1.0,
-        send_default_pii=True
+        send_default_pii=True,
     )
+    ignore_logger("django.security.DisallowedHost")
