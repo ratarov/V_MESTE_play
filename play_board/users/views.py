@@ -70,27 +70,28 @@ def user_info_edit(request):
 @login_required
 def update_tesera_collection(request):
     """Функция обновления списка игр в коллекции на сайте tesera.ru"""
-    if request.user.tesera_account:
-        collection_raw = get_tesera_collection(request.user.tesera_account)
-        collection_dataset = parse_tesera_response(collection_raw)
-        request.user.tesera_collection.clear()
-        new_games = []
-        games_in_collection = []
-        games_in_base = list(Game.objects.values_list('slug', flat=True))
-        for game_dataset in collection_dataset:
-            slug = game_dataset.get('slug')
-            if slug not in games_in_base:
-                new_games.append(Game(**game_dataset))
-            games_in_collection.append(slug)
-        Game.objects.bulk_create(new_games)
-        games_in_base = dict(Game.objects.values_list('slug', 'id'))
-        mapped_games = map(lambda x: games_in_base.get(x),
-                           games_in_collection)
-        col = [User.tesera_collection.through(
-            user_id=request.user.id, game_id=xxx) for xxx in mapped_games]
-        User.tesera_collection.through.objects.bulk_create(col)
+    if not request.user.tesera_account:
+        return redirect('users:user_info')
+    collection_raw = get_tesera_collection(request.user.tesera_account)
+    if not collection_raw:
         return redirect('users:user_collections', 'tesera')
-    return redirect('users:user_info')
+    collection_dataset = parse_tesera_response(collection_raw)
+    request.user.tesera_collection.clear()
+    new_games = []
+    games_in_collection = []
+    games_in_base = list(Game.objects.values_list('slug', flat=True))
+    for game_dataset in collection_dataset:
+        slug = game_dataset.get('slug')
+        if slug not in games_in_base:
+            new_games.append(Game(**game_dataset))
+        games_in_collection.append(slug)
+    Game.objects.bulk_create(new_games)
+    games_in_base = dict(Game.objects.values_list('slug', 'id'))
+    mapped_games = map(lambda x: games_in_base.get(x), games_in_collection)
+    col = [User.tesera_collection.through(
+        user_id=request.user.id, game_id=xxx) for xxx in mapped_games]
+    User.tesera_collection.through.objects.bulk_create(col)
+    return redirect('users:user_collections', 'tesera')
 
 
 @login_required

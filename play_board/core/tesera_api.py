@@ -1,4 +1,5 @@
 import logging
+from http import HTTPStatus
 
 import requests
 from django.conf import settings
@@ -91,6 +92,9 @@ def get_tesera_collection(tesera_account):
                  f'?offset={offset}&limit={limit}'),
                 timeout=TIMEOUT
             )
+            if response.status_code != HTTPStatus.OK:
+                logger.error(f'Статус от tesera.ru {response.status_code}')
+                break
             collection_size = int(response.headers.get('X-Total-Count', 0))
             games_batch = response.json()
             raw_games.extend(games_batch)

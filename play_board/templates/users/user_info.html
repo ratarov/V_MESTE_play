@@ -31,6 +31,13 @@
       </p>
     <div class="row mb-3">
       <div class="col-3">
+        <span class="text-muted">Username:</span>
+      </div>
+      <div class="col-9">
+        {{ user.username }}
+      </div>
+
+      <div class="col-3">
         <span class="text-muted">Имя:</span>
       </div>
       <div class="col-9">
@@ -43,7 +50,9 @@
         <span class="text-muted">E-mail:</span>
       </div>
       <div class="col-9">
-        {{ user.email }}
+        {% if user.email %}
+          {{ user.email }}
+        {% endif %}
       </div>  
       <div class="col-3">
         <span class="text-muted">Страна:</span>

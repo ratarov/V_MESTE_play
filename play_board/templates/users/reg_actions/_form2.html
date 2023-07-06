@@ -57,21 +57,22 @@
           
         </div>
         {% if form_header == 'Войти на сайт' %}
-          <div class="card-footer bg-transparent">
-            Продолжить через соц.сети:
-                <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+          <div class="card-footer bg-transparent text-center">
+            Войти через соц.сети:
+                <a class="text-muted" data-bs-toggle="collapse" href="#howitworks" role="button" aria-expanded="false" aria-controls="howitworks">
                   как это работает?
                 </a>
-              <div class="collapse" id="collapseExample">
-                <div class="card card-body">
-                  Мы получаем и сохраняем только следующие данные:<br>
+              <div class="collapse text-start" id="howitworks">
+                {% comment %} <div class="card card-body text-start"> {% endcomment %}
+                <small>  Мы получаем и сохраняем только следующие данные:<br>
                   <li>VK - имя (без фамилии) и username на сайте;</li>
-                  <li>Google - имя (без фамилии), эл.почта, фото; username формируется из почты до символа @.</li>
+                  <li>Google - имя (без фамилии) и эл.почта; username формируется из почты до символа @.</li>
                   Если username уже занят, к нему добавятся 4 случайных символа.<br>
-                  Вы можете изменить username в личном кабинете 
-                </div>
+                  Вы можете изменить username в личном кабинете.
+                </small>
+                  {% comment %} </div> {% endcomment %}
               </div>
-            <div class="row py-1">
+            <div class="row py-1 justify-content-center">
               <div = class="col-auto">
               <a href="{% url "social:begin" "vk-oauth2" %}">
                 <img src="{% static 'img/VK_logo.svg' %}"
@@ -93,7 +94,7 @@
             </div>
           </div>
           </div>
-          <div class="card-footer bg-transparent">
+          <div class="card-footer bg-transparent text-center">
             Нет аккаунта на сайте и в соц.сетях?
             <a href="{% url 'users:signup' %}">Зарегистрируйтесь</a>!
           </div>

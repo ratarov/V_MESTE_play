@@ -39,7 +39,7 @@ class PlaceForm(forms.ModelForm):
 class UserInfoForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('photo', 'first_name', 'last_name', 'email',
+        fields = ('photo', 'username', 'first_name', 'last_name', 'email',
                   'country', 'city', 'about', 'telegram', 'tesera_account',
                   'bgg_account')
         widgets = {'about': forms.Textarea(attrs={

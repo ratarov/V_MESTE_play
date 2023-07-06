@@ -14,12 +14,12 @@
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {% for field in form %}
-        {% for error in field.errors %} <i>{{ error|escape }}</i> {% endfor %}
+        {% for error in field.errors %} <mark><i>{{ error|escape }}</i></mark> {% endfor %}
       {% endfor %}
       <div class="form-group row my-3">
         <div class="col-12 col-md-2 mb-1">
           {% if user.photo %}
-            {% thumbnail user.photo "100x100" crop="center" as photo %}
+            {% thumbnail user.photo "140x140" crop="center" as photo %}
               <img class="img-fluid rounded mx-auto" src="{{ photo.url }}">
             {% endthumbnail %}
           {% else %}
@@ -34,6 +34,13 @@
           </small> 
         </div>
         <div class="col-12 col-md-12 mb-1">
+        </div>
+        <div class="col-12 col-md-8 mb-1">
+          <label class="form-label"><b>Username</b></label>
+          {{ form.username|addclass:'form-control' }}
+          <small class="form-text text-muted">Видно другим игрокам</small> 
+        </div>
+        <div class="col-md-12 mb-1"> 
         </div>
         <div class="col-6 col-md-4 mb-1">
           <label class="form-label"><b>Имя</b></label>

@@ -25,7 +25,7 @@
                active {% endif %}" aria-current="page" 
                href="{% url 'meetings:meeting_search' %}"
               >
-                Поиск
+                Встречи
               </a>
 						</li>
             <li class="nav-item">
@@ -63,13 +63,6 @@
                 active {% endif %}" aria-current="page" href="{% url 'users:login' %}"
                 >
                   Войти
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% if view_name == 'users:signup' %} 
-                active {% endif %}" aria-current="page" href="{% url 'users:signup' %}"
-                >
-                  Регистрация
                 </a>
               </li>
             {% endif %}
