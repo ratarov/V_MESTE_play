@@ -96,8 +96,8 @@ jobs:
             sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/vmeste_back
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vmeste_back:latest
             sudo docker-compose up -d --build
-            sudo docker exec -it vmeste-back python manage.py collectstatic --no-input
-            sudo docker exec -it vmeste-back python manage.py migrate
+            sudo docker exec -i vmeste-back python manage.py collectstatic --no-input
+            sudo docker exec -i vmeste-back python manage.py migrate
             sudo docker exec -d vmeste-back python manage.py start_bot
 
   deploy_to_test_server:
@@ -143,5 +143,5 @@ jobs:
             sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/vmeste_back
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vmeste_back:latest
             sudo docker-compose up -d --build
-            sudo docker exec -it vmeste-back python manage.py collectstatic --no-input
-            sudo docker exec -it vmeste-back python manage.py migrate
+            sudo docker exec vmeste-back python manage.py migrate
+            sudo docker exec vmeste-back python manage.py collectstatic --no-input
