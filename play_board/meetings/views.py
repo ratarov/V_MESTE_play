@@ -129,12 +129,12 @@ def meeting_edit(request, meeting_id):
 
     meeting_form = MeetingForm(user=request.user, data=request.POST or None,
                                instance=meeting)
-    participation = meeting.participants.get(player=request.user)
     if meeting_form.is_valid():
         meeting = meeting_form.save(commit=False)
         meeting.save()
         meeting.games.clear()
         meeting.games.set(meeting_form.data.getlist('games'))
+        participation = meeting.participants.get(player=request.user)
         participation.guests = meeting_form.data.get('guests')
         participation.save()
         return redirect('meetings:meeting_detail', meeting.id)

@@ -13,9 +13,9 @@
       </p>
       <form method="post">
         {% csrf_token %}
-        <i>{{ form.non_field_errors }}</i>
+        <mark>{{ form.non_field_errors }}</mark>
         {% for field in form %}
-          {% for error in field.errors %} <i>{{ error|escape }}</i> {% endfor %}
+          {% for error in field.errors %} <mark>{{ error|escape }}</mark> {% endfor %}
         {% endfor %}
         <div class="form-group row my-3">
           <div class="col-12 col-md-4 mb-1">

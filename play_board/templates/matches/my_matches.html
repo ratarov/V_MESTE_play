@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+{% load user_filters %}
+{% block title %}Мои партии{% endblock %}
+{% block content %}
+  <div class="row border rounded shadow-sm bg-white mb-3">
+    <div class="col-12 mb-3">
+      <p>
+        <h4>Мои партии</h4>
+        <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:create_new_match' %}">
+          Записать партию
+        </a>
+      </p>
+
+      {% for match in matches %}
+      <p>
+        {{ match.date }} - {{ match.creator }} - {{ match.game }} - {{ match.players.count }}
+        <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:create_from_match' match.id %}">
+          Повторить
+        </a>
+        <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:match_edit' match.id %}">
+          Изменить
+        </a>
+        <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:match_delete' match.id %}">
+          Удалить
+        </a>
+      </p>
+      {% endfor %}
+    </div>
+
+    
+  </div>
+  
+{% endblock %}

@@ -1,0 +1,56 @@
+<div hx-target="this" hx-swap="outerHTML">
+  <div class="list-group-item list-group-item-action py-3 lh-sm">
+    
+    <div class="row">
+      
+      <div class="col-6 col-md-6">
+        <div class="row ">
+          <div class="col-12 col-md-6 d-flex align-items-center">
+            <strong>
+              {{ player.name }}
+                
+              {% if player.user %}
+                  <a class="btn btn-outline-dark btn-sm" href="{% url 'users:profile' player.user %}" 
+                  title="Перейти на страницу игрока">
+                      {{ player.user }}
+                  </a>
+              {% endif %}
+            </strong>
+          </div>
+          <div class="col-12 col-md-6 d-flex align-items-center">
+              {% if player.team %}
+                {{ player.team }}
+              {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-2 col-md-1 d-flex align-items-center">
+        {% if player.winner %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" class="bi bi-trophy-fill" viewBox="0 0 16 16">
+            <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935z"/>
+          </svg>
+        {% endif %}
+      </div>
+      <div class="col-2 col-md d-flex align-items-center">
+        {% if player.score %}
+          {{ player.score }}
+        {% endif %}
+      </div>
+
+      <div class="col-1 col-md-auto d-md-flex gap-2 text-center">
+        <button class="btn btn-danger btn-sm d-flex gap-2" hx-get="{% url 'matches:player_edit' player.id %}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+              <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+            </svg><small class="d-none d-md-block">Изменить</small>
+        </button>
+        <button class="btn btn-dark btn-sm d-flex gap-2" hx-get="{% url 'matches:player_delete' player.id %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+              </svg><small class="d-none d-md-block">Удалить</small>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

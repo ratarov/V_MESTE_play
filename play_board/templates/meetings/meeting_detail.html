@@ -7,7 +7,13 @@
   <div class="row border rounded shadow-sm bg-white mb-3">
     <div class="col-12 mb-3">
       <p>
-        <h4>Встреча "{{ meeting.get_name }}" <button class="btn-sm btn-danger" id="copy-link-btn">Ссылка на встречу</button></h4>
+        <h4>
+          Встреча "{{ meeting.get_name }}" <br>
+          <button class="btn btn-sm btn-danger" id="copy-link-btn">Ссылка на встречу</button>
+          <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:create_from_meeting' meeting.id %}">
+            Записать партию
+          </a>
+        </h4>
         <small class="text-muted">Статус встречи: <b>{{ meeting.status }}</b></small>
       </p>
       {% if meeting.status.id == 1 %}
@@ -46,7 +52,7 @@
         {% else %}
           <form method="post">
             {% csrf_token %}
-            {% for error in guests_form.guests.errors %} <i>{{ error|escape }}</i> {% endfor %}
+            {% for error in guests_form.guests.errors %} <mark>{{ error|escape }}</mark> {% endfor %}
             <div class="row">
               <div class='col-auto'>
                 {% if participation %}

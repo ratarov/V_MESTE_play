@@ -4,9 +4,10 @@ from .models import (Comment, Meeting, MeetingStatus,
                      MeetingParticipation)
 
 
+@admin.register(Meeting)
 class MeetingAdmin(admin.ModelAdmin):
     list_display = (
-        'pk',
+        'id',
         'status',
         'start_date',
         'creator',
@@ -18,9 +19,10 @@ class MeetingAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
+@admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = (
-        'pk',
+        'id',
         'creator',
         'created',
         'meeting',
@@ -28,8 +30,10 @@ class CommentAdmin(admin.ModelAdmin):
     )
 
 
+@admin.register(MeetingParticipation)
 class MeetingParticipationAdmin(admin.ModelAdmin):
     list_display = (
+        'id',
         'meeting',
         'player',
         'guests',
@@ -37,7 +41,8 @@ class MeetingParticipationAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(Meeting, MeetingAdmin)
-admin.site.register(Comment, CommentAdmin)
-admin.site.register(MeetingStatus)
-admin.site.register(MeetingParticipation, MeetingParticipationAdmin)
+@admin.register(MeetingStatus)
+class MeetingStatusAdmin(admin.ModelAdmin):
+    list_display = (
+        'id', 'name'
+    )

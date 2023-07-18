@@ -1,0 +1,109 @@
+{% load user_filters %}
+<div hx-target="this" hx-swap="outerHTML">
+    <div class="list-group-item list-group-item-action py-3 lh-sm">
+      <form method='POST'>
+        {% csrf_token %}
+        <i>{{ player_form.non_field_errors }}</i>
+        {% for field in player_form %}
+          {% for error in field.errors %} <i>{{ error|escape }}</i> {% endfor %}
+        {% endfor %}
+
+    
+        <div class="row">
+          
+          <div class="col-6 col-md-2">
+            <small class="form-label">Имя</small>
+            {{ player_form.name }}
+          </div>
+          <div class="col-6 col-md-2">
+            <small class="form-label">Username</small>
+            {{ player_form.username }}
+
+            <datalist>
+              {% for user in users %}
+                <option value="{{ user.username }}"></option>
+              {% endfor %}
+            </datalist>
+          </div>
+          <div class="col-6 col-md-2">
+            <small class="form-label">Команда</small>
+            {{ player_form.team }}
+          </div>
+          <div class="col-3 col-md-2">
+            <small class="form-label">Очки</small>
+            {{ player_form.score }}
+          </div>
+          <div class="col-3 col-md">
+            <small>Выиграл</small><br>
+            {{ player_form.winner|addclass:'form-check-input' }}
+          </div>
+
+          <div class="col-1 col-md-auto d-md-flex gap-2 text-center align-items-end">
+            
+            <button class="btn btn-sm btn-danger" 
+              {% if player %} hx-post="{% url 'matches:player_edit' player.id %}"
+              {% else %} hx-post="."
+              {% endif %}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+              </svg><small class="d-none d-md-block">Сохранить</small>
+            </button>    
+          </div>
+
+
+          {% comment %} <div class="col-6 col-md-8">
+            <div class="row">
+              <div class="col-12 col-md-7">
+                  {{ player_form.name }}
+                    
+                  {{ player_form.username }}
+              </div>
+              <div class="col-12 col-md-5">
+                  {{ player_form.team }}
+              </div>
+            </div>
+          </div>
+    
+          <div class="col-4 col-md-2">
+            {{ player_form.winner }}
+
+            {{ player_form.score }}
+          </div> {% endcomment %}
+          
+
+        </div>
+      </form>
+
+
+
+    {% comment %} <div class="card mb-3">
+        <div class="card-body">
+    <form method='POST'>
+        {% csrf_token %}
+        {{ player_form.as_p }}
+
+        {% if player %}
+        <button class="btn btn-sm btn-danger" hx-post="{% url 'matches:player_edit' player.id %}">Изменить</button>
+        {% else %}
+        <button class="btn btn-sm btn-danger" hx-post=".">Сохранить</button>
+        {% endif %}
+    </form>
+</div>
+</div> {% endcomment %}
+</div>
+
+<script>
+
+
+  $(document).ready(function() {
+    $('.user-select').select2({
+      placeholder: 'Введите ник',
+      language: 'rus',
+      minimumInputLength: 1,
+      allowClear: true,
+      width: '100%',
+    });
+    });
+
+</script>

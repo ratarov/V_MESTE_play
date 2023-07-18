@@ -14,7 +14,7 @@
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {% for field in form %}
-        {% for error in field.errors %} <mark><i>{{ error|escape }}</i></mark> {% endfor %}
+        {% for error in field.errors %} <mark>{{ error|escape }}</mark> {% endfor %}
       {% endfor %}
       <div class="form-group row my-3">
         <div class="col-12 col-md-2 mb-1">
