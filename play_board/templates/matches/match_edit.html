@@ -17,11 +17,11 @@
             Изменение партии в {{ match.game }}
           {% endif %}
         </h4></p>
-        <button class="btn btn-danger btn-sm" type="submit">Сохранить</button>
+        <button class="btn btn-danger btn-sm" type="submit">Сохранить партию</button>
 
-        <mark>{{ match_form.non_field_errors }}</mark>
+        <u>{{ match_form.non_field_errors }}</u>
         {% for field in match_form %}
-          {% for error in field.errors %} <mark>{{ error|escape }}</mark> {% endfor %}
+          {% for error in field.errors %} <u>{{ error|escape }}</u> {% endfor %}
         {% endfor %}
         <div class="form-group row my-3">
           <div class="col-12 col-md-4 mb-1">

@@ -9,24 +9,192 @@
       <p>
         <h4>Мои партии</h4>
         <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:create_new_match' %}">
-          Записать партию
+          Новая партия
         </a>
       </p>
 
-      {% for match in matches %}
-      <p>
-        {{ match.date }} - {{ match.creator }} - {{ match.game }} - {{ match.players.count }}
-        <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:create_from_match' match.id %}">
-          Повторить
-        </a>
-        <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:match_edit' match.id %}">
-          Изменить
-        </a>
-        <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:match_delete' match.id %}">
-          Удалить
-        </a>
-      </p>
-      {% endfor %}
+      <div class="col-12 mb-3">
+
+        <div class="list-group list-group-flush border-bottom scrollarea">
+          <div class="list-group-item list-group-item-secondary py-3 lh-sm" >
+            <div class="row d-flex align-items-center">
+              <div class="col-auto text-center" style="width: 3rem">
+                <strong>
+                  Статус
+                </strong>
+              </div>
+              <div class="col-6 col-md-9">
+                <div class="row ">
+                  <div class="col-12 col-md-4 d-flex align-items-center">
+                    <strong>
+                      Игра
+                    </strong>
+                  </div>
+                  <div class="col-12 col-md-2 d-flex align-items-center">
+                    <strong>
+                      Дата
+                    </strong>
+                  </div>
+                  <div class="col-12 col-md-4 d-flex align-items-center">
+                    <strong>
+                      Место
+                    </strong>
+                  </div>
+                  <div class="col-12 col-md-2 d-flex align-items-center">
+                    <strong>
+                      Игроки
+                    </strong>
+                  </div>
+                </div>
+              </div>
+        
+              <div class="col-4 col-md d-flex">
+                <strong>
+                  Действия
+                </strong>
+              </div>
+        
+              <div class="col-1 col-md-auto d-md-flex gap-2">
+
+              </div>
+            </div>
+          </div>
+          {% for match in matches %}
+          <div class="list-group list-group-flush border-bottom scrollarea">
+            <div class="list-group-item list-group-item py-3 lh-sm" >
+              <div class="row d-flex align-items-center">
+                <div class="col-auto" style="width: 3rem">
+                  {% if match.status == 'ok' %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="green" class="bi bi-check-square-fill" viewBox="0 0 16 16">
+                    <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z"/>
+                  </svg>
+                  {% elif match.status == 'draft' %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="yellow" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                    <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
+                  </svg>
+                  {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="red" class="bi bi-x-square-fill" viewBox="0 0 16 16">
+                    <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708z"/>
+                  </svg>
+                  {% endif %}
+                </div>
+                <div class="col-6 col-md-9">
+                  <div class="row ">
+                    <div class="col-12 col-md-4 d-flex align-items-center">
+                      <strong>
+                        Игра
+                      </strong>
+                    </div>
+                    <div class="col-12 col-md-2 d-flex align-items-center">
+                      <strong>
+                        Дата
+                      </strong>
+                    </div>
+                    <div class="col-12 col-md-4 d-flex align-items-center">
+                      <strong>
+                        Место
+                      </strong>
+                    </div>
+                    <div class="col-12 col-md-2 d-flex align-items-center">
+                      <strong>
+                        Игроки
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+          
+                <div class="col-4 col-md d-flex">
+                  <strong>
+                    Действия
+                  </strong>
+                </div>
+          
+                <div class="col-1 col-md-auto d-md-flex gap-2">
+  
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+
+
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle table-borderless">
+          <thead>
+            <tr>
+              <th scope="col" width="60">Статус</th>
+              <th scope="col">Игра</th>
+              <th scope="col">Дата</th>
+              <th scope="col">Место</th>
+              <th scope="col">Игроки</th>
+              <th scope="col">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for match in matches %}
+            <tr>
+              <td>
+                {% if match.status == 'ok' %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="green" class="bi bi-check-square-fill" viewBox="0 0 16 16">
+                  <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm10.03 4.97a.75.75 0 0 1 .011 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.75.75 0 0 1 1.08-.022z"/>
+                </svg>
+                {% elif match.status == 'draft' %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="yellow" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                  <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
+                </svg>
+                {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="red" class="bi bi-x-square-fill" viewBox="0 0 16 16">
+                  <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708z"/>
+                </svg>
+                {% endif %}
+              </td>
+              <td>
+                {{ match.game }}
+              </td>
+              <td>
+                {{ match.date|date:"j b" }}
+              </td>
+              <td>
+                {{ match.place }}
+              </td>
+
+              <td>
+                {{ match.players.count }}
+              </td>
+              <td>
+                <a class="btn btn-sm btn-danger" href="{% url 'matches:create_from_match' match.id %}" title="Повторить">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                  </svg>
+                </a>
+                <a class="btn btn-sm btn-danger" href="{% url 'matches:match_detail' match.id %}" title="Детали">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                    <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                  </svg>
+                </a>
+                <a class="btn btn-sm btn-danger" href="{% url 'matches:match_edit' match.id %}" title="Изменить">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                  </svg>
+                </a>
+                <a class="btn btn-sm btn-danger" href="{% url 'matches:match_delete' match.id %}" title="Удалить">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                  </svg>
+                </a>
+              </td>
+              
+            </tr>
+            {% empty %} <i>Партий не найдено</i>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
     </div>
 
     

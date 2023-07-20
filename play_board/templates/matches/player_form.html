@@ -3,9 +3,9 @@
     <div class="list-group-item list-group-item-action py-3 lh-sm">
       <form method='POST'>
         {% csrf_token %}
-        <i>{{ player_form.non_field_errors }}</i>
+        <u>{{ player_form.non_field_errors }}</u>
         {% for field in player_form %}
-          {% for error in field.errors %} <i>{{ error|escape }}</i> {% endfor %}
+          {% for error in field.errors %} <u>{{ error|escape }}</u> {% endfor %}
         {% endfor %}
 
     
@@ -25,11 +25,11 @@
               {% endfor %}
             </datalist>
           </div>
-          <div class="col-6 col-md-2">
+          <div class="col-4 col-md-2">
             <small class="form-label">Команда</small>
             {{ player_form.team }}
           </div>
-          <div class="col-3 col-md-2">
+          <div class="col-2 col-md-2">
             <small class="form-label">Очки</small>
             {{ player_form.score }}
           </div>
@@ -38,15 +38,16 @@
             {{ player_form.winner|addclass:'form-check-input' }}
           </div>
 
-          <div class="col-1 col-md-auto d-md-flex gap-2 text-center align-items-end">
+          <div class="col-3 col-md-auto d-flex gap-2 text-center align-items-end justify-content-end">
             
-            <button class="btn btn-sm btn-danger" 
+            <button class="btn btn-sm btn-danger d-flex gap-2" 
               {% if player %} hx-post="{% url 'matches:player_edit' player.id %}"
               {% else %} hx-post="."
               {% endif %}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
               </svg><small class="d-none d-md-block">Сохранить</small>
             </button>    
           </div>

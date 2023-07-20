@@ -52,7 +52,7 @@
         {% else %}
           <form method="post">
             {% csrf_token %}
-            {% for error in guests_form.guests.errors %} <mark>{{ error|escape }}</mark> {% endfor %}
+            {% for error in guests_form.guests.errors %} <u>{{ error|escape }}</u> {% endfor %}
             <div class="row">
               <div class='col-auto'>
                 {% if participation %}

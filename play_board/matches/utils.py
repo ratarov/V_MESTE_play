@@ -43,6 +43,7 @@ def create_from_match(creator, match_id):
     match = get_object_or_404(Match, id=match_id)
     old_players = match.players.all()
     match.pk = None
+    match.status = Match.Status.DRAFT
     match.save()
     players = [Player(
         match=match, name=player.name, user=player.user, team=player.team

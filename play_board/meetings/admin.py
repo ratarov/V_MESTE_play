@@ -4,8 +4,13 @@ from .models import (Comment, Meeting, MeetingStatus,
                      MeetingParticipation)
 
 
+class ParticipationAdmin(admin.TabularInline):
+    model = MeetingParticipation
+
+
 @admin.register(Meeting)
 class MeetingAdmin(admin.ModelAdmin):
+    inlines = (ParticipationAdmin,)
     list_display = (
         'id',
         'status',

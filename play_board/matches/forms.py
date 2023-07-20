@@ -1,8 +1,4 @@
-from typing import Any, Dict, Mapping, Optional, Type, Union
 from django import forms
-from django.core.files.base import File
-from django.db.models.base import Model
-from django.forms.utils import ErrorList
 from django.utils import timezone
 
 from users.models import User
@@ -59,14 +55,15 @@ class PlayerForm(forms.ModelForm):
     def clean_user(self):
         user = None
         if self.data.get('username'):
-            user = User.objects.filter(username=self.data.get('username')).first()
+            user = User.objects.filter(
+                username=self.data.get('username')).first()
             if not user:
-                raise forms.ValidationError('Такой пользователь не зарегистрирован')
+                raise forms.ValidationError('Нет такого пользователя')
         return user
 
 
 class MatchForm(forms.ModelForm):
-    
+
     date = forms.DateField(
         initial=timezone.now(),
         widget=forms.DateInput(
@@ -84,7 +81,8 @@ class MatchForm(forms.ModelForm):
 
     class Meta:
         model = Match
-        fields = ('date', 'game', 'place', 'type', 'quantity', 'length', 'comments', 'ignore', 'incomplete', 'status')
+        fields = ('date', 'game', 'place', 'type', 'quantity', 'length',
+                  'comments', 'ignore', 'incomplete', 'status')
         widgets = {'comments': forms.Textarea(attrs={
             'rows': '3', 'class': 'form-control',
         })}
@@ -94,7 +92,9 @@ class MatchForm(forms.ModelForm):
         self.fields['place'] = forms.ChoiceField(choices=self.get_places())
 
     def get_places(self):
-        places = list(self.instance.creator.places.values_list('name', flat=True))
+        places = list(
+            self.instance.creator.places.values_list('name', flat=True)
+        )
         default = [
             ('квартира/дом', 'квартира/дом'),
             ('клуб/антикафе', 'клуб/антикафе'),

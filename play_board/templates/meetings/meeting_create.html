@@ -9,9 +9,9 @@
       <p><h4>Вы создаете новую встречу:</h4></p>       
       <form method="post">
         {% csrf_token %}
-        <mark>{{ meeting_form.non_field_errors }}</mark>
+        <u>{{ meeting_form.non_field_errors }}</u>
         {% for field in meeting_form %}
-          {% for error in field.errors %} <mark>{{ error|escape }}</mark> {% endfor %}
+          {% for error in field.errors %} <u>{{ error|escape }}</u> {% endfor %}
         {% endfor %}
         <div class="form-group row my-3">
           <div class="col-12 col-md-4 mb-1">
@@ -37,7 +37,7 @@
             {{ meeting_form.games }}
             <small class="form-text text-muted">
               Выберите одну или несколько игр из списка. Не нашли игру? 
-              <a href='{% url 'games:game_add' %}'>Добавьте в 1 клик!</a>
+              <a href="{% url 'games:game_add' %}">Добавьте в 1 клик!</a>
             </small>
           </div>
           <div class="col-6 col-md-4 mb-1">

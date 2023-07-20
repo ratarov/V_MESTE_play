@@ -18,27 +18,19 @@
 			href="{% static 'img/fav/favicon-16x16.png' %}">
 		<link rel="stylesheet" href="{% static 'css/base.css' %}">
 		<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+		<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 		<script src="{% static 'js/bootstrap.bundle.js' %}"></script>
 		<script src="{% static 'js/htmx.min.js' %}"></script>
-		<meta name="theme-color" content="#7952b3">
+		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 		<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 		<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+		<meta name="theme-color" content="#7952b3">
 
     <style type="text/css">
-      body{
-        position: relative;
-      }
-      main{
-          margin-bottom: 100px;
-      }
-      .footer-bs{
-          position: absolute;
-          width: 100%;
-          min-height: 70px;
-          bottom: 0px;
-          left: 0;
-      }
+
+		
     </style>
     <title>
 			{% block title %}Тут должен быть заголовок{% endblock %}
@@ -49,43 +41,25 @@
 	<body class="d-flex flex-column min-vh-100" style="background-color: #FFFAFA;">
 		{% include 'includes/header.html' %}
 		<div id="wrap">
-		<main >
-			<div class="container py-5">
-			{% block content %}Контента нет, но будет{% endblock %}
-			</div>
-			<div class="row">
+
+		<main>	
+			<div class="container py-4">
+				<div class="row">
+					<div class="d-none d-md-block col-md-2 width" style="width: 13rem">
+						{% include 'includes/sidebar.html' %}
+					</div>	
+					<div class="col-12 col-md">
+					{% block content %}Контента нет, но будет{% endblock %}
+					</div>	
+				</div>
+			
 			</div>
 			
 		</main>
 		</div>
 		{% include 'includes/footer.html' %}
 	
-		<script>
-			$(document).ready(function() {
-			$('.game-select').select2({
-				placeholder: 'Введите название игры',
-				language: 'rus',
-				minimumInputLength: 1,
-				allowClear: true,
-				width: '100%',
-				class: 'form-control',
-			});
-			});
-
-			$(document).ready(function() {
-				$('.user-select').select2({
-					placeholder: 'Введите игрока',
-					language: 'rus',
-					minimumInputLength: 1,
-					allowClear: true,
-					width: '100%',
-				});
-				});
-
-			document.body.addEventListener('htmx:configRequest', (event) => {
-				event.detail.headers['X-CSRFToken'] = '{{ csrf_token}}';
-			})
-		</script>
+		<script src="{% static 'js/base.js' %}"></script>
 	</body>
 
 

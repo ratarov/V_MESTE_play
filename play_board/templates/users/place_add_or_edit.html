@@ -2,7 +2,7 @@
 {% load user_filters %}
 {% block title %}Добавить/редактировать место{% endblock %}
 {% block content %}
-  <div class="row border-start border-end border-bottom rounded shadow-sm bg-white mb-3">
+  <div class="row border rounded shadow-sm bg-white mb-3">
     <div class="col-12 col-md-12">
       <p>
         <h4>
@@ -13,9 +13,9 @@
       </p>
       <form method="post">
         {% csrf_token %}
-        <mark>{{ form.non_field_errors }}</mark>
+        <u>{{ form.non_field_errors }}</u>
         {% for field in form %}
-          {% for error in field.errors %} <mark>{{ error|escape }}</mark> {% endfor %}
+          {% for error in field.errors %} <u>{{ error|escape }}</u> {% endfor %}
         {% endfor %}
         <div class="form-group row my-3">
           <div class="col-12 col-md-4 mb-1">

@@ -42,7 +42,8 @@ def match_create_new(request):
 
 @login_required
 def match_edit(request, match_id):
-    match = get_object_or_404(Match.objects.select_related('creator'), pk=match_id)
+    match = get_object_or_404(Match.objects.select_related('creator'),
+                              pk=match_id)
     if match.creator != request.user:
         return redirect('matches:match_detail', pk=match_id)
     match_form = MatchForm(request.POST or None, instance=match)
@@ -50,7 +51,7 @@ def match_edit(request, match_id):
     if request.method == 'POST':
         if match_form.is_valid():
             match = match_form.save()
-            return redirect('matches:match_detail', match_id)
+            return redirect('matches:my_matches')
         if player_form.is_valid():
             player = player_form.save(commit=False)
             player.match = match
@@ -70,7 +71,8 @@ def match_edit(request, match_id):
 
 @login_required
 def match_delete(request, match_id):
-    match = get_object_or_404(Match.objects.select_related('creator'), pk=match_id)
+    match = get_object_or_404(Match.objects.select_related('creator'),
+                              pk=match_id)
     if match.creator != request.user:
         return redirect('matches:match_detail', pk=match_id)
     match.delete()
@@ -98,7 +100,11 @@ def player_edit(request, player_id):
         player = player_form.save()
         return redirect('matches:player_detail', player.id)
 
-    context = {'player_form': player_form, 'player': player, 'users': User.objects.all()}
+    context = {
+        'player_form': player_form,
+        'player': player,
+        'users': User.objects.all(),
+    }
     return render(request, 'matches/player_form.html', context)
 
 
@@ -107,12 +113,3 @@ def player_delete(request, player_id):
     player = get_object_or_404(Player, pk=player_id)
     player.delete()
     return HttpResponse('')
-
-
-
-
-
-# def my_matches(request):
-#     matches = request.user.played.all()
-#     context = {'matches': matches}
-#     return render(request, 'matches/my_matches.html', context)

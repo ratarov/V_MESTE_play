@@ -15,48 +15,29 @@
        aria-controls="navbarCollapse" aria-expanded="false" 
        aria-label="Toggle navigation"
       >
-				<span class="navbar-toggler-icon"></span>
+				Меню
 			</button>
-			{% with request.resolver_match.view_name as view_name %}
-				<div class="navbar-collapse collapse" id="navbarCollapse" style="">
-					<ul class="navbar-nav ms-auto mb-2 mb-md-0">
-						<li class="nav-item">
-							<a class="nav-link{% if view_name == 'meetings:meeting_search' %} 
-               active {% endif %}" aria-current="page" 
-               href="{% url 'meetings:meeting_search' %}"
-              >
-                Встречи
-              </a>
-						</li>
-            <li class="nav-item">
-							<a class="nav-link{% if view_name == 'games:game_search' %} 
-               active {% endif %}" aria-current="page" 
-               href="{% url 'games:game_search' %}"
-              >
-                Игры
-              </a>
-						</li>
-						{% if user.is_authenticated %}
-							<li class="nav-item">
-								<a class="nav-link {% if view_name == 'meetings:meeting_create' %} 
-                 active {% endif %}" aria-current="page" href="{% url 'meetings:meeting_create' %}"
-                >
-                  Создать встречу
-                </a>
-							</li>
+
+      <div class="navbar-collapse collapse" id="navbarCollapse">
+        <div class="d-md-none">
+          {% include 'includes/sidebar.html' %}
+        </div>
+        <div class="d-none d-md-block ms-auto mb-2 mb-md-0">
+          <ul class="navbar-nav">
+            {% if user.is_authenticated %}
               <li class="nav-item">
-								<a class="nav-link {% if view_name == 'users:user_info' %}active{% endif %}" 
-                 aria-current="page" href="{% url 'users:user_info' %}"
+                <a class="nav-link {% if view_name == 'users:user_info' %}active{% endif %}" 
+                  aria-current="page" href="{% url 'users:user_info' %}"
                 >
                   Вы: {{ user.username }}
                 </a>
-							</li>
+              </li>
               <li class="nav-item">
-								<a class="nav-link" aria-current="page" href="{% url 'users:logout' %}"
+                <a class="nav-link" aria-current="page" href="{% url 'users:logout' %}"
                 >
                   Выйти
                 </a>
-							</li>
+              </li>
             {% else %}
               <li class="nav-item">
                 <a class="nav-link {% if view_name == 'users:login' %} 
@@ -66,9 +47,11 @@
                 </a>
               </li>
             {% endif %}
-					</ul>
-				</div>
-			{% endwith %}
+          </ul>
+        </div>
+        
+      </div>
+        
 		</div>
 	</nav>
 </header>
