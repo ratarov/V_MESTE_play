@@ -17,6 +17,8 @@ urlpatterns = [
          views.match_edit, name='match_edit'),
     path('<int:match_id>/delete/',
          views.match_delete, name='match_delete'),
+    path('<int:match_id>/leave/',
+         views.match_leave, name='match_leave'),
     path('<int:match_id>/',
          views.match_detail, name='match_detail'),
     path('create-from-meeting-<int:meeting_id>/',

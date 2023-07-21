@@ -15,13 +15,22 @@
           </h4>
         </p>
         <p>
-          
+          {% if user == match.creator %}
           <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:match_edit' match.id %}">
             Изменить
           </a>
+          <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:match_delete' match.id %}">
+            Удалить
+          </a>
+          {% endif %}
           <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:create_from_match' match.id %}">
             Повторить игру
           </a>
+          {% if user != match.creator and is_player %}
+          <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:match_leave' match.id %}">
+            Покинуть игру
+          </a>
+          {% endif %}
         </p>
       </div>
 
@@ -45,7 +54,13 @@
               <path d="M13 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h10zM3 0a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3H3z"/>
               <path d="M5.5 4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm8 0a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0 8a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-8 4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-4a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
             </svg>
-            {% if match.game %}{{ match.game }}{% else %}Не выбрана{% endif %}
+            {% if match.game %}
+            <a class="btn btn-sm btn-outline-dark" href="{% url 'games:game_detail' match.game.slug %}"
+            title="Страница игры {{ game.name_rus }}"
+            >
+              {{ match.game.name_rus }} 
+            </a>
+            {% else %}Не выбрана{% endif %}
           </div>
           
           <div class="mb-2">
@@ -101,12 +116,12 @@
               <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
               <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
             </svg>
-            {% if match.status == 'draft' or match.ignore %} Незачёт {% else %} Зачет {% endif %}
+            {% if match.status == 'draft' or match.ignore %} Не идет в зачёт {% else %} Идет в общий зачёт {% endif %}
           </div>
         </div>
         
       </div>
-      <div class="players col-12 col-md-8 mb-3">
+      <div class="players col-12 col-lg-8 mb-3">
 
         <div class="list-group list-group-flush border-bottom scrollarea">
           <div class="list-group-item list-group-item-secondary py-3 lh-sm" >
@@ -163,9 +178,7 @@
     
           <div class="col-2 col-md-1 d-flex align-items-center">
             {% if player.winner %}
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#dc3545" class="bi bi-trophy-fill" viewBox="0 0 16 16">
-                <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935z"/>
-              </svg>
+              <img src="{% static 'img/icons/trophy-fill.svg' %}" width="24" height="24">
             {% endif %}
           </div>
           <div class="col-2 col-md d-flex align-items-center">

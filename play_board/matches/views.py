@@ -1,3 +1,4 @@
+from django.db.models import Exists, OuterRef
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
@@ -11,14 +12,29 @@ from .utils import create_from_meeting, create_from_match, create_new_match
 
 @login_required
 def my_matches(request):
-    matches = Match.objects.filter(players__user=request.user)
+    matches = (Match.objects.
+               filter(players__user=request.user).
+               annotate(is_winner=Exists(Player.objects.filter(
+                   user=request.user, match_id=OuterRef('id'), winner=True
+               ))).
+               select_related('game', 'creator').
+               prefetch_related('players', 'players__user'))
     context = {'matches': matches}
     return render(request, 'matches/my_matches.html', context)
 
 
 def match_detail(request, match_id):
-    match = get_object_or_404(Match, pk=match_id)
-    context = {'match': match}
+    match = get_object_or_404(
+        (Match.objects.
+         select_related('creator', 'game').
+         prefetch_related('players', 'players__user')
+         ),
+        pk=match_id
+    )
+    is_player = False
+    if request.user.is_authenticated:
+        is_player = match.players.filter(user=request.user).exists()
+    context = {'match': match, 'is_player': is_player}
     return render(request, 'matches/match_detail.html', context)
 
 
@@ -42,8 +58,13 @@ def match_create_new(request):
 
 @login_required
 def match_edit(request, match_id):
-    match = get_object_or_404(Match.objects.select_related('creator'),
-                              pk=match_id)
+    match = get_object_or_404(
+        (Match.objects.
+         select_related('creator').
+         prefetch_related('players', 'players__user', 'players__user__places')
+         ),
+        pk=match_id,
+    )
     if match.creator != request.user:
         return redirect('matches:match_detail', pk=match_id)
     match_form = MatchForm(request.POST or None, instance=match)
@@ -51,7 +72,7 @@ def match_edit(request, match_id):
     if request.method == 'POST':
         if match_form.is_valid():
             match = match_form.save()
-            return redirect('matches:my_matches')
+            return redirect('matches:match_detail', match_id)
         if player_form.is_valid():
             player = player_form.save(commit=False)
             player.match = match
@@ -74,9 +95,19 @@ def match_delete(request, match_id):
     match = get_object_or_404(Match.objects.select_related('creator'),
                               pk=match_id)
     if match.creator != request.user:
-        return redirect('matches:match_detail', pk=match_id)
+        return redirect('matches:match_detail', match_id)
     match.delete()
     return redirect('matches:my_matches')
+
+
+@login_required
+def match_leave(request, match_id):
+    player = Player.objects.filter(user=request.user, match_id=match_id)
+    if player.exists():
+        player = player.first()
+        player.user = None
+        player.save()
+    return redirect('matches:match_detail', match_id)
 
 
 @login_required

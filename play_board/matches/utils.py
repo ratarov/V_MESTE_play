@@ -41,9 +41,10 @@ def create_from_meeting(creator, meeting_id):
 @atomic
 def create_from_match(creator, match_id):
     match = get_object_or_404(Match, id=match_id)
-    old_players = match.players.all()
+    old_players = list(match.players.select_related('user'))
     match.pk = None
     match.status = Match.Status.DRAFT
+    match.creator = creator
     match.save()
     players = [Player(
         match=match, name=player.name, user=player.user, team=player.team

@@ -2,7 +2,13 @@
 {% load thumbnail %}
 {% load static %}
 {% load user_filters %}
-{% block title %}Новая партия{% endblock %}
+{% block title %}
+  {% if match.status == 'draft' %}
+    Новая партия  
+  {% else %}
+    Изменение партии в {{ match.game }}
+  {% endif %}
+{% endblock %}
 {% block content %}
   <div class="row border rounded shadow-sm bg-white">
     <div class="col-12 col-md-12 mb-3">
@@ -12,61 +18,61 @@
         {% csrf_token %}
         <p><h4>
           {% if match.status == 'draft' %}
-            Черновик новой партии  
+            <mark>Черновик</mark> новой партии
           {% else %}
             Изменение партии в {{ match.game }}
           {% endif %}
         </h4></p>
         <button class="btn btn-danger btn-sm" type="submit">Сохранить партию</button>
-
+        <a class="btn btn-sm btn-danger" href="{% url 'matches:match_delete' match.id %}" title="Удалить">
+          Удалить
+        </a>
         <u>{{ match_form.non_field_errors }}</u>
         {% for field in match_form %}
           {% for error in field.errors %} <u>{{ error|escape }}</u> {% endfor %}
         {% endfor %}
         <div class="form-group row my-3">
-          <div class="col-12 col-md-4 mb-1">
+          <div class="col-12 col-md-6 mb-1">
             <label class="form-label"><b>Место:</b></label>
             {{ match_form.place|addclass:'form-control form-control-sm' }} 
           </div>
           
-          <div class="col-6 col-md-4 mb-1">
+          <div class="col-6 col-md-3 mb-1">
             <label class="form-label"><b>Дата:</b></label>
             {{ match_form.date }}
           </div>
 
-          <div class="col-6 col-md-4 mb-1">
+          <div class="col-6 col-md-3 mb-1">
             <label class="form-label"><b>Тип игры:</b></label>
             {{ match_form.type|addclass:'form-control form-control-sm' }}
           </div>
         
-          <div class="col-12 col-md-4 mb-1">
+          <div class="col-12 col-md-6 mb-1">
             <label class="form-label"><b>Игра:</b></label>
             {{ match_form.game }}
           </div>
 
-          <div class="col-6 col-md-4 mb-1">
+          <div class="col-6 col-md-3 mb-1">
             <label class="form-label"><b>Кол-во игр:</b></label>
             {{ match_form.quantity|addclass:'form-control form-control-sm' }}
           </div>
 
-          <div class="col-6 col-md-4 mb-1">
+          <div class="col-6 col-md-3 mb-1">
             <label class="form-label"><b>Время, минут:</b></label>
             {{ match_form.length|addclass:'form-control form-control-sm' }}
           </div>
 
-          <div class="col-12 col-md-4 mb-1">
+          <div class="col-12 col-md-6 mb-1">
             <label class="form-label"><b>Комментарии:</b></label>
             {{ match_form.comments }}
           </div>
 
-          <div class="col-12 col-md-12 mb-1">
+          <div class="col-12 col-md-6 mb-1">
+            <label class="form-label"><b>Дополнительно:</b></label>
             <div class="form-check form-switch">
               <label class="form-label">Не учитывать в статистике</label>
               {{ match_form.ignore|addclass:'form-check-input' }}
             </div>
-          </div>
-
-          <div class="col-12 col-md-12 mb-1">
             <div class="form-check form-switch">
               <label class="form-label">Игра не завершена</label>
               {{ match_form.incomplete|addclass:'form-check-input' }}

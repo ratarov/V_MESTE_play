@@ -17,15 +17,20 @@ main{
     padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
     font-size: var(--bs-nav-link-font-size);
     font-weight: var(--bs-nav-link-font-weight);
-    color: var(--bs-nav-link-color);
+    color:#890707 !important;
     text-decoration: none;
     background: none;
     border: 0;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
 
+.match-item {
+    color:black;
+    text-decoration: none;
+}
 
-@media screen and (max-width: 480px) {
+
+@media screen and (max-width: 992px) {
     .sidebar-link svg {
         fill: white;
     }
