@@ -30,9 +30,6 @@ urlpatterns = [
     path('login/',
          LoginView.as_view(template_name='users/reg_actions/login.html'),
          name='login'),
-    path('login2/',
-         LoginView.as_view(template_name='users/reg_actions/login2.html'),
-         name='login2'),
     path('logout/',
          LogoutView.as_view(
              template_name='users/reg_actions/logged_out.html'),

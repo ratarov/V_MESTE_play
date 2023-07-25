@@ -1,25 +1,28 @@
-from django.db.models import Exists, OuterRef
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth.decorators import login_required
 
 from users.models import User
 
-from .forms import PlayerForm, MatchForm
+from .forms import MatchForm, PlayerForm, UserMatchesForm
 from .models import Match, Player
-from .utils import create_from_meeting, create_from_match, create_new_match
+from .utils import (create_from_match, create_from_meeting, create_new_match,
+                    filter_user_matches, get_paginated_matches)
 
 
 @login_required
 def my_matches(request):
-    matches = (Match.objects.
-               filter(players__user=request.user).
-               annotate(is_winner=Exists(Player.objects.filter(
-                   user=request.user, match_id=OuterRef('id'), winner=True
-               ))).
-               select_related('game', 'creator').
-               prefetch_related('players', 'players__user'))
-    context = {'matches': matches}
+    form = UserMatchesForm(data=request.GET or None)
+    matches = filter_user_matches(request)
+    for match in matches:
+        print(match.date, match.game, end=' |||||||||| ')
+    matches = get_paginated_matches(matches, request)
+    print('пагинация пошла')
+    for match in matches:
+        print(match.date, match.game, end=' |||||||||| ')
+    context = {'matches': matches, 'form': form}
+    if request.GET.get('page'):
+        return render(request, 'matches/match_items.html', context)
     return render(request, 'matches/my_matches.html', context)
 
 
@@ -29,7 +32,7 @@ def match_detail(request, match_id):
          select_related('creator', 'game').
          prefetch_related('players', 'players__user')
          ),
-        pk=match_id
+        pk=match_id,
     )
     is_player = False
     if request.user.is_authenticated:
@@ -97,14 +100,16 @@ def match_delete(request, match_id):
     if match.creator != request.user:
         return redirect('matches:match_detail', match_id)
     match.delete()
+    if 'htmx' in request.path:
+        return HttpResponse('')
     return redirect('matches:my_matches')
 
 
 @login_required
 def match_leave(request, match_id):
-    player = Player.objects.filter(user=request.user, match_id=match_id)
-    if player.exists():
-        player = player.first()
+    player = Player.objects.filter(user=request.user,
+                                   match_id=match_id).first()
+    if player:
         player.user = None
         player.save()
     return redirect('matches:match_detail', match_id)

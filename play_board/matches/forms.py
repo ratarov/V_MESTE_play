@@ -107,3 +107,32 @@ class MatchForm(forms.ModelForm):
         if self.cleaned_data.get('ignore'):
             return Match.Status.IGNORE
         return Match.Status.OK
+
+
+class UserMatchesForm(forms.ModelForm):
+    status_options = [('', 'Не важно')] + Match.Status.choices
+    status = forms.ChoiceField(choices=status_options, required=False)
+    game = forms.ModelChoiceField(
+        queryset=Game.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'game-select', 'style': 'width: 100%;'
+        })
+    )
+    date_since = forms.DateField(
+        required=False, widget=forms.DateInput(
+            format=('%Y-%m-%d'),
+            attrs={'class': 'form-control', 'type': 'date'}
+        )
+    )
+    date_until = forms.DateField(
+        required=False,
+        widget=forms.DateInput(
+            format=('%Y-%m-%d'),
+            attrs={'class': 'form-control', 'type': 'date'}
+        )
+    )
+
+    class Meta:
+        model = Match
+        fields = ('status', 'game', 'date_since', 'date_until')

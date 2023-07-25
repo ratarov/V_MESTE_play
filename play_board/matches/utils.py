@@ -1,6 +1,9 @@
+from django.conf import settings
+from django.core.paginator import Paginator
+from django.db.models import Exists, OuterRef
 from django.db.transaction import atomic
-from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from meetings.models import Meeting
 
@@ -67,3 +70,33 @@ def create_new_match(creator):
         user=creator,
     )
     return match
+
+
+def filter_user_matches(request):
+    matches = (Match.objects.
+               filter(players__user=request.user).
+               annotate(is_winner=Exists(Player.objects.filter(
+                   user=request.user, match_id=OuterRef('id'), winner=True
+               ))).
+               select_related('game', 'creator').
+               prefetch_related('players', 'players__user'))
+    status = request.GET.get('status')
+    game = request.GET.get('game')
+    date_since = request.GET.get('date_since')
+    date_until = request.GET.get('date_until')
+    if status:
+        matches = matches.filter(status=status)
+    if game:
+        matches = matches.filter(game=game)
+    if date_since:
+        matches = matches.filter(date__gte=date_since)
+    if date_until:
+        matches = matches.filter(date__lte=date_until)
+    return matches
+
+
+def get_paginated_matches(queryset, request):
+    """Пагинация списка матчей"""
+    paginator = Paginator(queryset, settings.MATCHES_ON_PAGE)
+    page_number = request.GET.get('page')
+    return paginator.get_page(page_number)

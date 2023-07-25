@@ -13,6 +13,8 @@ urlpatterns = [
          views.player_edit, name='player_edit'),
     path('htmx/player/<int:player_id>/',
          views.player_detail, name='player_detail'),
+    path('htmx/<int:match_id>/delete/',
+         views.match_delete, name='match_delete_from_list'),
     path('<int:match_id>/edit/',
          views.match_edit, name='match_edit'),
     path('<int:match_id>/delete/',

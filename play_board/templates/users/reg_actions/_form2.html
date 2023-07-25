@@ -73,26 +73,46 @@
                   {% comment %} </div> {% endcomment %}
               </div>
             <div class="row py-1 justify-content-center">
-              <div = class="col-auto">
-              <a href="{% url "social:begin" "vk-oauth2" %}">
-                <img src="{% static 'img/VK_logo.svg' %}"
-                width="36"
-                height="36"
-                class="d-inline-block align-top"
-                alt="">
-              </a>
+              <div class="col-auto justify-content-center">
+                <a href="{% url 'social:begin' 'vk-oauth2' %}">
+                  <img src="{% static 'img/VK_logo.svg' %}"
+                  width="36"
+                  height="36"
+                  class="d-inline-block align-top"
+                  alt="">
+                </a>
+              </div>
+              <div class="col-auto">
+                <a href="{% url 'social:begin' 'google-oauth2' %}">
+                  <img src="{% static 'img/G.png' %}"
+                  width="36"
+                  height="36"
+                  class="d-inline-block align-top"
+                  fill="red"
+                  alt="">
+                </a>
+              </div>
+            
+            <!-- <div class="row py-1 justify-content-center">
+              <div class="col-5">
+                <a href="{% url 'social:begin' 'vk-oauth2' %}">
+                  <img src="{% static 'img/vk_text_logo.svg' %}"
+                  height="32"
+                  class="d-inline-block align-top"
+                  alt="">
+                </a>
+              </div>
+              <div class="col-5 d-flex justify-content-end">
+                <a href="{% url 'social:begin' 'google-oauth2' %}">
+                  <img src="{% static 'img/google.svg' %}"
+                  height="32"
+                  class="d-inline-block align-top"
+                  fill="red"
+                  alt="">
+                </a>
+              </div> -->
+
             </div>
-            <div = class="col-auto">
-              <a href="{% url "social:begin" "google-oauth2" %}">
-                <img src="{% static 'img/G.png' %}"
-                width="36"
-                height="36"
-                class="d-inline-block align-top"
-                fill="red"
-                alt="">
-              </a>
-            </div>
-          </div>
           </div>
           <div class="card-footer bg-transparent text-center">
             Нет аккаунта на сайте и в соц.сетях?

@@ -8,4 +8,4 @@ $(document).ready(function() {
         width: '100%',
         class: 'form-control',
     });
-    });
+});
