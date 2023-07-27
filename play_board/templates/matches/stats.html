@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+{% load user_filters %}
+{% block title %}Статистика игр{% endblock %}
+{% block content %}
+  <div class="row border rounded shadow-sm bg-white mb-3">
+    <div class="col-12 mb-3">
+      <p>
+        <h4>Статистика игр</h4>
+
+      </p>
+
+      <div class="col-12 mb-3">
+
+        Всего игр: {{ matches.total }}<br>
+        Игроков: {{ players.count }}<br>
+        {% for player in players %}
+          {{ player.username}} сыграл {{ player.plays }} / выиграл {{ player.wins }}<br>
+        {% endfor %}
+          
+            
+      </div>
+    </div>
+  </div>
+  
+{% endblock %}

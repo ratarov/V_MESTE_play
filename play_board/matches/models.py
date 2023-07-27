@@ -9,6 +9,7 @@ class Match(models.Model):
     class Type(models.TextChoices):
         PvP = 'PvP', 'Игрок vs Игрока'
         PvG = 'PvG', 'Игрок vs Игры'
+        SOLO = 'solo', 'Соло'
 
     class Status(models.TextChoices):
         DRAFT = 'draft', 'черновик'

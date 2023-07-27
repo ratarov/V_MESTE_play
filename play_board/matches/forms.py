@@ -14,7 +14,7 @@ class PlayerForm(forms.ModelForm):
         widget=forms.TextInput(attrs={
             'class': 'form-control form-control-sm',
             'placeholder': 'Имя игрока',
-        })
+        }),
     )
     user = forms.ModelChoiceField(
         queryset=User.objects.none(),
@@ -127,6 +127,38 @@ class UserMatchesForm(forms.ModelForm):
     )
     date_until = forms.DateField(
         required=False,
+        widget=forms.DateInput(
+            format=('%Y-%m-%d'),
+            attrs={'class': 'form-control', 'type': 'date'}
+        )
+    )
+
+    class Meta:
+        model = Match
+        fields = ('status', 'game', 'date_since', 'date_until')
+
+
+class StatFilterForm(forms.ModelForm):
+    status_options = [('', 'Не важно')] + Match.Status.choices
+    status = forms.ChoiceField(choices=status_options, required=False)
+    game = forms.ModelChoiceField(
+        queryset=Game.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'game-select', 'style': 'width: 100%;'
+        })
+    )
+    date_since = forms.DateField(
+        required=False,
+        initial=timezone.now() - timezone.timedelta(days=30),
+        widget=forms.DateInput(
+            format=('%Y-%m-%d'),
+            attrs={'class': 'form-control', 'type': 'date'}
+        )
+    )
+    date_until = forms.DateField(
+        required=False,
+        initial=timezone.now(),
         widget=forms.DateInput(
             format=('%Y-%m-%d'),
             attrs={'class': 'form-control', 'type': 'date'}

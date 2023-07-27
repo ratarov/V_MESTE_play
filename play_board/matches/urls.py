@@ -29,5 +29,7 @@ urlpatterns = [
          views.match_create_from_match, name='create_from_match'),
     path('create-new/',
          views.match_create_new, name='create_new_match'),
+    path('stats/',
+         views.statistics, name='stats'),
     path('', views.my_matches, name='my_matches'),
 ]

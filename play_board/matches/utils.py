@@ -10,6 +10,16 @@ from meetings.models import Meeting
 from .models import Match, Player
 
 
+def get_user_matches(user):
+    return (Match.objects.
+            filter(players__user=user).
+            annotate(is_winner=Exists(Player.objects.filter(
+                user=user, match_id=OuterRef('id'), winner=True
+            ))).
+            select_related('game', 'creator').
+            prefetch_related('players', 'players__user'))
+
+
 @atomic
 def create_from_meeting(creator, meeting_id):
     meeting = get_object_or_404(Meeting, id=meeting_id)
@@ -30,8 +40,10 @@ def create_from_meeting(creator, meeting_id):
 
     players = []
     for user in users:
+        username = user.username if user else ''
         players.append(
-            Player(match=match, name=user.first_name, user=user)
+            Player(match=match, name=user.first_name,
+                   user=user, username=username)
         )
     for ind in range(1, guest_players + 1):
         players.append(
@@ -50,7 +62,8 @@ def create_from_match(creator, match_id):
     match.creator = creator
     match.save()
     players = [Player(
-        match=match, name=player.name, user=player.user, team=player.team
+        match=match, name=player.name, user=player.user,
+        team=player.team, username=player.username,
     ) for player in old_players]
     Player.objects.bulk_create(players)
     return match
@@ -68,18 +81,13 @@ def create_new_match(creator):
         match=match,
         name=creator.first_name,
         user=creator,
+        username=creator.username,
     )
     return match
 
 
 def filter_user_matches(request):
-    matches = (Match.objects.
-               filter(players__user=request.user).
-               annotate(is_winner=Exists(Player.objects.filter(
-                   user=request.user, match_id=OuterRef('id'), winner=True
-               ))).
-               select_related('game', 'creator').
-               prefetch_related('players', 'players__user'))
+    matches = get_user_matches(request.user)
     status = request.GET.get('status')
     game = request.GET.get('game')
     date_since = request.GET.get('date_since')

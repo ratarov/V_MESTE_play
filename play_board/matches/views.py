@@ -7,19 +7,16 @@ from users.models import User
 from .forms import MatchForm, PlayerForm, UserMatchesForm
 from .models import Match, Player
 from .utils import (create_from_match, create_from_meeting, create_new_match,
-                    filter_user_matches, get_paginated_matches)
+                    filter_user_matches, get_paginated_matches,
+                    get_user_matches)
 
 
 @login_required
 def my_matches(request):
+    """Список партий пользователя."""
     form = UserMatchesForm(data=request.GET or None)
     matches = filter_user_matches(request)
-    for match in matches:
-        print(match.date, match.game, end=' |||||||||| ')
     matches = get_paginated_matches(matches, request)
-    print('пагинация пошла')
-    for match in matches:
-        print(match.date, match.game, end=' |||||||||| ')
     context = {'matches': matches, 'form': form}
     if request.GET.get('page'):
         return render(request, 'matches/match_items.html', context)
@@ -27,6 +24,7 @@ def my_matches(request):
 
 
 def match_detail(request, match_id):
+    """Страница с деталями о конкретной партии"""
     match = get_object_or_404(
         (Match.objects.
          select_related('creator', 'game').
@@ -36,31 +34,35 @@ def match_detail(request, match_id):
     )
     is_player = False
     if request.user.is_authenticated:
-        is_player = match.players.filter(user=request.user).exists()
+        is_player = match.players.filter(user=request.user)
     context = {'match': match, 'is_player': is_player}
     return render(request, 'matches/match_detail.html', context)
 
 
 @login_required
 def match_create_from_meeting(request, meeting_id):
+    """Создание новой партии на основании встречи."""
     match = create_from_meeting(request.user, meeting_id)
     return redirect('matches:match_edit', match.id)
 
 
 @login_required
 def match_create_from_match(request, match_id):
+    """Создание новой партии на основании другой партии."""
     match = create_from_match(request.user, match_id)
     return redirect('matches:match_edit', match.id)
 
 
 @login_required
 def match_create_new(request):
+    """Создание новой пустой партии."""
     match = create_new_match(request.user)
     return redirect('matches:match_edit', match.id)
 
 
 @login_required
 def match_edit(request, match_id):
+    """Корректировка партии."""
     match = get_object_or_404(
         (Match.objects.
          select_related('creator').
@@ -95,6 +97,7 @@ def match_edit(request, match_id):
 
 @login_required
 def match_delete(request, match_id):
+    """Удаление париии"""
     match = get_object_or_404(Match.objects.select_related('creator'),
                               pk=match_id)
     if match.creator != request.user:
@@ -107,6 +110,7 @@ def match_delete(request, match_id):
 
 @login_required
 def match_leave(request, match_id):
+    """Покинуть партию - удалить связь юзера с игроком в партии."""
     player = Player.objects.filter(user=request.user,
                                    match_id=match_id).first()
     if player:
@@ -117,12 +121,14 @@ def match_leave(request, match_id):
 
 @login_required
 def create_player_form(request):
+    """Создание новой строки игрока в партии."""
     context = {'player_form': PlayerForm, 'users': User.objects.all()}
     return render(request, 'matches/player_form.html', context)
 
 
 @login_required
 def player_detail(request, player_id):
+    """Строка с информацией об игроке в партии."""
     player = get_object_or_404(Player, pk=player_id)
     context = {'player': player}
     return render(request, 'matches/player_detail.html', context)
@@ -130,6 +136,7 @@ def player_detail(request, player_id):
 
 @login_required
 def player_edit(request, player_id):
+    """Изменение строки с данными игрока в партии"""
     player = get_object_or_404(Player, pk=player_id)
     player_form = PlayerForm(request.POST or None, instance=player)
     if player_form.is_valid():
@@ -146,6 +153,30 @@ def player_edit(request, player_id):
 
 @login_required
 def player_delete(request, player_id):
+    """Удаление строки с игроком из партии."""
     player = get_object_or_404(Player, pk=player_id)
     player.delete()
     return HttpResponse('')
+
+from django.db.models import Sum, Count, Q
+
+@login_required
+def statistics(request):
+    """Список партий пользователя."""
+    matches = get_user_matches(request.user).filter(status=Match.Status.OK)
+    matches = matches.aggregate(total=Sum('quantity'))
+    players = (
+        User.objects.
+        filter(played__match__players__user=request.user).
+        # exclude(username=request.user.username).
+        annotate(
+            wins=Sum('played__match__quantity',
+                     filter=Q(played__match__status=Match.Status.OK) & Q(played__winner=True)),
+            plays=Sum('played__match__quantity',
+                      filter=Q(played__match__status=Match.Status.OK))
+        ).
+        distinct().
+        order_by('-plays')
+    )
+    context = {'matches': matches, 'players': players}
+    return render(request, 'matches/stats.html', context)
