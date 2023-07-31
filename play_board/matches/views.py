@@ -2,9 +2,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
+from games.models import Game
 from users.models import User
 
-from .forms import MatchForm, PlayerForm, UserMatchesForm
+from .forms import MatchForm, PlayerForm, UserMatchesForm, StatFilterForm
 from .models import Match, Player
 from .utils import (create_from_match, create_from_meeting, create_new_match,
                     filter_user_matches, get_paginated_matches,
@@ -158,25 +159,51 @@ def player_delete(request, player_id):
     player.delete()
     return HttpResponse('')
 
-from django.db.models import Sum, Count, Q
+from django.db.models import Sum, Count, Q, Avg
+from django.utils import timezone
+from datetime import datetime
 
 @login_required
 def statistics(request):
     """Список партий пользователя."""
-    matches = get_user_matches(request.user).filter(status=Match.Status.OK)
-    matches = matches.aggregate(total=Sum('quantity'))
-    players = (
-        User.objects.
-        filter(played__match__players__user=request.user).
-        # exclude(username=request.user.username).
-        annotate(
-            wins=Sum('played__match__quantity',
-                     filter=Q(played__match__status=Match.Status.OK) & Q(played__winner=True)),
-            plays=Sum('played__match__quantity',
-                      filter=Q(played__match__status=Match.Status.OK))
-        ).
-        distinct().
-        order_by('-plays')
+    match_plays = Player.objects.filter(match__players__user=request.user, match__status=Match.Status.OK)
+    common_stat = match_plays.filter(user=request.user).aggregate(
+        total=Sum('match__quantity'),
+        wins=Sum('match__quantity', filter=Q(winner=True)),
+        avg_length=Avg('match__length', filter=Q(match__length__gte=0)),
+        games=Count('match__game', distinct=True),
     )
-    context = {'matches': matches, 'players': players}
+    games = match_plays.filter(user=request.user).values(
+        'match__game__name_rus',
+    ).annotate(
+        total=Sum('match__quantity'),
+        wins=Sum('match__quantity', filter=Q(winner=True)),
+    ).order_by('-total')
+    opponents = match_plays.exclude(user=None).exclude(user=request.user).values(
+        'user__username',
+    ).annotate(
+        total=Sum('match__quantity'),
+        wins=Sum('match__quantity', filter=Q(winner=True)),
+        games=Count('match__game', distinct=True),
+    ).order_by('-total')
+    places = match_plays.filter(user=request.user).values(
+        'match__place'
+    ).annotate(
+        total=Sum('match__quantity'),
+        wins=Sum('match__quantity', filter=Q(winner=True)),
+        games=Count('match__game', distinct=True),
+    ).order_by('-total')
+    form = StatFilterForm(places=places, players=opponents, games=games, data=request.GET or None)
+    a = form.fields.get('date_until')
+    b = form.fields.get('date_since')
+    delta = datetime(a) - datetime(b)
+    
+    period = form.fields.get('date_until').days() - form.fields.get('date_since').days()
+    context = {
+        'matches': common_stat,
+        'players': opponents,
+        'games': games,
+        'form': form,
+        'period': period,
+    }
     return render(request, 'matches/stats.html', context)

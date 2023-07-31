@@ -1,4 +1,6 @@
+from typing import Any, Mapping, Optional, Type, Union
 from django import forms
+from django.forms.utils import ErrorList
 from django.utils import timezone
 
 from users.models import User
@@ -138,13 +140,14 @@ class UserMatchesForm(forms.ModelForm):
         fields = ('status', 'game', 'date_since', 'date_until')
 
 
-class StatFilterForm(forms.ModelForm):
-    status_options = [('', 'Не важно')] + Match.Status.choices
-    status = forms.ChoiceField(choices=status_options, required=False)
-    game = forms.ModelChoiceField(
-        queryset=Game.objects.all(),
+class StatFilterForm(forms.Form):
+    empty = [('', '---------')]
+    # status_options = [('', 'Не важно')] + Match.Status.choices
+    # status = forms.ChoiceField(choices=status_options, required=False)
+    games = forms.ChoiceField(
+        choices=[],
         required=False,
-        widget=forms.Select(attrs={
+        widget=forms.SelectMultiple(attrs={
             'class': 'game-select', 'style': 'width: 100%;'
         })
     )
@@ -164,7 +167,21 @@ class StatFilterForm(forms.ModelForm):
             attrs={'class': 'form-control', 'type': 'date'}
         )
     )
+    places = forms.ChoiceField(choices=[], required=False)
+    type = forms.ChoiceField(
+        choices=empty + Match.Type.choices,
+        required=False,
+    )
+    players = forms.ChoiceField(choices=[], required=False)
 
     class Meta:
         model = Match
-        fields = ('status', 'game', 'date_since', 'date_until')
+        fields = ('games', 'date_since', 'date_until',
+                  'places', 'type', 'players', 'players_qty'
+                  )
+
+    def __init__(self, places, players, games, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.fields['players'].choices = self.empty + list(map(lambda x: (x.get('user__username'), x.get('user__username')), players))
+        self.fields['places'].choices = self.empty + list(map(lambda x: (x.get('match__place'), x.get('match__place')), places))
+        self.fields['games'].choices = self.empty + list(map(lambda x: (x.get('match__game__name_rus'), x.get('match__game__name_rus')), games))

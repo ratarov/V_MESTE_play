@@ -7,18 +7,69 @@
   <div class="row border rounded shadow-sm bg-white mb-3">
     <div class="col-12 mb-3">
       <p>
-        <h4>Статистика игр</h4>
+        <h4>Статистика игр {{ period }} /h4> 
 
       </p>
 
       <div class="col-12 mb-3">
 
+        <form method="get">
+          <div class="form-group row my-3">
+            <div class="col-7 col-md-2 mb-2">
+              <label class="form-label"><small class="text-muted">Игра:</small></label>
+              {{ form.games }}
+            </div>
+            <div class="col-5 col-md-2 mb-2">
+              <label class="form-label"><small class="text-muted">Не раньше:</small></label>
+              {{ form.date_since }}
+            </div>
+            <div class="col-5 col-md-2 mb-2">
+              <label class="form-label"><small class="text-muted">Не позже:</small></label>
+              {{ form.date_until }} 
+            </div>
+
+            <div class="col-5 col-md-2 mb-2">
+              <label class="form-label"><small class="text-muted">Статус:</small></label>
+              {{ form.places|addclass:'form-control' }} 
+            </div>
+            <div class="col-5 col-md-2 mb-2">
+              <label class="form-label"><small class="text-muted">Статус:</small></label>
+              {{ form.players|addclass:'form-control' }} 
+            </div>
+            <div class="col-5 col-md-2 mb-2">
+              <label class="form-label"><small class="text-muted">Статус:</small></label>
+              {{ form.type|addclass:'form-control' }} 
+            </div>
+
+            <div class="col-2 col-md-1 align-self-center">
+              <div class="row d-flex justify-content-end ">
+                <span style="color:white">.</span>
+              </div>
+              <div class="row d-flex justify-content-end ">
+                <button type="submit" class="btn btn-sm btn-danger">
+                  Найти
+                </button>
+              </div>  
+            </div>
+          </div>
+        </form>
+
         Всего игр: {{ matches.total }}<br>
+        Всего побед: {{ matches.wins }}<br>
+        Среднее время игры: {{ matches.avg_length }}<br>
+        Игр: {{ matches.wins }}<br>
+        Всего побед: {{ matches.wins }}<br>
+
+
         Игроков: {{ players.count }}<br>
         {% for player in players %}
-          {{ player.username}} сыграл {{ player.plays }} / выиграл {{ player.wins }}<br>
+          {{ player.user__username}} сыграл {{ player.total }} / выиграл {{ player.wins }} в играх {{ player.games }}<br>
         {% endfor %}
-          
+
+        Топ-5 игр:<br>
+        {% for game in games|slice:":5" %}
+          {{ game.match__game__name_rus}} сыграл {{ game.total }} / выиграл {{ game.wins }}<br>
+        {% endfor %}
             
       </div>
     </div>

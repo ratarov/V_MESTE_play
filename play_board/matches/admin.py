@@ -18,4 +18,5 @@ class MatchAdmin(admin.ModelAdmin):
         'game',
         'place',
         'status',
+        'length',
     )

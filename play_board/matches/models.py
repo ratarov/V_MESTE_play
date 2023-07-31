@@ -28,6 +28,7 @@ class Match(models.Model):
         on_delete=models.PROTECT,
         null=True,
         verbose_name='Игра',
+        related_name='played',
     )
     place = models.CharField(
         verbose_name='Место проведения партии',
