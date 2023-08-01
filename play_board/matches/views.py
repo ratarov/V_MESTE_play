@@ -159,51 +159,59 @@ def player_delete(request, player_id):
     player.delete()
     return HttpResponse('')
 
-from django.db.models import Sum, Count, Q, Avg
+from django.db.models import Sum, Count, Q, Avg, Func
 from django.utils import timezone
 from datetime import datetime
+from django.db import connection
 
 @login_required
 def statistics(request):
     """Список партий пользователя."""
-    match_plays = Player.objects.filter(match__players__user=request.user, match__status=Match.Status.OK)
+    match_plays = Player.objects.filter(match__players__user=request.user, match__status=Match.Status.OK).select_related('user', 'match', 'match__game')
     common_stat = match_plays.filter(user=request.user).aggregate(
         total=Sum('match__quantity'),
         wins=Sum('match__quantity', filter=Q(winner=True)),
         avg_length=Avg('match__length', filter=Q(match__length__gte=0)),
         games=Count('match__game', distinct=True),
+        # one=Sum('match__quantity', filter=Count('meeting__players')=1),
+        # two=Sum('match__quantity', filter=Q(Count('meeting__players')==2)),
+        three=Sum('match__quantity', filter=Q(Count('match__players')==3)),
+        # four=Sum('match__quantity', filter=Q(pl_qty=4)),
+        # five=Sum('match__quantity', filter=Q(pl_qty=5)),
+        # six=Sum('match__quantity', filter=Q(pl_qty__gte=6)),
     )
-    games = match_plays.filter(user=request.user).values(
+    print('а вот и ',common_stat.get('three'))
+    games = match_plays.filter(user=request.user)
+    games = games.values(
         'match__game__name_rus',
     ).annotate(
         total=Sum('match__quantity'),
+        losts=Sum('match__quantity', filter=Q(winner=False)),
         wins=Sum('match__quantity', filter=Q(winner=True)),
     ).order_by('-total')
-    opponents = match_plays.exclude(user=None).exclude(user=request.user).values(
+
+    players = match_plays.exclude(user=None).values(
         'user__username',
     ).annotate(
         total=Sum('match__quantity'),
         wins=Sum('match__quantity', filter=Q(winner=True)),
-        games=Count('match__game', distinct=True),
+        losts=Sum('match__quantity', filter=Q(winner=False)),
+        games=Count('match__game'),
     ).order_by('-total')
+
     places = match_plays.filter(user=request.user).values(
         'match__place'
     ).annotate(
         total=Sum('match__quantity'),
-        wins=Sum('match__quantity', filter=Q(winner=True)),
-        games=Count('match__game', distinct=True),
+        games=Count('match__game'),
     ).order_by('-total')
-    form = StatFilterForm(places=places, players=opponents, games=games, data=request.GET or None)
-    a = form.fields.get('date_until')
-    b = form.fields.get('date_since')
-    delta = datetime(a) - datetime(b)
-    
-    period = form.fields.get('date_until').days() - form.fields.get('date_since').days()
+
+    form = StatFilterForm(places=places, players=players, games=games, data=request.GET or None)
     context = {
         'matches': common_stat,
-        'players': opponents,
+        'players': players,
         'games': games,
+        'places': places,
         'form': form,
-        'period': period,
     }
     return render(request, 'matches/stats.html', context)

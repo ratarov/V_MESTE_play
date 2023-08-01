@@ -4,10 +4,13 @@
 {% load user_filters %}
 {% block title %}Статистика игр{% endblock %}
 {% block content %}
+
+
+
   <div class="row border rounded shadow-sm bg-white mb-3">
     <div class="col-12 mb-3">
       <p>
-        <h4>Статистика игр {{ period }} /h4> 
+        <h4>Статистика игр {{ period }} </h4> 
 
       </p>
 
@@ -70,9 +73,176 @@
         {% for game in games|slice:":5" %}
           {{ game.match__game__name_rus}} сыграл {{ game.total }} / выиграл {{ game.wins }}<br>
         {% endfor %}
-            
+
+        {% for place in places|slice:":5" %}
+          {{ place.match__place}} сыграл {{ place.total }} <br>
+        {% endfor %}
+
+        {% for number in numbers %}
+          Играл в {{ number.qty}} всего партий {{ number.total }} <br>
+        {% endfor %}
+        <div class="form-group row my-3">
+          <div class="col-12 col-md-4 mb-2">
+            <canvas id="players" width="20" height="20"></canvas> 
+          </div>
+
+          <div class="col-12 col-md-4 mb-2">
+            <canvas id="places" width="20" height="20"></canvas> 
+          </div>
+          <div class="col-12 col-md-4 mb-2">
+            <canvas id="games" width="20" height="20"></canvas> 
+          </div>
+
+          <div class="col-12 col-md-4 mb-2">
+            <canvas id="players_number" width="20" height="20"></canvas> 
+          </div>
+        </div>    
+        
       </div>
     </div>
   </div>
+ 
   
+
+  <script>
+    const ctx1 = document.getElementById('players');
+  
+    new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: [{% for player in players|slice:":5" %}'{{ player.user__username }}', {% endfor %}],
+        datasets: [
+        {
+          label: 'Поражений',
+          data: [{% for player in players|slice:":5" %}'{{ player.losts }}', {% endfor %}],
+          borderWidth: 1
+        },
+        {
+          label: 'Побед',
+          data: [{% for player in players|slice:":5" %}'{{ player.wins }}', {% endfor %}],
+          borderWidth: 1
+        },
+        {
+          label: 'Общих игр',
+          data: [{% for player in players|slice:":5" %}'{{ player.games }}', {% endfor %}],
+          borderWidth: 5,
+          type: 'line'
+        },
+      ]
+      },
+      options: {
+        interaction: {
+          intersect: false,
+        },
+        scales: {
+          x: {
+            stacked: true,
+          },
+          y: {
+            stacked: true
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Соперники'
+          }
+        }
+      }
+    });
+
+    const ctx2 = document.getElementById('games');
+
+    new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: [{% for game in games|slice:":5" %}'{{ game.match__game__name_rus }}', {% endfor %}],
+        datasets: [{
+          label: 'Поражений',
+          data: [{% for game in games|slice:":5" %}'{{ game.losts }}', {% endfor %}],
+          borderWidth: 1
+        },
+        {
+          label: 'Побед',
+          data: [{% for game in games|slice:":5" %}'{{ game.wins }}', {% endfor %}],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            stacked: true,
+          },
+          y: {
+            stacked: true
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Любимые игры'
+          }
+        }
+      }
+    });
+
+    const ctx3 = document.getElementById('places');
+
+    new Chart(ctx3, {
+      type: 'doughnut',
+      data: {
+        labels: [{% for place in places|slice:":5" %}'{{ place.match__place }}', {% endfor %}],
+        datasets: [{
+          label: 'Игр',
+          data: [{% for place in places|slice:":5" %}'{{ place.total }}', {% endfor %}],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        interaction: {
+          intersect: false,
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Места'
+          }
+        }
+      }
+    });
+
+    const ctx4 = document.getElementById('players_number');
+
+    new Chart(ctx4, {
+      type: 'doughnut',
+      data: {
+        labels: ['1', '2', '3', '4', '5', '6+'],
+        datasets: [{
+          label: 'Игр',
+          data: ['{{matches.one}}', '{{matches.two}}', '{{matches.three}}', '{{matches.four}}', '{{matches.five}}', '{{matches.six}}'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Кол-во игроков'
+          }
+        }
+      }
+    });
+  </script>
 {% endblock %}
