@@ -1,9 +1,8 @@
-from typing import Any, Mapping, Optional, Type, Union
 from django import forms
-from django.forms.utils import ErrorList
+from django.db.models import Q
 from django.utils import timezone
 
-from users.models import User
+from users.models import User, Place
 from games.models import Game
 
 from .models import Player, Match
@@ -80,6 +79,7 @@ class MatchForm(forms.ModelForm):
         })
     )
     status = forms.CharField(required=False)
+    place = forms.ModelChoiceField(queryset=None, required=False)
 
     class Meta:
         model = Match
@@ -91,19 +91,8 @@ class MatchForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(MatchForm, self).__init__(*args, **kwargs)
-        self.fields['place'] = forms.ChoiceField(choices=self.get_places())
-
-    def get_places(self):
-        places = list(
-            self.instance.creator.places.values_list('name', flat=True)
-        )
-        default = [
-            ('квартира/дом', 'квартира/дом'),
-            ('клуб/антикафе', 'клуб/антикафе'),
-            ('кафе/бар', 'кафе/бар'),
-            ('мероприятие', 'мероприятие'),
-        ]
-        return [(place, place) for place in places] + default
+        match_creator = self.instance.creator
+        self.fields['place'].queryset = Place.objects.filter(Q(creator=match_creator) | Q(matches__creator=match_creator)).distinct()
 
     def clean_status(self):
         if self.cleaned_data.get('ignore'):
@@ -142,12 +131,10 @@ class UserMatchesForm(forms.ModelForm):
 
 class StatFilterForm(forms.Form):
     empty = [('', '---------')]
-    # status_options = [('', 'Не важно')] + Match.Status.choices
-    # status = forms.ChoiceField(choices=status_options, required=False)
-    games = forms.ChoiceField(
-        choices=[],
+    game = forms.ModelChoiceField(
+        queryset=None,
         required=False,
-        widget=forms.SelectMultiple(attrs={
+        widget=forms.Select(attrs={
             'class': 'game-select', 'style': 'width: 100%;'
         })
     )
@@ -167,21 +154,20 @@ class StatFilterForm(forms.Form):
             attrs={'class': 'form-control', 'type': 'date'}
         )
     )
-    places = forms.ChoiceField(choices=[], required=False)
+    place = forms.ModelChoiceField(queryset=None, required=False)
     type = forms.ChoiceField(
         choices=empty + Match.Type.choices,
         required=False,
     )
-    players = forms.ChoiceField(choices=[], required=False)
+    player = forms.ModelChoiceField(queryset=None, required=False)
 
     class Meta:
         model = Match
-        fields = ('games', 'date_since', 'date_until',
-                  'places', 'type', 'players', 'players_qty'
-                  )
+        fields = ('game', 'date_since', 'date_until',
+                  'place', 'type', 'player')
 
     def __init__(self, places, players, games, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.fields['players'].choices = self.empty + list(map(lambda x: (x.get('user__username'), x.get('user__username')), players))
-        self.fields['places'].choices = self.empty + list(map(lambda x: (x.get('match__place'), x.get('match__place')), places))
-        self.fields['games'].choices = self.empty + list(map(lambda x: (x.get('match__game__name_rus'), x.get('match__game__name_rus')), games))
+        self.fields['player'].queryset = players
+        self.fields['place'].queryset = places
+        self.fields['game'].queryset = games

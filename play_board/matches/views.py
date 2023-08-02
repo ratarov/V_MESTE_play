@@ -3,13 +3,13 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from games.models import Game
-from users.models import User
+from users.models import User, Place
 
 from .forms import MatchForm, PlayerForm, UserMatchesForm, StatFilterForm
 from .models import Match, Player
 from .utils import (create_from_match, create_from_meeting, create_new_match,
                     filter_user_matches, get_paginated_matches,
-                    get_user_matches)
+                    filter_match_plays)
 
 
 @login_required
@@ -167,22 +167,21 @@ from django.db import connection
 @login_required
 def statistics(request):
     """Список партий пользователя."""
-    match_plays = Player.objects.filter(match__players__user=request.user, match__status=Match.Status.OK).select_related('user', 'match', 'match__game')
+    match_plays = Player.objects.filter(match__players__user=request.user, match__status=Match.Status.OK)
+    user_places = Place.objects.filter(matches__players__user=request.user).distinct()
+    user_games = Game.objects.filter(matches__players__user=request.user).distinct()
+    user_opponents = User.objects.filter(played__match__players__user=request.user).distinct()
+    form = StatFilterForm(places=user_places, players=user_opponents, games=user_games, data=request.GET or None)
+
+    match_plays = filter_match_plays(request, match_plays)
+
     common_stat = match_plays.filter(user=request.user).aggregate(
         total=Sum('match__quantity'),
         wins=Sum('match__quantity', filter=Q(winner=True)),
         avg_length=Avg('match__length', filter=Q(match__length__gte=0)),
         games=Count('match__game', distinct=True),
-        # one=Sum('match__quantity', filter=Count('meeting__players')=1),
-        # two=Sum('match__quantity', filter=Q(Count('meeting__players')==2)),
-        three=Sum('match__quantity', filter=Q(Count('match__players')==3)),
-        # four=Sum('match__quantity', filter=Q(pl_qty=4)),
-        # five=Sum('match__quantity', filter=Q(pl_qty=5)),
-        # six=Sum('match__quantity', filter=Q(pl_qty__gte=6)),
     )
-    print('а вот и ',common_stat.get('three'))
-    games = match_plays.filter(user=request.user)
-    games = games.values(
+    games = match_plays.filter(user=request.user).values(
         'match__game__name_rus',
     ).annotate(
         total=Sum('match__quantity'),
@@ -196,17 +195,15 @@ def statistics(request):
         total=Sum('match__quantity'),
         wins=Sum('match__quantity', filter=Q(winner=True)),
         losts=Sum('match__quantity', filter=Q(winner=False)),
-        games=Count('match__game'),
+        games=Count('match__game', distinct=True),
     ).order_by('-total')
 
     places = match_plays.filter(user=request.user).values(
-        'match__place'
+        'match__place__name'
     ).annotate(
         total=Sum('match__quantity'),
-        games=Count('match__game'),
     ).order_by('-total')
 
-    form = StatFilterForm(places=places, players=players, games=games, data=request.GET or None)
     context = {
         'matches': common_stat,
         'players': players,

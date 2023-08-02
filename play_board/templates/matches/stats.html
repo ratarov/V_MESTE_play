@@ -4,43 +4,39 @@
 {% load user_filters %}
 {% block title %}Статистика игр{% endblock %}
 {% block content %}
-
-
-
   <div class="row border rounded shadow-sm bg-white mb-3">
     <div class="col-12 mb-3">
       <p>
         <h4>Статистика игр {{ period }} </h4> 
-
       </p>
 
       <div class="col-12 mb-3">
-
         <form method="get">
           <div class="form-group row my-3">
-            <div class="col-7 col-md-2 mb-2">
+            <div class="col-12 col-md-4">
               <label class="form-label"><small class="text-muted">Игра:</small></label>
-              {{ form.games }}
+              {{ form.game }}
             </div>
-            <div class="col-5 col-md-2 mb-2">
+            <div class="col-6 col-md-2">
               <label class="form-label"><small class="text-muted">Не раньше:</small></label>
               {{ form.date_since }}
             </div>
-            <div class="col-5 col-md-2 mb-2">
+            <div class="col-6 col-md-2">
               <label class="form-label"><small class="text-muted">Не позже:</small></label>
               {{ form.date_until }} 
             </div>
-
-            <div class="col-5 col-md-2 mb-2">
-              <label class="form-label"><small class="text-muted">Статус:</small></label>
-              {{ form.places|addclass:'form-control' }} 
+            <div class="col-0 col-md-4">
             </div>
-            <div class="col-5 col-md-2 mb-2">
-              <label class="form-label"><small class="text-muted">Статус:</small></label>
-              {{ form.players|addclass:'form-control' }} 
+            <div class="col-12 col-md-4">
+              <label class="form-label"><small class="text-muted">Место:</small></label>
+              {{ form.place|addclass:'form-control' }} 
             </div>
-            <div class="col-5 col-md-2 mb-2">
-              <label class="form-label"><small class="text-muted">Статус:</small></label>
+            <div class="col-5 col-md-2">
+              <label class="form-label"><small class="text-muted">Соперник:</small></label>
+              {{ form.player|addclass:'form-control' }} 
+            </div>
+            <div class="col-5 col-md-2">
+              <label class="form-label"><small class="text-muted">Тип игры:</small></label>
               {{ form.type|addclass:'form-control' }} 
             </div>
 
@@ -48,9 +44,11 @@
               <div class="row d-flex justify-content-end ">
                 <span style="color:white">.</span>
               </div>
-              <div class="row d-flex justify-content-end ">
-                <button type="submit" class="btn btn-sm btn-danger">
-                  Найти
+              <div class="row d-flex justify-content-end px-2">
+                <button type="submit" class="btn btn-danger">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                  </svg>
                 </button>
               </div>  
             </div>
@@ -61,26 +59,23 @@
         Всего побед: {{ matches.wins }}<br>
         Среднее время игры: {{ matches.avg_length }}<br>
         Игр: {{ matches.wins }}<br>
-        Всего побед: {{ matches.wins }}<br>
 
 
         Игроков: {{ players.count }}<br>
         {% for player in players %}
-          {{ player.user__username}} сыграл {{ player.total }} / выиграл {{ player.wins }} в играх {{ player.games }}<br>
-        {% endfor %}
 
-        Топ-5 игр:<br>
-        {% for game in games|slice:":5" %}
-          {{ game.match__game__name_rus}} сыграл {{ game.total }} / выиграл {{ game.wins }}<br>
         {% endfor %}
+        <br>
+        Топ игр: {{ games.count }}<br>
+        {% for game in games %}
 
-        {% for place in places|slice:":5" %}
-          {{ place.match__place}} сыграл {{ place.total }} <br>
         {% endfor %}
+        <br>{{ places.count }}
+        {% for place in places %}
+         
+        {% endfor %}
+        <br>
 
-        {% for number in numbers %}
-          Играл в {{ number.qty}} всего партий {{ number.total }} <br>
-        {% endfor %}
         <div class="form-group row my-3">
           <div class="col-12 col-md-4 mb-2">
             <canvas id="players" width="20" height="20"></canvas> 
@@ -91,10 +86,6 @@
           </div>
           <div class="col-12 col-md-4 mb-2">
             <canvas id="games" width="20" height="20"></canvas> 
-          </div>
-
-          <div class="col-12 col-md-4 mb-2">
-            <canvas id="players_number" width="20" height="20"></canvas> 
           </div>
         </div>    
         
@@ -148,7 +139,7 @@
           },
           title: {
             display: true,
-            text: 'Соперники'
+            text: 'Топ соперников'
           }
         }
       }
@@ -197,7 +188,7 @@
     new Chart(ctx3, {
       type: 'doughnut',
       data: {
-        labels: [{% for place in places|slice:":5" %}'{{ place.match__place }}', {% endfor %}],
+        labels: [{% for place in places|slice:":5" %}'{{ place.match__place__name }}', {% endfor %}],
         datasets: [{
           label: 'Игр',
           data: [{% for place in places|slice:":5" %}'{{ place.total }}', {% endfor %}],
@@ -220,29 +211,5 @@
       }
     });
 
-    const ctx4 = document.getElementById('players_number');
-
-    new Chart(ctx4, {
-      type: 'doughnut',
-      data: {
-        labels: ['1', '2', '3', '4', '5', '6+'],
-        datasets: [{
-          label: 'Игр',
-          data: ['{{matches.one}}', '{{matches.two}}', '{{matches.three}}', '{{matches.four}}', '{{matches.five}}', '{{matches.six}}'],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: 'Кол-во игроков'
-          }
-        }
-      }
-    });
   </script>
 {% endblock %}

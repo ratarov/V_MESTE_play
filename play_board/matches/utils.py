@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Q
 from django.db.transaction import atomic
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -27,7 +27,7 @@ def create_from_meeting(creator, meeting_id):
         'creator': creator,
         'date': meeting.start_date,
         'game': meeting.games.all()[0],
-        'place': meeting.place.get_name(),
+        'place': meeting.place,
     }
     participants = meeting.participants.all()
     users, guest_players = [], 0
@@ -108,3 +108,23 @@ def get_paginated_matches(queryset, request):
     paginator = Paginator(queryset, settings.MATCHES_ON_PAGE)
     page_number = request.GET.get('page')
     return paginator.get_page(page_number)
+
+
+def filter_match_plays(request, match_plays):
+    game = request.GET.get('game')
+    date_since = request.GET.get('date_since', default=timezone.now() - timezone.timedelta(days=30))
+    date_until = request.GET.get('date_until', default=timezone.now())
+    place = request.GET.get('place')
+    type = request.GET.get('type')
+    player = request.GET.get('player')
+
+    match_plays = match_plays.filter(match__date__gte=date_since, match__date__lte=date_until)
+    if game:
+        match_plays = match_plays.filter(match__game=game)
+    if place:
+        match_plays = match_plays.filter(match__place=place)
+    if type:
+        match_plays = match_plays.filter(match__type=type)
+    if player:
+        return match_plays.filter(Q(user=player) | Q(user=request.user))
+    return match_plays

@@ -32,8 +32,11 @@
         </div>
         <div class="col-12 col-lg-3 order-4 order-lg-3">
           <img class="d-inline d-lg-none" src="{% static 'img/icons/geo-alt.svg' %}" width="16" height="16">
-          {{ match.place }}
-          
+          {% if match.place %}
+            {{ match.place }}
+          {% else %}
+            Не указано
+          {% endif %}
         </div>
         <div class="col-4 col-lg-2 d-lg-flex justify-content-center order-3 order-lg-4">
           <img class="d-inline d-lg-none" src="{% static 'img/icons/people.svg' %}" width="16" height="16">

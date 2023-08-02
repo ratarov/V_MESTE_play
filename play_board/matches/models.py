@@ -1,7 +1,7 @@
 from django.db import models
 
 from games.models import Game
-from users.models import User
+from users.models import User, Place
 
 
 class Match(models.Model):
@@ -28,12 +28,14 @@ class Match(models.Model):
         on_delete=models.PROTECT,
         null=True,
         verbose_name='Игра',
-        related_name='played',
+        related_name='matches',
     )
-    place = models.CharField(
-        verbose_name='Место проведения партии',
-        max_length=50,
-        default='квартира/дом',
+    place = models.ForeignKey(
+        Place,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name='Место игры',
+        related_name='matches',
     )
     type = models.CharField(
         verbose_name='Тип игры',
