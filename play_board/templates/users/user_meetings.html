@@ -13,11 +13,11 @@
         <div class="form-group row my-3">
           <div class="col-5 col-md-2 mb-2">
             <label class="form-label"><small class="text-muted">Статус:</small></label>
-            {{ form.status|addclass:'form-control form-control-sm' }} 
+            {{ form.status|addclass:'form-control' }} 
           </div>
           <div class="col-5 col-md-2 mb-2">
             <label class="form-label"><small class="text-muted">Хозяин:</small></label>
-            {{ form.host|addclass:'form-control form-control-sm' }}
+            {{ form.host|addclass:'form-control' }}
           </div>
           <div class="col-5 col-md-2 mb-2">
             <label class="form-label"><small class="text-muted">Не раньше:</small></label>
@@ -32,7 +32,7 @@
               <span style="color:white">.</span>
             </div>
             <div class="row d-flex justify-content-end ">
-              <button type="submit" class="btn btn-sm btn-danger">
+              <button type="submit" class="btn btn-danger">
                 Найти
               </button>
             </div>  
@@ -65,7 +65,7 @@
                 <small class="text-muted">{{ meeting.creator.username }}</small>
               </td>
               <td>
-                {{ meeting.place.get_name }}<br>
+                {{ meeting.place.name }}<br>
                 <small class="text-muted">{{ meeting.place.address }}, {{ meeting.place.building }}</small>
               </td>
               <td>{{ meeting.total_players }} / {{ meeting.max_players }}</td>

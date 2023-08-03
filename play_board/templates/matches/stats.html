@@ -55,32 +55,25 @@
           </div>
         </form>
 
-        Всего игр: {{ matches.total }}<br>
-        Всего побед: {{ matches.wins }}<br>
-        Среднее время игры: {{ matches.avg_length }}<br>
-        Игр: {{ matches.wins }}<br>
-
-
-        Игроков: {{ players.count }}<br>
+        Всего партий: {% if matches.total %}{{ matches.total }}{% else %}0{% endif %}<br>
+        Побед: {% if matches.wins %}{{ matches.wins }} ({{ matches.wins|divide:matches.total }}%){% else %}0{% endif %}<br>
+        Среднее время игры: {% if matches.avg_length %}{{ matches.avg_length }}{% else %}0{% endif %} мин.<br>
+        Соперников на сайте: {{ players.count|add:-1 }}<br>
+        Настольных игр: {{ games.count }}<br>
+        Мест для игр: {{ places.count }}
         {% for player in players %}
-
         {% endfor %}
-        <br>
-        Топ игр: {{ games.count }}<br>
+
         {% for game in games %}
-
         {% endfor %}
-        <br>{{ places.count }}
+  
         {% for place in places %}
-         
         {% endfor %}
-        <br>
 
         <div class="form-group row my-3">
           <div class="col-12 col-md-4 mb-2">
             <canvas id="players" width="20" height="20"></canvas> 
           </div>
-
           <div class="col-12 col-md-4 mb-2">
             <canvas id="places" width="20" height="20"></canvas> 
           </div>

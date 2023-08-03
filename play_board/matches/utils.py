@@ -1,10 +1,9 @@
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.db.models import Exists, OuterRef, Q
+from django.db.models import Avg, Count, Exists, OuterRef, Q, Sum
 from django.db.transaction import atomic
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-
 from meetings.models import Meeting
 
 from .models import Match, Player
@@ -60,6 +59,7 @@ def create_from_match(creator, match_id):
     match.pk = None
     match.status = Match.Status.DRAFT
     match.creator = creator
+    match.date = timezone.now().date()
     match.save()
     players = [Player(
         match=match, name=player.name, user=player.user,
@@ -112,13 +112,16 @@ def get_paginated_matches(queryset, request):
 
 def filter_match_plays(request, match_plays):
     game = request.GET.get('game')
-    date_since = request.GET.get('date_since', default=timezone.now() - timezone.timedelta(days=30))
+    date_since = request.GET.get(
+        'date_since', default=timezone.now() - timezone.timedelta(days=90)
+    )
     date_until = request.GET.get('date_until', default=timezone.now())
     place = request.GET.get('place')
     type = request.GET.get('type')
     player = request.GET.get('player')
 
-    match_plays = match_plays.filter(match__date__gte=date_since, match__date__lte=date_until)
+    match_plays = match_plays.filter(match__date__gte=date_since,
+                                     match__date__lte=date_until)
     if game:
         match_plays = match_plays.filter(match__game=game)
     if place:
@@ -128,3 +131,43 @@ def filter_match_plays(request, match_plays):
     if player:
         return match_plays.filter(Q(user=player) | Q(user=request.user))
     return match_plays
+
+
+def get_common_stats(match_plays, user):
+    return (match_plays.filter(user=user).aggregate(
+                total=Sum('match__quantity'),
+                wins=Sum('match__quantity', filter=Q(winner=True)),
+                avg_length=Avg('match__length', filter=Q(match__length__gte=0)),
+                games=Count('match__game', distinct=True),
+            ))
+
+
+def get_games_stat(match_plays, user):
+    return (match_plays.
+            filter(user=user).
+            values('match__game__name_rus').
+            annotate(
+                total=Sum('match__quantity'),
+                losts=Sum('match__quantity', filter=Q(winner=False)),
+                wins=Sum('match__quantity', filter=Q(winner=True)),
+            ).
+            order_by('-total'))
+
+
+def get_player_stats(match_plays):
+    return (match_plays.
+            exclude(user=None).values('user__username').
+            annotate(
+                total=Sum('match__quantity'),
+                wins=Sum('match__quantity', filter=Q(winner=True)),
+                losts=Sum('match__quantity', filter=Q(winner=False)),
+                games=Count('match__game', distinct=True),
+            ).
+            order_by('-total'))
+
+
+def get_places_stats(match_plays, user):
+    return (match_plays.
+            filter(user=user).values('match__place__name').
+            annotate(total=Sum('match__quantity')).
+            order_by('-total'))

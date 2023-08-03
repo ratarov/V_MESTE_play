@@ -1,6 +1,4 @@
-import json
-from pathlib import Path
-from random import random, randint
+from random import randint
 
 from django.utils import timezone
 from django.core.management.base import BaseCommand
@@ -15,7 +13,8 @@ class Command(BaseCommand):
         for _ in range(1000):
             try:
                 Match.objects.create(
-                    date=timezone.now() - timezone.timedelta(days=randint(1, 40)),
+                    date=timezone.now() - timezone.timedelta(days=randint(1,
+                                                                          40)),
                     game_id=randint(1, 100),
                     place_id=randint(10, 40),
                     status=Match.Status.OK,

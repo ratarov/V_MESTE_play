@@ -1,5 +1,9 @@
+from typing import Any, Dict, Mapping, Optional, Type, Union
 from django import forms
+from django.core.files.base import File
 from django.db.models import Q
+from django.db.models.base import Model
+from django.forms.utils import ErrorList
 from django.utils import timezone
 
 from users.models import User, Place
@@ -9,11 +13,11 @@ from .models import Player, Match
 
 
 class PlayerForm(forms.ModelForm):
+    """Форма для заполнения данных игрока в партии."""
     name = forms.CharField(
         max_length=30,
-        required=True,
         widget=forms.TextInput(attrs={
-            'class': 'form-control form-control-sm',
+            'class': 'form-control',
             'placeholder': 'Имя игрока',
         }),
     )
@@ -24,7 +28,7 @@ class PlayerForm(forms.ModelForm):
     username = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
-            'class': 'form-control form-control-sm',
+            'class': 'form-control',
             'list': 'users',
             'placeholder': 'Введите username',
         }),
@@ -32,14 +36,14 @@ class PlayerForm(forms.ModelForm):
     team = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
-            'class': 'form-control form-control-sm',
+            'class': 'form-control',
             'placeholder': 'Цвет/название',
         }),
     )
     score = forms.IntegerField(
         required=False,
         widget=forms.TextInput(attrs={
-            'class': 'form-control form-control-sm',
+            'class': 'form-control',
         }),
     )
 
@@ -47,11 +51,6 @@ class PlayerForm(forms.ModelForm):
         model = Player
         fields = ('name', 'user', 'username', 'team', 'score', 'winner')
 
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-        if not name:
-            raise forms.ValidationError('Имя - обязательное поле')
-        return name
 
     def clean_user(self):
         user = None
@@ -62,14 +61,20 @@ class PlayerForm(forms.ModelForm):
                 raise forms.ValidationError('Нет такого пользователя')
         return user
 
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        if not name:
+            raise forms.ValidationError('Имя - обязательное поле')
+        return name
+
 
 class MatchForm(forms.ModelForm):
-
+    """Форма для заполнения параметров партии"""
     date = forms.DateField(
         initial=timezone.now(),
         widget=forms.DateInput(
             format=('%Y-%m-%d'),
-            attrs={'class': 'form-control form-control-sm', 'type': 'date'}
+            attrs={'class': 'form-control', 'type': 'date'}
         )
     )
     game = forms.ModelChoiceField(
@@ -92,7 +97,9 @@ class MatchForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(MatchForm, self).__init__(*args, **kwargs)
         match_creator = self.instance.creator
-        self.fields['place'].queryset = Place.objects.filter(Q(creator=match_creator) | Q(matches__creator=match_creator)).distinct()
+        self.fields['place'].queryset = Place.objects.filter(
+            Q(creator=match_creator) | Q(matches__creator=match_creator)
+        ).distinct()
 
     def clean_status(self):
         if self.cleaned_data.get('ignore'):
@@ -101,6 +108,7 @@ class MatchForm(forms.ModelForm):
 
 
 class UserMatchesForm(forms.ModelForm):
+    """Форма для фильтра списка матчей."""
     status_options = [('', 'Не важно')] + Match.Status.choices
     status = forms.ChoiceField(choices=status_options, required=False)
     game = forms.ModelChoiceField(
@@ -130,6 +138,7 @@ class UserMatchesForm(forms.ModelForm):
 
 
 class StatFilterForm(forms.Form):
+    """Форма для фильтра статистики матчей."""
     empty = [('', '---------')]
     game = forms.ModelChoiceField(
         queryset=None,
@@ -140,7 +149,7 @@ class StatFilterForm(forms.Form):
     )
     date_since = forms.DateField(
         required=False,
-        initial=timezone.now() - timezone.timedelta(days=30),
+        initial=timezone.now() - timezone.timedelta(days=90),
         widget=forms.DateInput(
             format=('%Y-%m-%d'),
             attrs={'class': 'form-control', 'type': 'date'}
@@ -166,8 +175,17 @@ class StatFilterForm(forms.Form):
         fields = ('game', 'date_since', 'date_until',
                   'place', 'type', 'player')
 
-    def __init__(self, places, players, games, *args, **kwargs) -> None:
+    def __init__(self, user, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.fields['player'].queryset = players
-        self.fields['place'].queryset = places
-        self.fields['game'].queryset = games
+        self.fields['player'].queryset = (
+            User.objects.
+            filter(played__match__players__user=user).
+            distinct().
+            order_by('username')
+        )
+        self.fields['place'].queryset = (
+            Place.objects.filter(matches__players__user=user).distinct()
+        )
+        self.fields['game'].queryset = (
+            Game.objects.filter(matches__players__user=user).distinct()
+        )

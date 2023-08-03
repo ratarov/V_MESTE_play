@@ -33,8 +33,8 @@ def filter_meetings(place, request):
         meetings = meetings.filter(start_date__lte=date_until)
     if game:
         meetings = meetings.filter(games__id=game)
-    if request.user.is_authenticated:
-        meetings = meetings.exclude(creator=request.user)
+    # if request.user.is_authenticated:
+    #     meetings = meetings.exclude(creator=request.user)
     return (meetings.
             select_related('status', 'creator', 'place', 'place__type').
             prefetch_related('games').
@@ -56,7 +56,7 @@ def add_meeting_marker(map, meeting):
         <br>
         <b>Игры:</b> {games}
     '''
-    text = f'<b>{meeting.get_name()}</b><br><b>Игры:</b> {games}'
+    text = f'<b>{meeting.name}</b><br><b>Игры:</b> {games}'
     folium.Marker(
         location=[meeting.place.loc_lat, meeting.place.loc_lon],
         popup=folium.Popup(html, max_width=120),

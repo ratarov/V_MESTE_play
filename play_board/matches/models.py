@@ -83,7 +83,11 @@ class Player(models.Model):
         null=True,
         verbose_name='Партия',
     )
-    name = models.CharField(verbose_name='Имя', max_length=50)
+    name = models.CharField(
+        verbose_name='Имя',
+        max_length=50,
+        blank=True,
+    )
     user = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,

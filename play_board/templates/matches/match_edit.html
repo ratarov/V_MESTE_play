@@ -32,34 +32,35 @@
           {% for error in field.errors %} <u>{{ error|escape }}</u> {% endfor %}
         {% endfor %}
         <div class="form-group row my-3">
+
+          <div class="col-12 col-md-6 mb-1">
+            <label class="form-label"><b>Игра: *</b></label>
+            {{ match_form.game }}
+          </div>
+
+          <div class="col-6 col-md-3 mb-1">
+            <label class="form-label"><b>Кол-во партий:</b></label>
+            {{ match_form.quantity|addclass:'form-control' }}
+          </div>
+
+          <div class="col-6 col-md-3 mb-1">
+            <label class="form-label"><b>Тип игры:</b></label>
+            {{ match_form.type|addclass:'form-control' }}
+          </div>
+        
           <div class="col-12 col-md-6 mb-1">
             <label class="form-label"><b>Место:</b></label>
-            {{ match_form.place|addclass:'form-control form-control-sm' }} 
+            {{ match_form.place|addclass:'form-control' }} 
           </div>
-          
+
           <div class="col-6 col-md-3 mb-1">
             <label class="form-label"><b>Дата:</b></label>
             {{ match_form.date }}
           </div>
 
           <div class="col-6 col-md-3 mb-1">
-            <label class="form-label"><b>Тип игры:</b></label>
-            {{ match_form.type|addclass:'form-control form-control-sm' }}
-          </div>
-        
-          <div class="col-12 col-md-6 mb-1">
-            <label class="form-label"><b>Игра:</b></label>
-            {{ match_form.game }}
-          </div>
-
-          <div class="col-6 col-md-3 mb-1">
-            <label class="form-label"><b>Кол-во игр:</b></label>
-            {{ match_form.quantity|addclass:'form-control form-control-sm' }}
-          </div>
-
-          <div class="col-6 col-md-3 mb-1">
             <label class="form-label"><b>Время, минут:</b></label>
-            {{ match_form.length|addclass:'form-control form-control-sm' }}
+            {{ match_form.length|addclass:'form-control' }}
           </div>
 
           <div class="col-12 col-md-6 mb-1">

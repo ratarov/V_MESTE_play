@@ -3,13 +3,14 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from games.models import Game
-from users.models import User, Place
+from users.models import Place, User
 
-from .forms import MatchForm, PlayerForm, UserMatchesForm, StatFilterForm
+from .forms import MatchForm, PlayerForm, StatFilterForm, UserMatchesForm
 from .models import Match, Player
 from .utils import (create_from_match, create_from_meeting, create_new_match,
-                    filter_user_matches, get_paginated_matches,
-                    filter_match_plays)
+                    filter_match_plays, filter_user_matches, get_common_stats,
+                    get_games_stat, get_paginated_matches, get_places_stats,
+                    get_player_stats)
 
 
 @login_required
@@ -72,7 +73,7 @@ def match_edit(request, match_id):
         pk=match_id,
     )
     if match.creator != request.user:
-        return redirect('matches:match_detail', pk=match_id)
+        return redirect('matches:match_detail', match_id)
     match_form = MatchForm(request.POST or None, instance=match)
     player_form = PlayerForm(request.POST or None)
     if request.method == 'POST':
@@ -159,50 +160,21 @@ def player_delete(request, player_id):
     player.delete()
     return HttpResponse('')
 
-from django.db.models import Sum, Count, Q, Avg, Func
-from django.utils import timezone
-from datetime import datetime
-from django.db import connection
 
 @login_required
 def statistics(request):
-    """Список партий пользователя."""
-    match_plays = Player.objects.filter(match__players__user=request.user, match__status=Match.Status.OK)
-    user_places = Place.objects.filter(matches__players__user=request.user).distinct()
-    user_games = Game.objects.filter(matches__players__user=request.user).distinct()
-    user_opponents = User.objects.filter(played__match__players__user=request.user).distinct()
-    form = StatFilterForm(places=user_places, players=user_opponents, games=user_games, data=request.GET or None)
-
+    """Статистика партий пользователя."""
+    user = request.user
+    match_plays = Player.objects.filter(match__players__user=user,
+                                        match__status=Match.Status.OK)
+    
+    form = StatFilterForm(user=user, data=request.GET or None)
     match_plays = filter_match_plays(request, match_plays)
 
-    common_stat = match_plays.filter(user=request.user).aggregate(
-        total=Sum('match__quantity'),
-        wins=Sum('match__quantity', filter=Q(winner=True)),
-        avg_length=Avg('match__length', filter=Q(match__length__gte=0)),
-        games=Count('match__game', distinct=True),
-    )
-    games = match_plays.filter(user=request.user).values(
-        'match__game__name_rus',
-    ).annotate(
-        total=Sum('match__quantity'),
-        losts=Sum('match__quantity', filter=Q(winner=False)),
-        wins=Sum('match__quantity', filter=Q(winner=True)),
-    ).order_by('-total')
-
-    players = match_plays.exclude(user=None).values(
-        'user__username',
-    ).annotate(
-        total=Sum('match__quantity'),
-        wins=Sum('match__quantity', filter=Q(winner=True)),
-        losts=Sum('match__quantity', filter=Q(winner=False)),
-        games=Count('match__game', distinct=True),
-    ).order_by('-total')
-
-    places = match_plays.filter(user=request.user).values(
-        'match__place__name'
-    ).annotate(
-        total=Sum('match__quantity'),
-    ).order_by('-total')
+    common_stat = get_common_stats(match_plays, user)
+    games = get_games_stat(match_plays, user)
+    players = get_player_stats(match_plays)
+    places = get_places_stats(match_plays, user)
 
     context = {
         'matches': common_stat,

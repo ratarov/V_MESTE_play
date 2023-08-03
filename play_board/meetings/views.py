@@ -176,10 +176,8 @@ def join_meeting(request, guests, meeting_id):
 def leave_meeting(request, meeting_id):
     """Пользователь покидает встречу, к которой ранее присоединился"""
     meeting = get_object_or_404(Meeting, id=meeting_id)
-    participation = get_object_or_404(MeetingParticipation, meeting=meeting,
-                                      player=request.user)
     if request.user != meeting.creator:
-        participation.delete()
+        meeting.participants.filter(player=request.user).delete()
     return redirect('meetings:meeting_detail', meeting_id)
 
 

@@ -8,7 +8,7 @@
     <div class="col-12 mb-3">
       <p>
         <h4>Мои партии</h4>
-        <a class="btn btn-sm btn-outline-danger" href="{% url 'matches:create_new_match' %}">
+        <a class="btn btn-sm btn-danger" href="{% url 'matches:create_new_match' %}">
           Новая партия
         </a>
       </p>
@@ -21,7 +21,7 @@
               <label class="form-label"><small class="text-muted">Статус:</small></label>
               {{ form.status|addclass:'form-control' }} 
             </div>
-            <div class="col-7 col-md-2 mb-2">
+            <div class="col-7 col-md-4 mb-2">
               <label class="form-label"><small class="text-muted">Игра:</small></label>
               {{ form.game }}
             </div>

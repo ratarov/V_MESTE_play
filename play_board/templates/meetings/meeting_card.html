@@ -5,7 +5,7 @@
   <div class="col p-3 flex-column">
     <div class="row">
       <div class="col">
-        <a href="{% url 'meetings:meeting_detail' meeting.id %}"><b>{{ meeting.get_name }}</b></a><br>
+        <a href="{% url 'meetings:meeting_detail' meeting.id %}"><b>{{ meeting.name }}</b></a><br>
         <small>Организатор: <a href="{% url 'users:profile' meeting.creator.username %}" 
         title="Страница организатора"
         >{{ meeting.creator.username }}</a></small>

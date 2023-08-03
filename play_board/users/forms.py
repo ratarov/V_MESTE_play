@@ -70,14 +70,14 @@ class UserMeetingsForm(forms.ModelForm):
     date_since = forms.DateField(
         required=False, widget=forms.DateInput(
             format=('%Y-%m-%d'),
-            attrs={'class': 'form-control form-control-sm', 'type': 'date'}
+            attrs={'class': 'form-control', 'type': 'date'}
         )
     )
     date_until = forms.DateField(
         required=False,
         widget=forms.DateInput(
             format=('%Y-%m-%d'),
-            attrs={'class': 'form-control form-control-sm', 'type': 'date'}
+            attrs={'class': 'form-control', 'type': 'date'}
         )
     )
 
