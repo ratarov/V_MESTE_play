@@ -3,6 +3,8 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Sum
 
+from meetings.models import Meeting
+
 
 def get_paginated_games(queryset, request):
     """Пагинация списка игр"""
@@ -18,11 +20,12 @@ def filter_user_meetings(request):
     date_since = request.GET.get('date_since')
     date_until = request.GET.get('date_until')
     meetings = (
-        request.user.meetings.
-        order_by('-start_date').
+        Meeting.objects.
+        annotate(total_players=Sum('participants__total_qty')).
+        filter(players=request.user).
         select_related('creator', 'place', 'status', 'place__type').
-        prefetch_related('games').
-        annotate(total_players=Sum('participants__total_qty'))
+        prefetch_related('games', 'participants').
+        order_by('-start_date')
     )
     if status:
         meetings = meetings.filter(status__name=status)

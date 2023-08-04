@@ -54,7 +54,7 @@
             {% csrf_token %}
             {% for error in guests_form.guests.errors %} <u>{{ error|escape }}</u> {% endfor %}
             <div class="row">
-              <div class='col-12 col-md-auto'>
+              <div class='col-12 col-sm-auto'>
                 {% if participation %}
                   <a class="btn btn-sm btn-danger" href="{% url 'meetings:leave_meeting' meeting.id %}">
                     Покинуть встречу

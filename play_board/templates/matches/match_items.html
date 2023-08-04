@@ -14,7 +14,7 @@
       {% endif %}
       
     </div>
-    <a href="{% url 'matches:match_detail' match.id %}" class="match-item col-6 col-lg-9">
+    <a href="{% url 'matches:match_detail' match.id %}" class="match-item col-6 col-md-8 col-lg-9">
       <div class="row ">
         <div class="col-12 col-lg-5 order-1 order-lg-1">
           {% if match.is_winner %}
@@ -45,7 +45,7 @@
       </div>
     </a>
 
-    <div class="col-4 col-md d-flex justify-content-center gap-2 flex-wrap">
+    <div class="col-4 col-md-3 col-lg d-flex justify-content-center gap-1 flex-wrap">
       <a class="btn btn-sm btn-danger" href="{% url 'matches:create_from_match' match.id %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Повторить">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
           <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>

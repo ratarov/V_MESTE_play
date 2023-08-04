@@ -79,20 +79,20 @@ def meeting_create(request):
 def meeting_detail(request, meeting_id):
     """Страница 1 выбранной встречи"""
     meeting = get_object_or_404(
-        Meeting.objects.select_related(
-            'creator', 'place', 'status'
-        ).prefetch_related('games').annotate(
-            total_players=Sum('participants__total_qty')
-        ),
-        id=meeting_id
+        (Meeting.objects.
+         select_related('creator', 'place', 'status').
+         prefetch_related('games').
+         annotate(total_players=Sum('participants__total_qty'))
+         ),
+        id=meeting_id,
     )
     comments = meeting.comments.select_related('creator')
     comment_form = CommentForm()
 
     participation = None
     if (request.user.is_authenticated and meeting.participants.
-            filter(player=request.user).exists()):
-        participation = meeting.participants.get(player=request.user)
+            filter(player=request.user).first()):
+        participation = meeting.participants.filter(player=request.user).first()
 
     guests_form = GuestForm(user=request.user, meeting=meeting,
                             data=request.POST or None, instance=participation)
@@ -160,13 +160,14 @@ def meeting_cancel(request, meeting_id):
 def join_meeting(request, guests, meeting_id):
     """Присоединение пользователя к встрече с проверкой мест для гостей"""
     meeting = get_object_or_404(Meeting, id=meeting_id)
-    if not meeting.participants.filter(player=request.user).exists():
+    user = request.user
+    if not meeting.participants.filter(player=user).first():
         meeting.participants.create(
-            player=request.user,
+            player=user,
             guests=guests
         )
     else:
-        participation = meeting.participants.get(player=request.user)
+        participation = meeting.participants.filter(player=user).first()
         participation.guests = guests
         participation.save()
     return redirect('meetings:meeting_detail', meeting_id)
@@ -184,11 +185,10 @@ def leave_meeting(request, meeting_id):
 @login_required
 def ban_player(request, meeting_id, username):
     """Добавление игрока, присоединившегося к встрече, в черный список"""
-    meeting = get_object_or_404(Meeting, id=meeting_id)
-    player = get_object_or_404(User, username=username)
+    meeting = get_object_or_404(Meeting.objects.select_related('creator'), id=meeting_id)
     participation = get_object_or_404(MeetingParticipation, meeting=meeting,
-                                      player=player)
-    if meeting.creator == request.user and meeting.creator != player:
+                                      player__username=username)
+    if meeting.creator == request.user and meeting.creator.username != username:
         participation.status = 'BAN'
         participation.save()
     return redirect('meetings:meeting_detail', meeting_id)
@@ -199,12 +199,16 @@ def unban_player(request, meeting_id, username):
     """Исключение игрока из черного списка встречи. Если есть место с учетом
        гостя, игрок возвращается в список участников.
     """
-    meeting = get_object_or_404(Meeting, id=meeting_id)
-    player = get_object_or_404(User, username=username)
+    meeting = get_object_or_404(
+        (Meeting.objects.
+         annotate(total_players=Sum('participants__total_qty')).
+         select_related('creator')),
+        id=meeting_id
+    )
     participation = get_object_or_404(MeetingParticipation, meeting=meeting,
-                                      player=player)
+                                      player__username=username)
     if meeting.creator == request.user:
-        if (participation.total_qty + meeting.get_total_players()
+        if (participation.guests + 1 + meeting.total_players
                 <= meeting.max_players):
             participation.status = 'ACT'
             participation.save()

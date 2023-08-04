@@ -34,12 +34,10 @@
         </div>
         <div class="col-12 col-md-12 mb-1">
         </div>
-        <div class="col-12 col-md-8 mb-1">
+        <div class="col-12 col-md-4 mb-1">
           <label class="form-label"><b>Username</b></label>
           {{ form.username|addclass:'form-control' }}
           <small class="form-text text-muted">Видно другим игрокам</small> 
-        </div>
-        <div class="col-md-12 mb-1"> 
         </div>
         <div class="col-6 col-md-4 mb-1">
           <label class="form-label"><b>Имя</b></label>
@@ -51,8 +49,7 @@
           {{ form.last_name|addclass:'form-control' }}
           <small class="form-text text-muted">Видно другим игрокам</small> 
         </div>
-        <div class="col-md-12 mb-1"> 
-        </div>
+
         <div class="col-6 col-md-4 mb-1">
           <label class="form-label"><b>Страна</b></label>
           {{ form.country|addclass:'form-control' }}
@@ -63,20 +60,17 @@
           {{ form.city|addclass:'form-control' }}
           <small class="form-text text-muted">Ваш город</small> 
         </div>
-        <div class="col-md-12 mb-1"> 
-        </div>
-        <div class="col-12 col-md-4 mb-1">
-          <label class="form-label"><b>Телеграм аккаунт</b></label>
-          {{ form.telegram|addclass:'form-control' }}
-          <small class="form-text text-muted">Для бота - другие игроки его не увидят</small> 
-        </div>
         <div class="col-6 col-md-4 mb-1">
           <label class="form-label"><b>Электронная почта</b></label>
           {{ form.email|addclass:'form-control' }}
           <small class="form-text text-muted">Для восстановления пароля</small> 
         </div>
-        <div class="col-md-12 mb-1"> 
+        <div class="col-12 col-md-4 mb-1">
+          <label class="form-label"><b>Телеграм аккаунт</b></label>
+          {{ form.telegram|addclass:'form-control' }}
+          <small class="form-text text-muted">Для бота - никто его не увидят</small> 
         </div>
+
         <div class="col-6 col-md-4 mb-1">
           <label class="form-label"><b>BGG ник</b></label>
           {{ form.bgg_account|addclass:'form-control' }}
@@ -87,7 +81,7 @@
           {{ form.tesera_account|addclass:'form-control' }}
           <small class="form-text text-muted">Ник на tesera.ru</small> 
         </div>
-        <div class="col-12 col-md-8 mb-1">
+        <div class="col-12 mb-1">
           <label class="form-label"><b>О себе</b></label>
           {{ form.about|addclass:'form-control' }}
           <small class="form-text text-muted">Расскажите о себе, интересах, опыте в настольных играх</small> 

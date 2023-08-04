@@ -15,7 +15,7 @@ def get_user_matches(user):
             annotate(is_winner=Exists(Player.objects.filter(
                 user=user, match_id=OuterRef('id'), winner=True
             ))).
-            select_related('game', 'creator').
+            select_related('game', 'creator', 'place').
             prefetch_related('players', 'players__user'))
 
 

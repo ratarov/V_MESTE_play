@@ -1,9 +1,5 @@
-from typing import Any, Dict, Mapping, Optional, Type, Union
 from django import forms
-from django.core.files.base import File
 from django.db.models import Q
-from django.db.models.base import Model
-from django.forms.utils import ErrorList
 from django.utils import timezone
 
 from users.models import User, Place
@@ -50,7 +46,6 @@ class PlayerForm(forms.ModelForm):
     class Meta:
         model = Player
         fields = ('name', 'user', 'username', 'team', 'score', 'winner')
-
 
     def clean_user(self):
         user = None

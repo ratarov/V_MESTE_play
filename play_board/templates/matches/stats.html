@@ -13,29 +13,29 @@
       <div class="col-12 mb-3">
         <form method="get">
           <div class="form-group row my-3">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-5 col-lg-4">
               <label class="form-label"><small class="text-muted">Игра:</small></label>
               {{ form.game }}
             </div>
-            <div class="col-6 col-md-2">
+            <div class="col-6 col-md-3 col-lg-2">
               <label class="form-label"><small class="text-muted">Не раньше:</small></label>
               {{ form.date_since }}
             </div>
-            <div class="col-6 col-md-2">
+            <div class="col-6 col-md-3 col-lg-2">
               <label class="form-label"><small class="text-muted">Не позже:</small></label>
               {{ form.date_until }} 
             </div>
-            <div class="col-0 col-md-4">
+            <div class="col-0 col-md-1 col-lg-4">
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-5 col-lg-4">
               <label class="form-label"><small class="text-muted">Место:</small></label>
               {{ form.place|addclass:'form-control' }} 
             </div>
-            <div class="col-5 col-md-2">
+            <div class="col-5 col-md-3 col-lg-2">
               <label class="form-label"><small class="text-muted">Соперник:</small></label>
               {{ form.player|addclass:'form-control' }} 
             </div>
-            <div class="col-5 col-md-2">
+            <div class="col-5 col-md-3 col-lg-2">
               <label class="form-label"><small class="text-muted">Тип игры:</small></label>
               {{ form.type|addclass:'form-control' }} 
             </div>
@@ -71,13 +71,13 @@
         {% endfor %}
 
         <div class="form-group row my-3">
-          <div class="col-12 col-md-4 mb-2">
+          <div class="col-12 col-md-6 col-xl-4 mb-2">
             <canvas id="players" width="20" height="20"></canvas> 
           </div>
-          <div class="col-12 col-md-4 mb-2">
+          <div class="col-12 col-md-6 col-xl-4 mb-2">
             <canvas id="places" width="20" height="20"></canvas> 
           </div>
-          <div class="col-12 col-md-4 mb-2">
+          <div class="col-12 col-md-6 col-xl-4 mb-2">
             <canvas id="games" width="20" height="20"></canvas> 
           </div>
         </div>    
