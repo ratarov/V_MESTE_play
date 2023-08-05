@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 import sentry_sdk
+from django.core.management.utils import get_random_secret_key 
 from dotenv import load_dotenv
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import ignore_logger
@@ -9,7 +10,7 @@ from sentry_sdk.integrations.logging import ignore_logger
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR.parent, 'infra-vmeste/.env'), verbose=True)
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', default=get_random_secret_key())
 DEBUG = os.getenv('DEBUG', default='False') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='*').split(', ')
 DOMAIN = '127.0.0.1:8000' if DEBUG else 'v-meste.fun'
@@ -77,11 +78,11 @@ WSGI_APPLICATION = 'play_board.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'NAME': os.getenv('DB_NAME', default='postgres'),
+        'USER': os.getenv('POSTGRES_USER', default='postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
+        'HOST': os.getenv('DB_HOST', default='db'),
+        'PORT': os.getenv('DB_PORT', default=5432),
     }
 }
 
@@ -90,8 +91,6 @@ DATABASES = {
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_USER_MODEL = 'users.User'
-
-# SITE_ID = 1
 
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
@@ -159,8 +158,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = Path(BASE_DIR, 'static')
-STATICFILES_DIRS = [Path(BASE_DIR, 'static')]
+STATIC_ROOT = Path(BASE_DIR, 'static')
+# STATICFILES_DIRS = [Path(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = Path(BASE_DIR, 'media')
