@@ -84,9 +84,8 @@ def match_edit(request, match_id):
             player.match = match
             player.save()
             return redirect('matches:player_detail', player.id)
-        else:
-            context = {'player_form': player_form}
-            return render(request, 'matches/player_form.html', context)
+        context = {'player_form': player_form}
+        return render(request, 'matches/player_form.html', context)
 
     context = {
         'player_form': player_form,

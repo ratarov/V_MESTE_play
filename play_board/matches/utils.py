@@ -99,7 +99,7 @@ def filter_user_matches(request):
     if date_since:
         matches = matches.filter(date__gte=date_since)
     if date_until:
-        matches = matches.filter(date__lte=date_until)
+        return matches.filter(date__lte=date_until)
     return matches
 
 
