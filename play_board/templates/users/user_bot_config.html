@@ -18,7 +18,7 @@
     <p>Укажите telegram-аккаунт в <a href="{% url 'users:user_info_edit' %}">настройках пользователя</a>.</p>
   </div>  
   {% elif not user.bot_config.tg_id %}
-    <div class="col-12 col-md-7 mb-3">
+    <div class="col-12 mb-3">
       Для управления рассылкой телеграм-бота необходимо его активировать:<br>
       1. Перейдите по ссылке <a href='https://t.me/vmeste_v_meste_bot' target="_blank">https://t.me/vmeste_v_meste_bot</a> или qr-коду<br>
       <div class="col-12 col-md-6 py-4">

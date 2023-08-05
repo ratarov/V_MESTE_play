@@ -135,11 +135,11 @@ def filter_match_plays(request, match_plays):
 
 def get_common_stats(match_plays, user):
     return (match_plays.filter(user=user).aggregate(
-                total=Sum('match__quantity'),
-                wins=Sum('match__quantity', filter=Q(winner=True)),
-                avg_length=Avg('match__length', filter=Q(match__length__gte=0)),
-                games=Count('match__game', distinct=True),
-            ))
+        total=Sum('match__quantity'),
+        wins=Sum('match__quantity', filter=Q(winner=True)),
+        avg_length=Avg('match__length', filter=Q(match__length__gte=0)),
+        games=Count('match__game', distinct=True),
+    ))
 
 
 def get_games_stat(match_plays, user):

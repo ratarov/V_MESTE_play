@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from folium.plugins import MarkerCluster
 
 from core.geolocation import get_geolocation
-from users.models import User
 
 from .forms import CommentForm, GuestForm, MeetingForm, MeetingSearchForm
 from .models import Comment, Meeting, MeetingParticipation, MeetingStatus
@@ -78,6 +77,7 @@ def meeting_create(request):
 
 def meeting_detail(request, meeting_id):
     """Страница 1 выбранной встречи"""
+    user = request.user
     meeting = get_object_or_404(
         (Meeting.objects.
          select_related('creator', 'place', 'status').
@@ -90,11 +90,11 @@ def meeting_detail(request, meeting_id):
     comment_form = CommentForm()
 
     participation = None
-    if (request.user.is_authenticated and meeting.participants.
-            filter(player=request.user).first()):
-        participation = meeting.participants.filter(player=request.user).first()
+    if (user.is_authenticated and meeting.participants.
+            filter(player=user).first()):
+        participation = meeting.participants.filter(player=user).first()
 
-    guests_form = GuestForm(user=request.user, meeting=meeting,
+    guests_form = GuestForm(user=user, meeting=meeting,
                             data=request.POST or None, instance=participation)
 
     if guests_form.is_valid():
@@ -185,10 +185,12 @@ def leave_meeting(request, meeting_id):
 @login_required
 def ban_player(request, meeting_id, username):
     """Добавление игрока, присоединившегося к встрече, в черный список"""
-    meeting = get_object_or_404(Meeting.objects.select_related('creator'), id=meeting_id)
+    meeting = get_object_or_404(Meeting.objects.select_related('creator'),
+                                id=meeting_id)
     participation = get_object_or_404(MeetingParticipation, meeting=meeting,
                                       player__username=username)
-    if meeting.creator == request.user and meeting.creator.username != username:
+    if (meeting.creator == request.user and meeting.
+            creator.username != username):
         participation.status = 'BAN'
         participation.save()
     return redirect('meetings:meeting_detail', meeting_id)

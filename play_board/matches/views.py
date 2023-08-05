@@ -2,8 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from games.models import Game
-from users.models import Place, User
+from users.models import User
 
 from .forms import MatchForm, PlayerForm, StatFilterForm, UserMatchesForm
 from .models import Match, Player
@@ -167,7 +166,7 @@ def statistics(request):
     user = request.user
     match_plays = Player.objects.filter(match__players__user=user,
                                         match__status=Match.Status.OK)
-    
+
     form = StatFilterForm(user=user, data=request.GET or None)
     match_plays = filter_match_plays(request, match_plays)
 
