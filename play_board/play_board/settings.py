@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 import sentry_sdk
-from django.core.management.utils import get_random_secret_key 
+from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import ignore_logger
