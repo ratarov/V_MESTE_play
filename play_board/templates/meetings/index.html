@@ -4,7 +4,7 @@
 {% block title %}Главная страница В МЕСТЕ{% endblock %}
 {% block content %}
   <div class="row border rounded shadow-sm bg-white justify-content-center">
-    <div class="col-12 col-md-4 py-4">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
       <p>
         <h2>Добро пожаловать на</h2>
         <h1 class="display-1" style="color:#dc3545"><b><b>В МЕСТЕ</b></b></h1>
@@ -14,19 +14,19 @@
         </h4>
       </p>
     </div>
-    <div class="col-12 col-md-4 py-4">
-      <img src="{% static 'img/playingboardgames2.jpg' %}" class="img-fluid rounded" alt="">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-5 col-xxl-4 py-4">
+      <img src="{% static 'img/main/(16).jpg' %}" class="img-fluid rounded" alt="">
     </div>
-    <div class="col-12 col-md-6 mb-3 text-center py-4">
+    <div class="col-12 col-md-8 col-xl-6 mb-3 text-center py-4">
       <h4>Найдите встречу рядом с собой:</h4>
       <form method="get" action="{% url 'meetings:meeting_search' %}">
         <div class="form-group row my-3">
-          <div class="col-12 col-md-12 mb-2">
+          <div class="col-12 col-lg-12 mb-2">
             {{ form.location|addplaceholder:'Введите название города или адрес' }} 
           </div>
           <div class="col-12">
             <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-sm btn-danger">
+              <button type="submit" class="btn btn-danger">
                 Искать
               </button>
             </div>  
@@ -34,23 +34,39 @@
         </div>
       </form>
     </div>  
-    <div class="col-12 text-center py-4">
+    <div class="col-12 text-center py-2">
       <h4>Хотите создать встречу сами?</h4>
       <div class="row justify-content-center">
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-4 col-xl-3">
           <h6><a href="{% url 'users:login' %}">Зарегистрируйтесь</a></h6>
           <img src="{% static 'img/reg.jpg' %}" class="img-fluid rounded" alt="">
         </div>
         
 
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-4 col-xl-3">
           <h6><a href="{% url 'users:user_info' %}">Добавьте место</a></h6>
           <img src="{% static 'img/place.jpg' %}" class="img-fluid rounded" alt="">
         </div>
 
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-4 col-xl-3 mb-4">
           <h6><a href="{% url 'meetings:meeting_create' %}">Создайте встречу</a></h6>
           <img src="{% static 'img/meeting.jpg' %}" class="img-fluid rounded" alt="">
+        </div>
+      </div>
+    </div>  
+
+    <div class="col-12 text-center py-2 mb-3">
+      <h4>Сыграли? Запишите результат!</h4>
+      <div class="row justify-content-center">      
+
+        <div class="col-12 col-md-4 col-xl-3">
+          <h6><a href="{% url 'matches:my_matches' %}">Сохраняйте партии</a></h6>
+          <img src="{% static 'img/add_match.jpg' %}" class="img-fluid rounded" alt="">
+        </div>
+
+        <div class="col-12 col-md-4 col-xl-3">
+          <h6><a href="{% url 'matches:stats' %}">Изучайте статистику</a></h6>
+          <img src="{% static 'img/graphs.jpg' %}" class="img-fluid rounded" alt="">
         </div>
       </div>
     </div>  

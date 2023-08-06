@@ -4,20 +4,43 @@
 {% load user_filters %}
 {% block title %}Настройки телеграм-бота{% endblock %}
 {% block content %}
-{% include 'users/_switcher.html' %}
-<div class="row border-start border-end border-bottom rounded shadow-sm bg-white mb-3">
+<div class="row border rounded shadow-sm bg-white mb-3">
   <div class="col-12 col-md-12">
     <p>
       <h4>Настройки телеграм-бота</h4> 
     </p>
   </div>
-  {% if user.bot_config.tg_id %}
+  {% if not user.telegram %}
+  <div class="col-12 mb-3">
+    <p>После настройки Telegram-бота Вы сможете получать рассылку о создании новых встреч по заданным фильтрам и 
+      получать уведомления об изменениях во встречах, к которым присоединились.</p>
+    <p>Никакого спама и рекламы. Рассылку всегда можно будет выключить.</p>
+    <p>Укажите telegram-аккаунт в <a href="{% url 'users:user_info_edit' %}">настройках пользователя</a>.</p>
+  </div>  
+  {% elif not user.bot_config.tg_id %}
+    <div class="col-12 mb-3">
+      Для управления рассылкой телеграм-бота необходимо его активировать:<br>
+      1. Перейдите по ссылке <a href='https://t.me/vmeste_v_meste_bot' target="_blank">https://t.me/vmeste_v_meste_bot</a> или qr-коду<br>
+      <div class="col-12 col-md-6 py-4">
+        <img src="{% static 'img/bot_qr.png' %}" class="img-fluid rounded" alt="">
+      </div>
+      2. Нажмите на кнопку start.<br>
+      <br>Или<br>
+      1. Откройте telegram <br>
+      2. Введите название бота: <b>@vmeste_v_meste_bot</b> в строку поиска.<br>
+      <div class="col-12 col-md-6 py-4">
+        <img src="{% static 'img/1.jpg' %}" class="img-fluid rounded" alt="">
+      </div>
+      3. Выберите бота.<br>
+      4. Нажмите на кнопку start.<br>
+    </div>  
+  {% else %}
     <div class="col-12 col-md-6 mb-3">
       <form method="post">
         {% csrf_token %}
         <p>
           {% for field in form %}
-            {% for error in field.errors %} <b><i>{{ error|escape }}</i></b><br> {% endfor %}
+            {% for error in field.errors %} <u>{{ error|escape }}</u><br> {% endfor %}
           {% endfor %}
         </p>
         <div class="form-check form-switch">
@@ -39,11 +62,11 @@
         </div>
         <div class="col-12 col-md-12 mb-2">
           <label class="form-label">Адрес - центр поиска: </label>
-          {{ form.address|addclass:'form-control form-control-sm' }} 
+          {{ form.address|addclass:'form-control' }} 
         </div>
         <div class="col-6 col-md-6 mb-2">
           <label class="form-label">Радиус поиска (км):</label>
-          {{ form.radius|addclass:'form-control form-control-sm' }}
+          {{ form.radius|addclass:'form-control' }}
         </div>
         <div class="col-12 col-md-12 mb-2">
           <label class="form-label">Выберите игру:</label>
@@ -58,23 +81,7 @@
     <div class="col-12 col-md-6 mb-3">
       {{ map|safe }}
     </div>
-  {% else %}
-    <div class="col-12 col-md-7 mb-3">
-      Для управления рассылкой телеграм-бота необходимо его активировать:<br>
-      1. Перейдите по ссылке <a href='https://t.me/vmeste_v_meste_bot' target="_blank">https://t.me/vmeste_v_meste_bot</a> или qr-коду<br>
-      <div class="col-12 col-md-6 py-4">
-        <img src="{% static 'img/bot_qr.png' %}" class="img-fluid rounded" alt="">
-      </div>
-      2. Нажмите на кнопку start.<br>
-      <br>Или<br>
-      1. Откройте telegram <br>
-      2. Введите название бота: <b>@vmeste_v_meste_bot</b> в строку поиска.<br>
-      <div class="col-12 col-md-6 py-4">
-        <img src="{% static 'img/1.jpg' %}" class="img-fluid rounded" alt="">
-      </div>
-      3. Выберите бота.<br>
-      4. Нажмите на кнопку start.<br>
-    </div>  
+  
   {% endif %}
 </div>
 {% endblock %}

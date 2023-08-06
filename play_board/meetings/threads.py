@@ -58,7 +58,7 @@ class NewCommentInformThread(InformThread):
         url_end = reverse('meetings:meeting_detail',
                           args=(self.comment.meeting.id,))
         return (f"Новое сообщение:\n"
-                f"Встреча: {self.comment.meeting.get_name()} "
+                f"Встреча: {self.comment.meeting.name} "
                 f"({self.comment.meeting.start_date})\n"
                 f"Игрок {self.comment.creator} написал:\n"
                 f"{self.comment.text}\n"

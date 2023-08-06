@@ -17,20 +17,20 @@ class MeetingSearchForm(forms.ModelForm):
         [5, 5]
     )
     location = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control form-control-sm'}
+        attrs={'class': 'form-control'}
     ))
     radius = forms.ChoiceField(choices=radius_vars, required=False)
     date_since = forms.DateField(
         required=False, widget=forms.DateInput(
             format=('%Y-%m-%d'),
-            attrs={'class': 'form-control form-control-sm', 'type': 'date'}
+            attrs={'class': 'form-control', 'type': 'date'}
         )
     )
     date_until = forms.DateField(
         required=False,
         widget=forms.DateInput(
             format=('%Y-%m-%d'),
-            attrs={'class': 'form-control form-control-sm', 'type': 'date'}
+            attrs={'class': 'form-control', 'type': 'date'}
         )
     )
     game = forms.ModelChoiceField(
@@ -114,7 +114,6 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('text',)
-
         widgets = {'text': forms.Textarea(attrs={
             'rows': '5', 'class': 'form-control',
         })}

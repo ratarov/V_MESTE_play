@@ -50,7 +50,8 @@ def gamer_collections(request, username, collection):
 @login_required
 def user_info(request):
     """Личный кабинет пользователя"""
-    return render(request, 'users/user_info.html')
+    places = request.user.places.select_related('type')
+    return render(request, 'users/user_info.html', {'places': places})
 
 
 @login_required

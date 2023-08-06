@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+{% load user_filters %}
+{% block title %}
+  {% if match.status == 'draft' %}
+    Новая партия  
+  {% else %}
+    Изменение партии в {{ match.game }}
+  {% endif %}
+{% endblock %}
+{% block content %}
+  <div class="row border rounded shadow-sm bg-white">
+    <div class="col-12 col-md-12 mb-3">
+             
+
+      <form method="post">
+        {% csrf_token %}
+        <p><h4>
+          {% if match.status == 'draft' %}
+            <mark>Черновик</mark> новой партии
+          {% else %}
+            Изменение партии в {{ match.game }}
+          {% endif %}
+        </h4></p>
+        <button class="btn btn-danger btn-sm" type="submit">Сохранить партию</button>
+        <a class="btn btn-sm btn-danger" href="{% url 'matches:match_delete' match.id %}" title="Удалить">
+          Удалить
+        </a>
+        <u>{{ match_form.non_field_errors }}</u>
+        {% for field in match_form %}
+          {% for error in field.errors %} <u>{{ error|escape }}</u> {% endfor %}
+        {% endfor %}
+        <div class="form-group row my-3">
+
+          <div class="col-12 col-md-6 mb-1">
+            <label class="form-label"><b>Игра: *</b></label>
+            {{ match_form.game }}
+          </div>
+
+          <div class="col-6 col-md-3 mb-1">
+            <label class="form-label"><b>Кол-во партий:</b></label>
+            {{ match_form.quantity|addclass:'form-control' }}
+          </div>
+
+          <div class="col-6 col-md-3 mb-1">
+            <label class="form-label"><b>Тип игры:</b></label>
+            {{ match_form.type|addclass:'form-control' }}
+          </div>
+        
+          <div class="col-12 col-md-6 mb-1">
+            <label class="form-label"><b>Место:</b></label>
+            {{ match_form.place|addclass:'form-control' }} 
+          </div>
+
+          <div class="col-6 col-md-3 mb-1">
+            <label class="form-label"><b>Дата:</b></label>
+            {{ match_form.date }}
+          </div>
+
+          <div class="col-6 col-md-3 mb-1">
+            <label class="form-label"><b>Время, минут:</b></label>
+            {{ match_form.length|addclass:'form-control' }}
+          </div>
+
+          <div class="col-12 col-md-6 mb-1">
+            <label class="form-label"><b>Комментарии:</b></label>
+            {{ match_form.comments }}
+          </div>
+
+          <div class="col-12 col-md-6 mb-1">
+            <label class="form-label"><b>Дополнительно:</b></label>
+            <div class="form-check form-switch">
+              <label class="form-label">Не учитывать в статистике</label>
+              {{ match_form.ignore|addclass:'form-check-input' }}
+            </div>
+            <div class="form-check form-switch">
+              <label class="form-label">Игра не завершена</label>
+              {{ match_form.incomplete|addclass:'form-check-input' }}
+            </div>
+          </div>
+
+        </div>
+
+      </form>
+
+      <button class="btn btn-danger btn-sm" hx-get="{% url 'matches:player_form' %}" hx-swap='beforeend' hx-target='#playerforms'>
+        Добавить игрока
+      </button>
+  
+      </div>
+      <div class="col-12 mb-3">
+
+        <div class="list-group list-group-flush border-bottom scrollarea">
+          <div class="list-group-item list-group-item-secondary py-3 lh-sm" >
+            <div class="row d-flex align-items-center">
+              
+              <div class="col-6 col-md-6">
+                <div class="row ">
+                  <div class="col-12 col-md-6 d-flex align-items-center">
+                    <strong>
+                      Игрок
+                    </strong>
+                  </div>
+                  <div class="col-12 col-md-6 d-flex align-items-center">
+                    <strong>
+                      Команда
+                    </strong>
+                  </div>
+                </div>
+              </div>
+        
+              <div class="col-4 col-md d-flex">
+                <strong>
+                  Результат
+                </strong>
+              </div>
+        
+              <div class="col-1 col-md-auto d-md-flex gap-2">
+
+              </div>
+            </div>
+          </div>
+
+          
+          {% comment %} <div class="list-group-item list-group-item-action py-3 lh-sm"> {% endcomment %}
+    
+            
+      
+
+        <div id="playerforms">
+          {% for player in match.players.all %}
+            {% include 'matches/player_detail.html' %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div> 
+
+{% endblock %}

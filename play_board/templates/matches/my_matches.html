@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+{% load user_filters %}
+{% block title %}Мои партии{% endblock %}
+{% block content %}
+  <div class="row border rounded shadow-sm bg-white mb-3">
+    <div class="col-12 mb-3">
+      <p>
+        <h4>Мои партии</h4>
+        <a class="btn btn-sm btn-danger" href="{% url 'matches:create_new_match' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+          </svg>
+          Новая партия
+        </a>
+      </p>
+
+      <div class="col-12 mb-3">
+
+        <form method="get">
+          <div class="form-group row my-3">
+            <div class="col-5 col-md-2 mb-2">
+              <label class="form-label"><small class="text-muted">Статус:</small></label>
+              {{ form.status|addclass:'form-control' }} 
+            </div>
+            <div class="col-7 col-md-4 mb-2">
+              <label class="form-label"><small class="text-muted">Игра:</small></label>
+              {{ form.game }}
+            </div>
+            <div class="col-5 col-md-2 mb-2">
+              <label class="form-label"><small class="text-muted">Не раньше:</small></label>
+              {{ form.date_since }}
+            </div>
+            <div class="col-5 col-md-2 mb-2">
+              <label class="form-label"><small class="text-muted">Не позже:</small></label>
+              {{ form.date_until }} 
+            </div>
+            <div class="col-2 col-md-1 align-self-center">
+              <div class="row d-flex justify-content-end ">
+                <span style="color:white">.</span>
+              </div>
+              <div class="row d-flex justify-content-end ">
+                <button type="submit" class="btn btn-sm btn-danger">
+                  Найти
+                </button>
+              </div>  
+            </div>
+          </div>
+        </form>
+
+        <div class="list-group list-group-flush border-bottom scrollarea">
+          <div class="list-group-item list-group-item-secondary py-3 lh-sm" >
+            <div class="row">
+              <div class="col-auto d-flex justify-content-center" style="width: 3rem">
+                Статус
+              </div>
+              <div class="col-6 col-md-8 col-lg-9">
+                <div class="row ">
+                  <div class="col-12 col-lg-5">
+                    Игра х кол-во
+                  </div>
+                  <div class="col-12 col-lg-2 d-lg-flex justify-content-center d-none d-lg-block">
+                    Дата
+                  </div>
+                  <div class="col-12 col-lg-3 d-none d-lg-block">
+                    Место
+                  </div>
+                  <div class="col-12 col-lg-2 d-lg-flex justify-content-center d-none d-lg-block">
+                    Игроки
+                  </div>
+                </div>
+              </div>
+        
+              <div class="col-4 col-md d-flex justify-content-center">        
+                Действия
+              </div>
+        
+            </div>
+          </div>
+ 
+          
+            {% include 'matches/match_items.html' %}
+          
+        </div>
+      </div>
+
+
+
+      
+    </div>
+
+    
+  </div>
+  
+{% endblock %}

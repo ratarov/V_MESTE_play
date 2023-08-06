@@ -3,12 +3,7 @@
 {% load static %}
 {% block title %}Мои коллекции{% endblock %}
 {% block content %}
-  {% if view_name == 'users:gamer_collections' %}
-    {% include 'users/_switcher.html' %}
-    <div class="row border-start border-end border-bottom rounded shadow-sm bg-white mb-3">
-  {% else %}
-    <div class="row border-start border-end border-bottom border-top rounded shadow-sm bg-white mb-3">
-  {% endif %}
+  <div class="row border rounded shadow-sm bg-white mb-3">
     <div class="col-12 col-md-12">
       <p>
         <h5>

@@ -4,7 +4,7 @@ from django.db import models
 class Game(models.Model):
     tesera_id = models.PositiveIntegerField(null=True, blank=True)
     bgg_id = models.PositiveIntegerField(null=True, blank=True)
-    name_rus = models.CharField(max_length=255)
+    name_rus = models.CharField(max_length=255, db_index=True)
     name_eng = models.CharField(max_length=255, null=True, blank=True)
     slug = models.SlugField(unique=True, max_length=100)
     description = models.TextField(null=True, blank=True)

@@ -2,7 +2,7 @@
 {% load user_filters %}
 {% block title %}Добавить/редактировать место{% endblock %}
 {% block content %}
-  <div class="row border-start border-end border-bottom rounded shadow-sm bg-white mb-3">
+  <div class="row border rounded shadow-sm bg-white mb-3">
     <div class="col-12 col-md-12">
       <p>
         <h4>
@@ -13,9 +13,9 @@
       </p>
       <form method="post">
         {% csrf_token %}
-        <i>{{ form.non_field_errors }}</i>
+        <u>{{ form.non_field_errors }}</u>
         {% for field in form %}
-          {% for error in field.errors %} <i>{{ error|escape }}</i> {% endfor %}
+          {% for error in field.errors %} <u>{{ error|escape }}</u> {% endfor %}
         {% endfor %}
         <div class="form-group row my-3">
           <div class="col-12 col-md-4 mb-1">
@@ -29,7 +29,7 @@
             <label class="form-label"><b>Название места *</b></label>
             {{ form.name|addclass:'form-control' }}
             <small class="form-text text-muted">
-              Если тип квартира, другие игроки увидят просто надпись "квартира"
+              Название заведения и уникальное название Вашего места
             </small>
           </div>
           <div class="col-12 col-md-4 mb-1">

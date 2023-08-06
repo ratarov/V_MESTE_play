@@ -7,18 +7,24 @@
   <div class="row border rounded shadow-sm bg-white mb-3">
     <div class="col-12 mb-3">
       <p>
-        <h4>Встреча "{{ meeting.get_name }}" <button class="btn-sm btn-danger" id="copy-link-btn">Ссылка на встречу</button></h4>
+        <h4>
+          Встреча "{{ meeting.get_name }}" <br>
+          <button class="btn btn-sm btn-danger" id="copy-link-btn">Ссылка на встречу</button>
+          <a class="btn btn-sm btn-danger" href="{% url 'matches:create_from_meeting' meeting.id %}">
+            Записать партию
+          </a>
+        </h4>
         <small class="text-muted">Статус встречи: <b>{{ meeting.status }}</b></small>
       </p>
       {% if meeting.status.id == 1 %}
         {% if not user.is_authenticated %}
           <i>Авторизуйтесь, чтобы присоединиться</i>
         {% elif meeting.creator == user %} 
-          <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:meeting_edit' meeting.id %}">
+          <a class="btn btn-sm btn-danger" href="{% url 'meetings:meeting_edit' meeting.id %}">
             Изменить
           </a>
           <!-- Button trigger modal -->
-          <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Отменить
           </button>
           <!-- Modal -->
@@ -46,32 +52,32 @@
         {% else %}
           <form method="post">
             {% csrf_token %}
-            {% for error in guests_form.guests.errors %} <i>{{ error|escape }}</i> {% endfor %}
+            {% for error in guests_form.guests.errors %} <u>{{ error|escape }}</u> {% endfor %}
             <div class="row">
-              <div class='col-auto'>
+              <div class='col-12 col-sm-auto'>
                 {% if participation %}
-                  <a class="btn btn-sm btn-outline-danger" href="{% url 'meetings:leave_meeting' meeting.id %}">
+                  <a class="btn btn-sm btn-danger" href="{% url 'meetings:leave_meeting' meeting.id %}">
                     Покинуть встречу
                   </a>
                 {% else %}
-                  <button type="submit" class="btn-sm btn-danger">
+                  <button type="submit" class="btn btn-sm btn-danger">
                     Присоединиться
                   </button>
                 {% endif %}
               </div>
               <div class='col-auto'>
-                <button class="btn-sm btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
+                <button class="btn btn-sm btn-outline-danger" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
                   Приду не один
                 </button>
               </div>
               <div class='col-3'>
                 <div class="collapse collapse-horizontal" id="collapseWidthExample">
-                  <div class="row" style="width: 550px;">
+                  <div class="row" style="width: 500px;">
                     <div class="col-2">
                       {{ guests_form.guests|addclass:'form-control form-control-sm' }}
                     </div>
                     <div class="col-2">
-                      <button type="submit" class="btn-sm btn-danger">ОК</button>
+                      <button type="submit" class="btn btn-sm btn-danger">ОК</button>
                     </div>
                   </div>
                 </div>
@@ -198,7 +204,7 @@
               {% thumbnail meeting.place.type.logo "24x24" as logo %}
                   <img class="img-fluid rounded mx-auto" src="{{ logo.url }}"  title="{{meeting.place.type.name}}">
                 {% endthumbnail %}
-              {{ meeting.place.get_name }}<br>
+              {{ meeting.place.name }}<br>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
                 <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
                 <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
@@ -263,7 +269,7 @@
             <div class="form-group mb-2">
               {{ comment_form.text }}
             </div>
-            <button type="submit" class="btn btn-danger">Отправить</button>
+            <button type="submit" class="btn btn-sm btn-danger">Отправить</button>
           </form>
         {% endif %}
       </div>

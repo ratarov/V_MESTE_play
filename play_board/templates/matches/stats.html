@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% load static %}
+{% load user_filters %}
+{% block title %}Статистика игр{% endblock %}
+{% block content %}
+  <div class="row border rounded shadow-sm bg-white mb-3">
+    <div class="col-12 mb-3">
+      <p>
+        <h4>Статистика игр {{ period }} </h4> 
+      </p>
+
+      <div class="col-12 mb-3">
+        <form method="get">
+          <div class="form-group row my-3">
+            <div class="col-12 col-md-5 col-lg-4">
+              <label class="form-label"><small class="text-muted">Игра:</small></label>
+              {{ form.game }}
+            </div>
+            <div class="col-6 col-md-3 col-lg-2">
+              <label class="form-label"><small class="text-muted">Не раньше:</small></label>
+              {{ form.date_since }}
+            </div>
+            <div class="col-6 col-md-3 col-lg-2">
+              <label class="form-label"><small class="text-muted">Не позже:</small></label>
+              {{ form.date_until }} 
+            </div>
+            <div class="col-0 col-md-1 col-lg-4">
+            </div>
+            <div class="col-12 col-md-5 col-lg-4">
+              <label class="form-label"><small class="text-muted">Место:</small></label>
+              {{ form.place|addclass:'form-control' }} 
+            </div>
+            <div class="col-5 col-md-3 col-lg-2">
+              <label class="form-label"><small class="text-muted">Соперник:</small></label>
+              {{ form.player|addclass:'form-control' }} 
+            </div>
+            <div class="col-5 col-md-3 col-lg-2">
+              <label class="form-label"><small class="text-muted">Тип игры:</small></label>
+              {{ form.type|addclass:'form-control' }} 
+            </div>
+
+            <div class="col-2 col-md-1 align-self-center">
+              <div class="row d-flex justify-content-end ">
+                <span style="color:white">.</span>
+              </div>
+              <div class="row d-flex justify-content-end px-2">
+                <button type="submit" class="btn btn-danger">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                  </svg>
+                </button>
+              </div>  
+            </div>
+          </div>
+        </form>
+
+        Всего партий: {% if matches.total %}{{ matches.total }}{% else %}0{% endif %}<br>
+        Побед: {% if matches.wins %}{{ matches.wins }} ({{ matches.wins|divide:matches.total }}%){% else %}0{% endif %}<br>
+        Среднее время игры: {% if matches.avg_length %}{{ matches.avg_length }}{% else %}0{% endif %} мин.<br>
+        Соперников на сайте: {{ players.count|add:-1 }}<br>
+        Настольных игр: {{ games.count }}<br>
+        Мест для игр: {{ places.count }}
+        {% for player in players %}
+        {% endfor %}
+
+        {% for game in games %}
+        {% endfor %}
+  
+        {% for place in places %}
+        {% endfor %}
+
+        <div class="form-group row my-3">
+          <div class="col-12 col-md-6 col-xl-4 mb-2">
+            <canvas id="players" width="20" height="20"></canvas> 
+          </div>
+          <div class="col-12 col-md-6 col-xl-4 mb-2">
+            <canvas id="places" width="20" height="20"></canvas> 
+          </div>
+          <div class="col-12 col-md-6 col-xl-4 mb-2">
+            <canvas id="games" width="20" height="20"></canvas> 
+          </div>
+        </div>    
+        
+      </div>
+    </div>
+  </div>
+ 
+  
+
+  <script>
+    const ctx1 = document.getElementById('players');
+  
+    new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: [{% for player in players|slice:":5" %}'{{ player.user__username }}', {% endfor %}],
+        datasets: [
+        {
+          label: 'Поражений',
+          data: [{% for player in players|slice:":5" %}'{{ player.losts }}', {% endfor %}],
+          borderWidth: 1
+        },
+        {
+          label: 'Побед',
+          data: [{% for player in players|slice:":5" %}'{{ player.wins }}', {% endfor %}],
+          borderWidth: 1
+        },
+        {
+          label: 'Общих игр',
+          data: [{% for player in players|slice:":5" %}'{{ player.games }}', {% endfor %}],
+          borderWidth: 5,
+          type: 'line'
+        },
+      ]
+      },
+      options: {
+        interaction: {
+          intersect: false,
+        },
+        scales: {
+          x: {
+            stacked: true,
+          },
+          y: {
+            stacked: true
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Топ соперников'
+          }
+        }
+      }
+    });
+
+    const ctx2 = document.getElementById('games');
+
+    new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: [{% for game in games|slice:":5" %}'{{ game.match__game__name_rus }}', {% endfor %}],
+        datasets: [{
+          label: 'Поражений',
+          data: [{% for game in games|slice:":5" %}'{{ game.losts }}', {% endfor %}],
+          borderWidth: 1
+        },
+        {
+          label: 'Побед',
+          data: [{% for game in games|slice:":5" %}'{{ game.wins }}', {% endfor %}],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            stacked: true,
+          },
+          y: {
+            stacked: true
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Любимые игры'
+          }
+        }
+      }
+    });
+
+    const ctx3 = document.getElementById('places');
+
+    new Chart(ctx3, {
+      type: 'doughnut',
+      data: {
+        labels: [{% for place in places|slice:":5" %}'{{ place.match__place__name }}', {% endfor %}],
+        datasets: [{
+          label: 'Игр',
+          data: [{% for place in places|slice:":5" %}'{{ place.total }}', {% endfor %}],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        interaction: {
+          intersect: false,
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Места'
+          }
+        }
+      }
+    });
+
+  </script>
+{% endblock %}

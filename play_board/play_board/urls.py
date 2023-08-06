@@ -10,6 +10,7 @@ from django.urls import include, path
 urlpatterns = [
     path('adminka/', admin.site.urls),
     path('games/', include('games.urls', namespace='games')),
+    path('matches/', include('matches.urls', namespace='matches')),
     path('users/', include('users.urls', namespace='users')),
     path('users/', include('social_django.urls', namespace='social')),
 

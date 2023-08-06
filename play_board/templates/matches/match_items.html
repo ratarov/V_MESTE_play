@@ -1,0 +1,84 @@
+{% load static %}
+
+{% for match in matches %}
+
+<div class="list-group-item py-3 lh-sm" hx-target="this" hx-swap="outerHTML">
+  <div class="row d-flex align-items-center list-group-flush">
+    <div class="col-auto d-lg-flex justify-content-center align-items-center" style="width: 3rem">
+      {% if match.status == 'ok' %}
+      <img src="{% static 'img/icons/check-square-fill.svg' %}" width="24" height="24" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Учитывается в статистике">
+      {% elif match.status == 'draft' %}
+      <img src="{% static 'img/icons/plus-square-fill.svg' %}" width="24" height="24" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Черновик партии">
+      {% else %}
+      <img src="{% static 'img/icons/x-square-fill.svg' %}" width="24" height="24" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Не закончили - незачёт">
+      {% endif %}
+      
+    </div>
+    <a href="{% url 'matches:match_detail' match.id %}" class="match-item col-6 col-md-8 col-lg-9">
+      <div class="row ">
+        <div class="col-12 col-lg-5 order-1 order-lg-1">
+          {% if match.is_winner %}
+          <img src="{% static 'img/icons/trophy-fill.svg' %}" width="24" height="24">
+          {% endif %}
+          <strong>
+            {% if match.game %}{{ match.game }}{% else %}Не выбрано{% endif %}
+          </strong>
+          {% if match.quantity > 1 %} x <strong>{{ match.quantity }}</strong> {% endif %}
+        </div>
+        <div class="col-8 col-lg-2 d-lg-flex justify-content-center order-2 order-lg-2">
+          <img class="d-inline d-lg-none" src="{% static 'img/icons/calendar-date.svg' %}" width="16" height="16">
+          {{ match.date|date:"j b" }}
+          
+        </div>
+        <div class="col-12 col-lg-3 order-4 order-lg-3">
+          <img class="d-inline d-lg-none" src="{% static 'img/icons/geo-alt.svg' %}" width="16" height="16">
+          {% if match.place %}
+            {{ match.place }}
+          {% else %}
+            Не указано
+          {% endif %}
+        </div>
+        <div class="col-4 col-lg-2 d-lg-flex justify-content-center order-3 order-lg-4">
+          <img class="d-inline d-lg-none" src="{% static 'img/icons/people.svg' %}" width="16" height="16">
+          {{ match.players.count }}
+        </div>
+      </div>
+    </a>
+
+    <div class="col-4 col-md-3 col-lg d-flex justify-content-center gap-1 flex-wrap">
+      <a class="btn btn-sm btn-danger" href="{% url 'matches:create_from_match' match.id %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Повторить">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+        </svg>
+      </a>
+      <!-- <a class="btn btn-sm btn-danger" href="{% url 'matches:match_detail' match.id %}" title="Детали">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+          <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+        </svg>
+      </a> -->
+      {% if user == match.creator %}
+        <a class="btn btn-sm btn-danger" href="{% url 'matches:match_edit' match.id %}" title="Изменить">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+          </svg>
+        </a>
+        <a class="btn btn-sm btn-danger" hx-get="{% url 'matches:match_delete_from_list' match.id %}" title="Удалить">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+          </svg>
+        </a>
+      {% endif %}
+      
+    </div>
+  </div>
+</div>
+
+{% if forloop.last %}
+  {% if matches.has_next %}
+    <div hx-get="?page={{ matches.next_page_number }}" hx-trigger="revealed" hx-swap="afterend" hx-target="this" rel="next"></div>
+  {% endif %}
+
+
+{% endif %}
+{% endfor %}
