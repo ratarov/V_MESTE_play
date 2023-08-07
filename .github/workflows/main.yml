@@ -92,10 +92,10 @@ jobs:
             sudo docker-compose stop
             sudo docker rm vmeste-back
             sudo docker rm vmeste-nginx
-            sudo docker volume rm vmeste_static_value
+            sudo docker volume rm infra-vmeste_static_value
             sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/vmeste_back
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vmeste_back:latest
             sudo docker-compose up -d --build
             sudo docker exec -it vmeste-back python manage.py collectstatic --no-input
             sudo docker exec -it vmeste-back python manage.py migrate
-            sudo docker exec -it vmeste-back python manage.py start_bot
+            sudo docker exec -d vmeste-back python manage.py start_bot
