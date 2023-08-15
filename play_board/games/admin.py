@@ -11,7 +11,7 @@ class GameAdmin(admin.ModelAdmin):
         'slug',
         'year',
     )
-    search_fields = ['name_rus', 'name_eng']
+    search_fields = ['name_rus', 'name_eng', 'slug']
 
 
 admin.site.register(Game, GameAdmin)

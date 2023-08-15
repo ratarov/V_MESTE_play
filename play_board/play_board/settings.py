@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'debug_toolbar',
     'social_django',
+    'ckeditor',
+    # 'django_ckeditor_5',
 ]
 
 MIDDLEWARE = [
@@ -158,8 +160,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = Path(BASE_DIR, 'static')
-# STATICFILES_DIRS = [Path(BASE_DIR, 'static')]
+if not DEBUG:
+    STATIC_ROOT = Path(BASE_DIR, 'static')
+else:
+    STATICFILES_DIRS = [Path(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = Path(BASE_DIR, 'media')
@@ -208,3 +212,15 @@ if not DEBUG:
         send_default_pii=True,
     )
     ignore_logger("django.security.DisallowedHost")
+
+CKEDITOR_ALLOW_NONIMAGE_FILES = False
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar_Base': [
+            ['Undo', 'Redo', '-', 'FontSize', 'Bold', 'Italic', 'Underline', '-', 'Link', 'Smiley']
+        ],
+        'toolbar': 'Base',
+        'height': 'full',
+        'width': 'full',
+    }
+}

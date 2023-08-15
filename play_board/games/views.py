@@ -34,6 +34,7 @@ def game_add(request):
             for game_dataset in games_data:
                 if game_dataset.get('slug') not in games_in_base:
                     new_games.append(Game(**game_dataset))
+                    games_in_base.append(game_dataset.get('slug'))
             Game.objects.bulk_create(new_games)
         context['search'] = True
         context['games'] = new_games

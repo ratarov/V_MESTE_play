@@ -8,6 +8,7 @@ from django.urls import include, path
 
 
 urlpatterns = [
+    # path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
     path('adminka/', admin.site.urls),
     path('games/', include('games.urls', namespace='games')),
     path('matches/', include('matches.urls', namespace='matches')),
@@ -26,7 +27,6 @@ urlpatterns = [
          PasswordResetCompleteView.as_view(
              template_name='users/reg_actions/password_reset_complete.html'),
          name='password_reset_complete'),
-
 
     path('', include('meetings.urls', namespace='meetings')),
 ]

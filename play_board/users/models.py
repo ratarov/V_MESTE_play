@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from ckeditor.fields import RichTextField
 
 from games.models import Game
 
@@ -123,7 +124,7 @@ class User(AbstractUser):
         blank=True,
         null=True,
     )
-    about = models.TextField(
+    about = RichTextField(
         verbose_name='О себе',
         help_text='Расскажите о себе, своих увлечениях и опыте в играх',
         blank=True,

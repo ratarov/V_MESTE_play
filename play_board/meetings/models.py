@@ -1,4 +1,5 @@
 from django.db import models
+from ckeditor.fields import RichTextField
 
 from games.models import Game
 from users.models import Place, User
@@ -51,7 +52,7 @@ class Meeting(models.Model):
         verbose_name='Максимальное кол-во игроков',
         default=7,
     )
-    description = models.TextField(
+    description = RichTextField(
         verbose_name='Описание',
         blank=True,
     )

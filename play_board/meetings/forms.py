@@ -70,7 +70,7 @@ class MeetingForm(forms.ModelForm):
                 "type": "time",
                 "value": "19:00"
             }),
-            'description': forms.Textarea(attrs={'rows': '5'})
+            # 'description': forms.Textarea(attrs={'rows': '5'})
         }
         labels = {
             'games': 'Игры',
