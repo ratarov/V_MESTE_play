@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load user_filters %}
 {% load static %}
-{% block title %}Главная страница В МЕСТЕ{% endblock %}
+{% block title %}Сервис В МЕСТЕ{% endblock %}
 {% block content %}
   <div class="row border rounded shadow-sm bg-white justify-content-center">
     <div class="col-12 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
@@ -38,19 +38,25 @@
       <h4>Хотите создать встречу сами?</h4>
       <div class="row justify-content-center">
         <div class="col-12 col-md-4 col-xl-3">
-          <h6><a href="{% url 'users:login' %}">Зарегистрируйтесь</a></h6>
-          <img src="{% static 'img/reg.jpg' %}" class="img-fluid rounded" alt="">
+          <a href="{% url 'users:login' %}">
+            <h6>Зарегистрируйтесь</h6>
+            <img src="{% static 'img/reg.jpg' %}" class="img-fluid rounded" alt="">
+          </a>
         </div>
         
 
         <div class="col-12 col-md-4 col-xl-3">
-          <h6><a href="{% url 'users:user_info' %}">Добавьте место</a></h6>
-          <img src="{% static 'img/place.jpg' %}" class="img-fluid rounded" alt="">
+          <a href="{% url 'users:user_info' %}">
+            <h6>Добавьте место</h6>
+            <img src="{% static 'img/place.jpg' %}" class="img-fluid rounded" alt="">
+          </a>
         </div>
 
         <div class="col-12 col-md-4 col-xl-3 mb-4">
-          <h6><a href="{% url 'meetings:meeting_create' %}">Создайте встречу</a></h6>
-          <img src="{% static 'img/meeting.jpg' %}" class="img-fluid rounded" alt="">
+          <a href="{% url 'meetings:meeting_create' %}">
+            <h6>Создайте встречу</h6>
+            <img src="{% static 'img/meeting.jpg' %}" class="img-fluid rounded" alt="">
+          </a>
         </div>
       </div>
     </div>  
@@ -60,13 +66,17 @@
       <div class="row justify-content-center">      
 
         <div class="col-12 col-md-4 col-xl-3">
-          <h6><a href="{% url 'matches:my_matches' %}">Сохраняйте партии</a></h6>
-          <img src="{% static 'img/add_match.jpg' %}" class="img-fluid rounded" alt="">
+          <a href="{% url 'matches:my_matches' %}">
+            <h6>Сохраняйте партии</h6>
+            <img src="{% static 'img/add_match.jpg' %}" class="img-fluid rounded" alt="">
+          </a>
         </div>
 
         <div class="col-12 col-md-4 col-xl-3">
-          <h6><a href="{% url 'matches:stats' %}">Изучайте статистику</a></h6>
-          <img src="{% static 'img/graphs.jpg' %}" class="img-fluid rounded" alt="">
+          <a href="{% url 'matches:stats' %}">
+            <h6>Изучайте статистику</h6>
+            <img src="{% static 'img/graphs.jpg' %}" class="img-fluid rounded" alt="">
+          </a>
         </div>
       </div>
     </div>  

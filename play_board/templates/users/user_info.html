@@ -74,7 +74,7 @@
       </div>
       <div class="col-9">
         {% if user.about %}
-          {{ user.about|linebreaksbr }} 
+          {{ user.about|safe }} 
         {% endif %}
       </div>
       <div class="col-3">

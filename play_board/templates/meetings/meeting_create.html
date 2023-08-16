@@ -9,6 +9,7 @@
       <p><h4>Вы создаете новую встречу:</h4></p>       
       <form method="post">
         {% csrf_token %}
+        {{ meeting_form.media }}
         <u>{{ meeting_form.non_field_errors }}</u>
         {% for field in meeting_form %}
           {% for error in field.errors %} <u>{{ error|escape }}</u> {% endfor %}
@@ -70,7 +71,7 @@
           </div>
           <div class="col-12 col-md-12 mb-1">
             <label class="form-label"><b>Комментарии</b></label>
-            {{ meeting_form.description|addclass:'form-control' }}
+            {{ meeting_form.description }}
             <small class="form-text text-muted">
               Любые Ваши пожелания
             </small>
@@ -80,5 +81,7 @@
           {% if form_edit %} Изменить {% else %} Создать {% endif %} 
         </button>
       </form>
-    </div></div>  
+    </div>
+  </div>
+
 {% endblock %}

@@ -64,6 +64,7 @@ def user_info_edit(request):
         user = form.save(commit=False)
         user.save()
         return redirect('users:user_info')
+    print(form.media)
     context = {'form': form, 'places': places}
     return render(request, 'users/user_info_edit.html', context)
 

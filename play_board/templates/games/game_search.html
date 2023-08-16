@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load thumbnail %}
+{% load static %}
 {% block title %}Добавление игр{% endblock %}
 {% block content %}
 <div class="row border rounded shadow-sm bg-white">
@@ -28,7 +29,13 @@
             {% for game in games %}
             <tr>
               <td class="width-70" width="70">
-                <img class="img rounded max-height-100" src="{{ game.photo_url }}" height="60">
+                <img class="img rounded max-height-100" 
+                {% if game.photo_url %}
+                  src="{{ game.photo_url }}"
+                {% else %}
+                  src="{% static 'img/fav/logo-256x256.png' %}"
+                {% endif %}
+                height="60">
               </td>
               <td>
                 <a class="text-decoration-none" href="{% url 'games:game_detail' game.slug %}">

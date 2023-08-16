@@ -12,9 +12,13 @@
       </p>
     </div>
     
-    <div class="col-12">
+    <div class="col-12 mb-2">
       <img class="img-fluid rounded mx-auto" class="img-responsive" data-no-retina="true"   
-      src="{{ game.photo_url }}" width="200" height="200">
+      {% if game.photo_url %}
+        src="{{ game.photo_url }}"
+      {% else %}
+        src="{% static 'img/fav/logo-256x256.png' %}"
+      {% endif %} width="200" height="200">
     </div>
     {% if user.is_authenticated %}
       <div class="col-6 col-md-2 mb-4">

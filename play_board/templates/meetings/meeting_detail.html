@@ -125,12 +125,6 @@
             {% empty %} Коллекция
             {% endfor %}
             </div>
-            <div class="col-4 col-md-2">
-              <text class="text-muted">Команда:<text>
-            </div>
-            <div class="col-8 col-md-10">
-              {{ meeting.total_players }} / {{ meeting.max_players }}
-            </div>
             <div class="col-12 col-md-2">
               <text class="text-muted">Игроки:<text>
             </div>
@@ -152,10 +146,10 @@
               {% endfor %}
             </div>
             {% if user == meeting.creator %}
-              <div class="col-4 col-md-2">
+              <div class="col-12 col-md-2">
                 <text class="text-muted">Забанены:<text>
               </div>
-              <div class="col-8 col-md-10">
+              <div class="col-12 col-md-10">
                 {% for participation in meeting.get_banned_players %}
                   <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                     {% if user == meeting.creator %}
@@ -174,7 +168,12 @@
                 {% endfor %} 
               </div>
             {% endif %}
-            
+            <div class="col-4 col-md-2">
+              <text class="text-muted">Команда:<text>
+            </div>
+            <div class="col-8 col-md-10">
+              {{ meeting.total_players }} / {{ meeting.max_players }}
+            </div>
             <div class="col-4 col-md-2">
               <text class="text-muted">Цена:<text>
             </div>
@@ -185,7 +184,7 @@
               <text class="text-muted">Комментарии:<text>
             </div>
             <div class="col-12 col-md-10">
-              {{ meeting.description|linebreaksbr }}
+              {{ meeting.description|safe }}
             </div>
           </div>
         </div><!--текст карточки-->

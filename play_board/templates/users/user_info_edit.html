@@ -4,6 +4,8 @@
 {% load user_filters %}
 {% block title %}Изменение профиля {{ user.username }} {% endblock %}
 {% block content %}
+
+
 <div class="row border rounded shadow-sm bg-white mb-3">
   <div class="col-12 col-md-12">
     <p>
@@ -12,6 +14,7 @@
     <p>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
+      {{ form.media }}
       {% for field in form %}
         {% for error in field.errors %} <u>{{ error|escape }}</u> {% endfor %}
       {% endfor %}
@@ -68,7 +71,7 @@
         <div class="col-12 col-md-4 mb-1">
           <label class="form-label"><b>Телеграм аккаунт</b></label>
           {{ form.telegram|addclass:'form-control' }}
-          <small class="form-text text-muted">Для бота - никто его не увидят</small> 
+          <small class="form-text text-muted">Для бота - никто его не увидит</small> 
         </div>
 
         <div class="col-6 col-md-4 mb-1">
@@ -82,8 +85,8 @@
           <small class="form-text text-muted">Ник на tesera.ru</small> 
         </div>
         <div class="col-12 mb-1">
-          <label class="form-label"><b>О себе</b></label>
-          {{ form.about|addclass:'form-control' }}
+          <label class="form-label"><b>О себе</b></label><br>
+          {{ form.about }}<br>
           <small class="form-text text-muted">Расскажите о себе, интересах, опыте в настольных играх</small> 
         </div>
       <div class="d-flex">
