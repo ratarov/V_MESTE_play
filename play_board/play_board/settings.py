@@ -35,8 +35,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'debug_toolbar',
     'social_django',
-    'ckeditor',
-    # 'django_ckeditor_5',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -213,14 +212,16 @@ if not DEBUG:
     )
     ignore_logger("django.security.DisallowedHost")
 
-CKEDITOR_ALLOW_NONIMAGE_FILES = False
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar_Base': [
-            ['Undo', 'Redo', '-', 'FontSize', 'Bold', 'Italic', 'Underline', '-', 'Link', 'Smiley']
-        ],
-        'toolbar': 'Base',
-        'height': 'full',
-        'width': 'full',
-    }
+TINYMCE_DEFAULT_CONFIG = {
+
+    "menubar": "",
+    # "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
+    # "fullscreen insertdatetime media table paste code help wordcount spellchecker",
+    "toolbar": "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft "
+    "aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor "
+    "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
+    # "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
+    "a11ycheck ltr rtl | showcomments addcomment code",
+    "custom_undo_redo_levels": 10,
+    # "language": "es_ES",  # To force a specific language instead of the Django current language.
 }
